@@ -167,7 +167,7 @@
                 android:textColor="@color/black"/>
         </LinearLayout>
         <ImageButton
-            android:id="@+id/rightArrowButton"
+            android:id="@+id/rightCourseArrowButton"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:background="@null"

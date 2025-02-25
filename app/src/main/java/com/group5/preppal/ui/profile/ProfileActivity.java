@@ -13,13 +13,11 @@ import com.group5.preppal.R;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private LinearLayout detailInfoLayout;
     private ImageButton rightDetailArrowButton;
     private FrameLayout detailContainer;
     private boolean isDetailVisible = false;
 
-    private LinearLayout detailCourseListLayout;
-    private ImageButton rightArrowButton;
+    private ImageButton rightCourseArrowButton;
     private FrameLayout listContainer;
     private boolean isCourseListVisible = false;
 
@@ -29,17 +27,19 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         // Khởi tạo các thành phần giao diện
-        detailInfoLayout = findViewById(R.id.detailInfoLayout);
+        LinearLayout detailInfoLayout = findViewById(R.id.detailInfoLayout);
         rightDetailArrowButton = findViewById(R.id.rightDetailArrowButton);
         detailContainer = findViewById(R.id.detailContainer);
 
-        detailCourseListLayout = findViewById(R.id.detailCourseListLayout);
-        rightArrowButton = findViewById(R.id.rightArrowButton);
+        LinearLayout detailCourseListLayout = findViewById(R.id.detailCourseListLayout);
+        rightCourseArrowButton = findViewById(R.id.rightCourseArrowButton);
         listContainer = findViewById(R.id.listContainer);
 
         // Thiết lập sự kiện khi nhấn vào detailInfoLayout
         detailInfoLayout.setOnClickListener(v -> toggleUserDetails());
         detailCourseListLayout.setOnClickListener(v -> toggleCourseList());
+        rightDetailArrowButton.setOnClickListener(v -> toggleUserDetails());
+        rightCourseArrowButton.setOnClickListener(v -> toggleCourseList());
     }
 
     private void toggleUserDetails() {
@@ -64,10 +64,10 @@ public class ProfileActivity extends AppCompatActivity {
                     .replace(R.id.listContainer, new CourseListProfileFragment())
                     .commit();
             listContainer.setVisibility(View.VISIBLE);
-            rightArrowButton.setRotation(90f);  // Xoay nút 90 độ
+            rightCourseArrowButton.setRotation(90f);
         } else {
             listContainer.setVisibility(View.GONE);
-            rightArrowButton.setRotation(0f);  // Đưa nút về trạng thái ban đầu
+            rightCourseArrowButton.setRotation(0f);
         }
         isCourseListVisible = !isCourseListVisible;
     }
