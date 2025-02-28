@@ -14,13 +14,19 @@
         android:theme="@style/Theme.PrepPal"
         tools:targetApi="31">
 
-        <activity android:name=".ui.MainActivity"
-            android:exported="true">
+        <!-- Login Activity -->
+        <activity android:name=".ui.LoginActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Register Activity -->
+        <activity android:name=".ui.RegisterActivity" />
+
+        <!-- Main Activity (Home Screen) -->
+        <activity android:name=".ui.MainActivity" />
 
     </application>
 
