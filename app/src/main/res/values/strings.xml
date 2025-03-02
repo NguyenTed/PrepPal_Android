@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">PrepPal</string>
+    <string name="app_name" translatable="false">PrepPal</string>
+    <string name="account" translatable="false">Account</string>
+    <string name="back_button" translatable="false">Back button</string>
 </resources>

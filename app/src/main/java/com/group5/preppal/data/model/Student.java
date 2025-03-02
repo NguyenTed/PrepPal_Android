@@ -8,6 +8,6 @@ public class Student extends User {
     public Student() {}
 
     public Student(String uid, String email, String name, Date dateOfBirth, Gender gender) {
-        super(uid, email, name, dateOfBirth, gender);
+        super(uid, email, name, dateOfBirth, gender, "student");
     }
 }
