@@ -58,15 +58,26 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="Đăng ký"
+        android:text="Đăng nhập"
         android:textSize="16sp"
         android:textColor="@android:color/white"
         android:backgroundTint="@color/blue"
         android:layout_marginTop="20dp"
+        android:layout_marginBottom="8dp"
         android:radius="20dp"/>
 
 
-    <!-- Đăng nhập bằng số điện thoại (Tăng vùng cảm ứng với minWidth & minHeight) -->
+    <Button
+        android:id="@+id/btnGoogleSignIn"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Đăng nhập bằng Google"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:backgroundTint="@color/white"
+        android:drawableLeft="@drawable/ic_google"
+        android:gravity="center"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
