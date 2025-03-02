@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_arrow_back"
+            android:scaleType="centerInside"
+            android:contentDescription="Quay lại"
+            android:onClick="onBackPressed"
+            android:layout_gravity="start"
+            android:layout_marginBottom="10dp"/>
+        <!-- Logo -->
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/logo_prep"
+            android:contentDescription="Logo"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Tiêu đề -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đăng ký thông tin"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginBottom="10dp" />
+
+        <!-- Layout chứa thanh tiến trình -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:orientation="horizontal"
+            android:background="@color/white"
+            android:layout_marginBottom="20dp">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@color/blue"
+                android:radius="10dp"
+                android:layout_marginEnd="4dp"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@color/blue"
+                android:radius="10dp"
+                android:layout_marginStart="4dp"/>
+        </LinearLayout>
+
+
+
+        <!-- Form nhập liệu -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="Mật khẩu"
+            android:textSize="14sp"
+            android:textColor="@color/black"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/input_background"
+            android:hint="Nhập mật khẩu"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="Xác nhận mật khẩu"
+            android:textSize="14sp"
+            android:textColor="@color/black"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/input_background"
+            android:hint="Nhập lại mật khẩu"
+            android:padding="10dp"
+            android:textSize="16sp"
+            android:layout_marginBottom="10dp"/>
+
+        <!-- Nút lưu thông tin -->
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Lưu thông tin"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/blue"
+            android:layout_marginTop="10dp"/>
+
+    </LinearLayout>
+</ScrollView>
