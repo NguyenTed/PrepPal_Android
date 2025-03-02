@@ -3,18 +3,26 @@ package com.group5.preppal.data.model;
 import java.util.Date;
 
 public class User {
-    private String uid;
-    private String email;
-    private String name;
-    private Date dateOfBirth;
+    protected String uid;
+    protected String email;
+    protected String name;
+    protected Date dateOfBirth;
+    protected Gender gender;
+    protected String role;
+
+    public enum Gender {
+        MALE, FEMALE, OTHER
+    }
 
     public User() {}
 
-    public User(String uid, String email, String name, Date dateOfBirth) {
+    public User(String uid, String email, String name, Date dateOfBirth, Gender gender, String role) {
         this.uid = uid;
         this.email = email;
         this.name = name;
         this.dateOfBirth = dateOfBirth;
+        this.gender = gender;
+        this.role = role;
     }
 
     public String getUid() {
@@ -47,5 +55,21 @@ public class User {
 
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
