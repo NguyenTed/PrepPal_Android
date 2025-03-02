@@ -38,15 +38,15 @@ public class RegisterActivity extends AppCompatActivity {
 
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
-        nameEditText = findViewById(R.id.nameEditText);
-        emailEditText = findViewById(R.id.emailEditText);
-        passwordEditText = findViewById(R.id.passwordEditText);
-        confirmPasswordEditText = findViewById(R.id.confirmPasswordEditText);
-        dobEditText = findViewById(R.id.dobEditText);
-        genderSpinner = findViewById(R.id.genderSpinner);
-        roleSpinner = findViewById(R.id.roleSpinner);
-        registerButton = findViewById(R.id.registerButton);
-        loginTextView = findViewById(R.id.loginTextView);
+//        nameEditText = findViewById(R.id.nameEditText);
+//        emailEditText = findViewById(R.id.emailEditText);
+//        passwordEditText = findViewById(R.id.passwordEditText);
+//        confirmPasswordEditText = findViewById(R.id.confirmPasswordEditText);
+//        dobEditText = findViewById(R.id.dobEditText);
+//        genderSpinner = findViewById(R.id.genderSpinner);
+//        roleSpinner = findViewById(R.id.roleSpinner);
+//        registerButton = findViewById(R.id.registerButton);
+//        loginTextView = findViewById(R.id.loginTextView);
 
         registerButton.setOnClickListener(v -> registerUser());
         loginTextView.setOnClickListener(v -> startActivity(new Intent(this, LoginActivity.class)));
