@@ -1,8 +1,9 @@
-package com.group5.preppal.ui;
+package com.group5.preppal.ui.auth;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -17,6 +18,8 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.group5.preppal.R;
+import com.group5.preppal.ui.MainActivity;
+import com.group5.preppal.ui.profile.ProfileActivity;
 import com.group5.preppal.viewmodel.AuthViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -24,10 +27,9 @@ import javax.inject.Inject;
 
 @AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity {
-    private static final int RC_SIGN_IN = 9001;
-
     private EditText emailEditText, passwordEditText;
     private Button emailSignInButton, googleSignInButton;
+    private TextView signUpTextView;
 
     private AuthViewModel authViewModel;
 
@@ -58,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.passwordEditText);
         emailSignInButton = findViewById(R.id.loginButton);
         googleSignInButton = findViewById(R.id.googleSignInButton);
+        signUpTextView = findViewById(R.id.signUpTextView);
 
         emailSignInButton.setOnClickListener(v -> {
             String email = emailEditText.getText().toString();
@@ -66,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         googleSignInButton.setOnClickListener(v -> signInWithGoogle());
+        signUpTextView.setOnClickListener(v -> goToSignUpActivity());
 
         authViewModel.getUserLiveData().observe(this, user -> {
             if (user != null) {
@@ -86,7 +90,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void goToMainActivity(FirebaseUser user) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, ProfileActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void goToSignUpActivity() {
+        Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
         finish();
     }

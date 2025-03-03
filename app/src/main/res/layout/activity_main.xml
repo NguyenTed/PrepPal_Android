@@ -10,16 +10,10 @@
         android:id="@+id/userInfoTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="User Info"
+        android:text="Fetching user..."
         android:textSize="18sp"
-        android:textAlignment="center"
-        android:padding="10dp" />
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="8dp" />
 
-    <Button
-        android:id="@+id/signOutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign Out"
-        android:layout_marginTop="20dp"/>
 </LinearLayout>
-
