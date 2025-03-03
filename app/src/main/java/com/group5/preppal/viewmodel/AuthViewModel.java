@@ -5,9 +5,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseUser;
+import com.group5.preppal.data.model.User;
 import com.group5.preppal.data.repository.AuthRepository;
+
+import java.util.Date;
 
 import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
@@ -41,8 +43,8 @@ public class AuthViewModel extends ViewModel {
                 .addOnFailureListener(e -> errorLiveData.setValue(e.getMessage()));
     }
 
-    public void signUpWithEmail(String email, String password) {
-        authRepository.signUpWithEmail(email, password)
+    public void signUpWithEmail(String email, String password, String name, Date dateOfBirth, User.Gender gender) {
+        authRepository.signUpWithEmail(email, password, name, dateOfBirth, gender)
                 .addOnSuccessListener(userLiveData::setValue)
                 .addOnFailureListener(e -> errorLiveData.setValue(e.getMessage()));
     }
