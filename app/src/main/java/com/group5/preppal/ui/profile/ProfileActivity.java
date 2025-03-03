@@ -34,7 +34,6 @@ public class ProfileActivity extends AppCompatActivity {
                     v.getWidth() / 2, v.getHeight() / 2, // Tâm mở rộng
                     0, 0 // Kích thước ban đầu
             );
-
             startActivity(intent, options.toBundle());
         });
     }
