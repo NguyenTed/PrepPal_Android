@@ -1,4 +1,6 @@
 package com.group5.preppal.data.repository;
+import android.util.Log;
+
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.AuthCredential;
@@ -12,7 +14,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.group5.preppal.data.model.Student;
 import com.group5.preppal.data.model.User;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Singleton
 public class AuthRepository {
@@ -77,7 +81,10 @@ public class AuthRepository {
                                 firebaseUser.getEmail(),
                                 firebaseUser.getDisplayName() != null ? firebaseUser.getDisplayName() : "Unknown",
                                 null,
-                                User.Gender.OTHER
+                                User.Gender.OTHER,
+                                0.0f,
+                                6.5f,
+                                new ArrayList<>()
                         );
 
                         firestore.collection("students").document(student.getUid())
@@ -98,7 +105,10 @@ public class AuthRepository {
                                 email,
                                 name,
                                 dateOfBirth,
-                                gender
+                                gender,
+                                0.0f,
+                                6.5f,
+                                new ArrayList<>()
                         );
 
                         firestore.collection("students").document(student.getUid())
@@ -109,9 +119,37 @@ public class AuthRepository {
                 });
     }
 
+
+
     public FirebaseUser getCurrentUser() {
         return firebaseAuth.getCurrentUser();
     }
+
+    public void addCourseToStudent(String uid, String courseId) {
+        firestore.collection("students").document(uid)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Student student = documentSnapshot.toObject(Student.class);
+                        if (student != null) {
+                            List<String> courses = student.getCourses();
+                            if (!courses.contains(courseId)) {
+                                courses.add(courseId); // ✅ Thêm courseId mới vào danh sách
+
+                                // ✅ Cập nhật Firestore
+                                firestore.collection("students").document(uid)
+                                        .update("courses", courses)
+                                        .addOnSuccessListener(aVoid -> Log.d("AuthRepository", "Course added successfully"))
+                                        .addOnFailureListener(Throwable::printStackTrace);
+                            } else {
+                                Log.d("AuthRepository", "Course already exists in student's list");
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(Throwable::printStackTrace);
+    }
+
 
     public void signOut() {
         firebaseAuth.signOut();

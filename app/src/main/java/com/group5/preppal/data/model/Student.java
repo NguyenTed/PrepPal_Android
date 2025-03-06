@@ -1,21 +1,44 @@
 package com.group5.preppal.data.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Student extends User {
-    private float level = 0;
+    protected float currentBand;
+    protected float aimBand;
+    private List<String> courses;
 
     public Student() {}
 
-    public Student(String uid, String email, String name, Date dateOfBirth, Gender gender) {
+    public Student(String uid, String email, String name, Date dateOfBirth, Gender gender, float currentBand, float aimBand, List<String>courses ) {
         super(uid, email, name, dateOfBirth, gender, "student");
+        this.courses = courses != null ? courses : new ArrayList<>();
+        this.currentBand = currentBand;
+        this.aimBand = aimBand;
     }
 
-    public float getLevel() {
-        return level;
+    public float getCurrentBand() {
+        return currentBand;
     }
 
-    public void setLevel(float level) {
-        this.level = level;
+    public void setCurrentBand(float currentBand) {
+        this.currentBand = currentBand;
+    }
+
+    public float getAimBand() {
+        return aimBand;
+    }
+
+    public void setAimBand(float aimBand) {
+        this.aimBand = aimBand;
+    }
+
+    public List<String> getCourses() {
+        return courses != null ? courses : new ArrayList<>();
+    }
+
+    public void setCourses(List<String> courses) {
+        this.courses = courses != null ? courses : new ArrayList<>();
     }
 }

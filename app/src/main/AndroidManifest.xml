@@ -36,7 +36,7 @@
 
         <activity android:name=".ui.choose_band.ChooseBandActivity"/>
 
-        <activity android:name=".ui.course_payment.CoursePayment"
+        <activity android:name=".ui.course_payment.CoursePaymentActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

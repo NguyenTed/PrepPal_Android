@@ -17,7 +17,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class UserRepository {
     private final FirebaseAuth firebaseAuth;
     private final FirebaseFirestore firestore;
@@ -30,13 +32,18 @@ public class UserRepository {
 
     public LiveData<User> getCurrentUser() {
         MutableLiveData<User> userLiveData = new MutableLiveData<>();
-        String uid = firebaseAuth.getCurrentUser().getUid();
+        String uid = firebaseAuth.getCurrentUser() != null ? firebaseAuth.getCurrentUser().getUid() : null;
+
+        if (uid == null) {
+            userLiveData.setValue(null);
+            return userLiveData;
+        }
 
         // Try fetching from each collection
-        fetchUserFromCollection("admins", Admin.class, uid, userLiveData, () ->
+        fetchUserFromCollection("students", Student.class, uid, userLiveData, () ->
                 fetchUserFromCollection("teachers", Teacher.class, uid, userLiveData, () ->
-                        fetchUserFromCollection("students", Student.class, uid, userLiveData, () ->
-                                userLiveData.setValue(null) // User not found in any collection
+                        fetchUserFromCollection("admins", Admin.class, uid, userLiveData, () ->
+                                userLiveData.setValue(null) // Nếu không tìm thấy user
                         )
                 )
         );

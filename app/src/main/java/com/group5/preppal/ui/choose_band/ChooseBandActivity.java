@@ -142,11 +142,11 @@ public class ChooseBandActivity extends AppCompatActivity {
 
     private void saveBandToFirebase() {
         userViewModel.updateUserBand(selectedBandLevel, selectedGoalBand).observe(this, success -> {
-            if (success) {
-                Toast.makeText(this, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Lỗi khi cập nhật!", Toast.LENGTH_SHORT).show();
-            }
+//            if (success) {
+//                Toast.makeText(this, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(this, "Lỗi khi cập nhật!", Toast.LENGTH_SHORT).show();
+//            }
         });
     }
 }
