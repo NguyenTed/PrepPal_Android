@@ -12,6 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.group5.preppal.R;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class CourseInfoActivity extends AppCompatActivity {
     private ImageButton backButton;
 
@@ -37,13 +40,12 @@ public class CourseInfoActivity extends AppCompatActivity {
 
         shrinkAnimation.setDuration(100); // Thời gian hiệu ứng
         shrinkAnimation.setInterpolator(new AccelerateInterpolator()); // Tăng tốc hiệu ứng
-
         // Khi animation kết thúc, đóng Activity
         shrinkAnimation.addListener(new android.animation.AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(android.animation.Animator animation) {
                 finish();
-                overridePendingTransition(0, 0); // Không có hiệu ứng hệ thống để tránh xung đột
+                overridePendingTransition(0, 0);
             }
         });
 

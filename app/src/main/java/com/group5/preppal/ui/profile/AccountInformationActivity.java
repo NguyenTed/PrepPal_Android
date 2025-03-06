@@ -19,6 +19,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class AccountInformationActivity extends AppCompatActivity {
     private ImageButton backButton;
     private EditText edtDateOfBirth;
