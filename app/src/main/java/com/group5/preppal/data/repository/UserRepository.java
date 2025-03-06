@@ -1,5 +1,8 @@
 package com.group5.preppal.data.repository;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -9,6 +12,9 @@ import com.group5.preppal.data.model.Admin;
 import com.group5.preppal.data.model.Student;
 import com.group5.preppal.data.model.Teacher;
 import com.group5.preppal.data.model.User;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -52,5 +58,28 @@ public class UserRepository {
                 })
                 .addOnFailureListener(e -> nextAttempt.run());
     }
+
+    //  Update currentBand and aimBand to Firestore
+    public LiveData<Boolean> updateUserBand(double currentBand, double aimBand) {
+        MutableLiveData<Boolean> updateStatus = new MutableLiveData<>();
+        String uid = firebaseAuth.getCurrentUser() != null ? firebaseAuth.getCurrentUser().getUid() : null;
+
+        if (uid == null) {
+            updateStatus.setValue(false);
+            return updateStatus;
+        }
+
+        Map<String, Object> userUpdates = new HashMap<>();
+        userUpdates.put("currentBand", currentBand);
+        userUpdates.put("aimBand", aimBand);
+
+        firestore.collection("students").document(uid)
+                .update(userUpdates)
+                .addOnSuccessListener(aVoid -> updateStatus.setValue(true))
+                .addOnFailureListener(e -> updateStatus.setValue(false));
+
+        return updateStatus;
+    }
+
 }
 

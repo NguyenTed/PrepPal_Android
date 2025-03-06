@@ -8,11 +8,14 @@ public class User {
     protected String name;
     protected Date dateOfBirth;
     protected Gender gender;
+    protected float currentBand;
+    protected float aimBand;
     protected String role;
 
     public enum Gender {
         MALE, FEMALE, OTHER
     }
+
 
     public User() {}
 
@@ -64,6 +67,16 @@ public class User {
     public void setGender(Gender gender) {
         this.gender = gender;
     }
+
+    public float getCurrentBand() {
+        return currentBand;
+    }
+
+    public void setCurrentBand(float currentBand) { this.currentBand = currentBand; }
+
+    public float getAimBand() { return aimBand; }
+
+    public void setAimBand(float currentBand) { this.currentBand = aimBand; }
 
     public String getRole() {
         return role;

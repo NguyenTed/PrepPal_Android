@@ -68,7 +68,7 @@
             android:layout_marginTop="10dp"
             android:background="@drawable/rounded_1000dp_gray">
             <Button
-                android:id="@+id/btn_band_4_5"
+                android:id="@+id/btn_band_4_0"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
@@ -80,7 +80,7 @@
                 android:textColor="#6B7280"
                 android:text="IELTS 4.0 - 4.5" />
             <Button
-                android:id="@+id/btn_band_5_5"
+                android:id="@+id/btn_band_5_0"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
@@ -92,7 +92,7 @@
                 android:textSize="13sp"
                 android:text="IELTS 5.0 - 5.5"/>
             <Button
-                android:id="@+id/btn_band_6_5"
+                android:id="@+id/btn_band_6_0"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
