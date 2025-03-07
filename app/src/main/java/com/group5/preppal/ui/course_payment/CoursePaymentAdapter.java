@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.Course;
 import com.group5.preppal.data.repository.AuthRepository;
+import com.group5.preppal.data.repository.UserRepository;
 import com.group5.preppal.ui.MainActivity;
 
 import java.util.ArrayList;
@@ -25,11 +26,13 @@ import java.util.List;
 public class CoursePaymentAdapter extends RecyclerView.Adapter<CoursePaymentAdapter.CourseViewHolder> {
     private List<Course> courseList = new ArrayList<>();
     private final AuthRepository authRepository;
+    private final UserRepository userRepository;
     private final Context context;
 
-    public CoursePaymentAdapter(Context context, AuthRepository authRepository) {
+    public CoursePaymentAdapter(Context context, AuthRepository authRepository, UserRepository userRepository) {
         this.context = context;
         this.authRepository = authRepository;
+        this.userRepository = userRepository;
     }
 
     public void setCourses(List<Course> courses) {
@@ -41,7 +44,7 @@ public class CoursePaymentAdapter extends RecyclerView.Adapter<CoursePaymentAdap
     @Override
     public CourseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_course_payment, parent, false);
-        return new CourseViewHolder(view, context, authRepository);
+        return new CourseViewHolder(view, context, authRepository, userRepository);
     }
 
     @Override
@@ -63,8 +66,9 @@ public class CoursePaymentAdapter extends RecyclerView.Adapter<CoursePaymentAdap
         Button payBtn;
         private final Context context;
         private final AuthRepository authRepository;
+        private final UserRepository userRepository;
 
-        public CourseViewHolder(@NonNull View itemView, Context context, AuthRepository authRepository) {
+        public CourseViewHolder(@NonNull View itemView, Context context, AuthRepository authRepository, UserRepository userRepository) {
             super(itemView);
             this.context = context;
             this.authRepository = authRepository;
@@ -74,6 +78,7 @@ public class CoursePaymentAdapter extends RecyclerView.Adapter<CoursePaymentAdap
             targetLevel = itemView.findViewById(R.id.targetLevel);
 
             payBtn = itemView.findViewById(R.id.payBtn);
+            this.userRepository = userRepository;
         }
 
         public void bind(Course course) {
@@ -87,7 +92,7 @@ public class CoursePaymentAdapter extends RecyclerView.Adapter<CoursePaymentAdap
 
                 FirebaseUser user = authRepository.getCurrentUser();
                 if (user != null) {
-                    authRepository.addCourseToStudent(user.getUid(), courseId);
+                    userRepository.addCourseToStudent(user.getUid(), courseId);
                     Intent intent = new Intent(context, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);

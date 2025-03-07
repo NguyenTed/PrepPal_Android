@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.group5.preppal.R;
 import com.group5.preppal.data.repository.AuthRepository;
+import com.group5.preppal.data.repository.UserRepository;
 import com.group5.preppal.ui.MainActivity;
 import com.group5.preppal.viewmodel.CourseViewModel;
 
@@ -32,6 +33,8 @@ public class CoursePaymentFragment extends Fragment {
 
     @Inject
     AuthRepository authRepository;
+    @Inject
+    UserRepository userRepository;
 
     @Nullable
     @Override
@@ -49,20 +52,18 @@ public class CoursePaymentFragment extends Fragment {
         });
 
 
-        coursePaymentAdapter = new CoursePaymentAdapter(requireContext(), authRepository);
+        coursePaymentAdapter = new CoursePaymentAdapter(requireContext(), authRepository, userRepository);
         recyclerView.setAdapter(coursePaymentAdapter);
 
         // ✅ Lấy ViewModel từ ViewModelProvider
         courseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
 
-        if (courseViewModel != null) {
-            courseViewModel.getFilteredCourses().observe(getViewLifecycleOwner(), courses -> {
-                if (courses != null && !courses.isEmpty()) {
-                    coursePaymentAdapter.setCourses(courses);
-                } else {
-                }
-            });
-        }
+        courseViewModel.getFilteredCourses().observe(getViewLifecycleOwner(), courses -> {
+            if (courses != null && !courses.isEmpty()) {
+                coursePaymentAdapter.setCourses(courses);
+            } else {
+            }
+        });
 
         return view;
     }

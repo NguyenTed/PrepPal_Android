@@ -1,6 +1,7 @@
 package com.group5.preppal.data.repository;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
@@ -14,6 +15,7 @@ import com.group5.preppal.data.model.Teacher;
 import com.group5.preppal.data.model.User;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -86,6 +88,30 @@ public class UserRepository {
                 .addOnFailureListener(e -> updateStatus.setValue(false));
 
         return updateStatus;
+    }
+    public void addCourseToStudent(String uid, String courseId) {
+        firestore.collection("students").document(uid)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        Student student = documentSnapshot.toObject(Student.class);
+                        if (student != null) {
+                            List<String> courses = student.getCourses();
+                            if (!courses.contains(courseId)) {
+                                courses.add(courseId); // ✅ Thêm courseId mới vào danh sách
+
+                                // ✅ Cập nhật Firestore
+                                firestore.collection("students").document(uid)
+                                        .update("courses", courses)
+                                        .addOnSuccessListener(aVoid -> Log.d("AuthRepository", "Course added successfully"))
+                                        .addOnFailureListener(Throwable::printStackTrace);
+                            } else {
+                                Log.d("AuthRepository", "Course already exists in student's list");
+                            }
+                        }
+                    }
+                })
+                .addOnFailureListener(Throwable::printStackTrace);
     }
 
 }

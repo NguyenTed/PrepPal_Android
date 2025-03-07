@@ -125,30 +125,6 @@ public class AuthRepository {
         return firebaseAuth.getCurrentUser();
     }
 
-    public void addCourseToStudent(String uid, String courseId) {
-        firestore.collection("students").document(uid)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Student student = documentSnapshot.toObject(Student.class);
-                        if (student != null) {
-                            List<String> courses = student.getCourses();
-                            if (!courses.contains(courseId)) {
-                                courses.add(courseId); // ✅ Thêm courseId mới vào danh sách
-
-                                // ✅ Cập nhật Firestore
-                                firestore.collection("students").document(uid)
-                                        .update("courses", courses)
-                                        .addOnSuccessListener(aVoid -> Log.d("AuthRepository", "Course added successfully"))
-                                        .addOnFailureListener(Throwable::printStackTrace);
-                            } else {
-                                Log.d("AuthRepository", "Course already exists in student's list");
-                            }
-                        }
-                    }
-                })
-                .addOnFailureListener(Throwable::printStackTrace);
-    }
 
 
     public void signOut() {
