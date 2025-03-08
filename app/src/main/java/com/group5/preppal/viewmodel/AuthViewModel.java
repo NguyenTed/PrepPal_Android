@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseUser;
 import com.group5.preppal.data.model.User;
 import com.group5.preppal.data.repository.AuthRepository;
@@ -45,19 +46,32 @@ public class AuthViewModel extends ViewModel {
 
     public void signUpWithEmail(String email, String password, String name, Date dateOfBirth, User.Gender gender) {
         authRepository.signUpWithEmail(email, password, name, dateOfBirth, gender)
-                .addOnSuccessListener(userLiveData::setValue)
-                .addOnFailureListener(e -> errorLiveData.setValue(e.getMessage()));
-    }
-
-    public void signInWithGoogle(GoogleSignInAccount account) {
-        authRepository.firebaseAuthWithGoogle(account)
-                .addOnSuccessListener(credential -> {
-                    FirebaseUser user = authRepository.getCurrentUser();
-                    Log.d("AuthViewModel", "Google sign-in successful: " + (user != null ? user.getEmail() : "NULL"));
+                .addOnSuccessListener(user -> {
+                    Log.d("AuthViewModel", "User registered: " + user.getEmail());
                     userLiveData.setValue(user);
                 })
-                .addOnFailureListener(e -> errorLiveData.setValue(e.getMessage()));
+                .addOnFailureListener(e -> {
+                    Log.e("AuthViewModel", "Registration failed", e);
+                    errorLiveData.setValue(e.getMessage());
+                });
     }
+
+
+    public void signInWithGoogle(AuthCredential credential) {
+        authRepository.signInWithGoogle(credential)
+                .addOnSuccessListener(authResult -> {
+                    FirebaseUser user = authResult.getUser();
+                    if (user != null) {
+                        Log.d("AuthViewModel", "Google sign-in successful: " + user.getEmail());
+                        userLiveData.setValue(user);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("AuthViewModel", "Google sign-in failed", e);
+                    errorLiveData.setValue(e.getMessage());
+                });
+    }
+
 
     public void signOut() {
         authRepository.signOut();

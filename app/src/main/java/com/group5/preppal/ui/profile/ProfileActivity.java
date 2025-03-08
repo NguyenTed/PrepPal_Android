@@ -65,29 +65,27 @@ public class ProfileActivity extends AppCompatActivity {
         // Ánh xạ View
         setupClickListener(R.id.accountInformationRoute, AccountInformationActivity.class);
         setupClickListener(R.id.courseRoute, CourseInfoActivity.class);
+
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setSelectedItemId(R.id.nav_profile);
 
         bottomNav.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
-            if (itemId == R.id.nav_home) {
-                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
-                overridePendingTransition(0, 0);
-                finish();
+            if (itemId == R.id.nav_profile) {
                 return true;
             } else if (itemId == R.id.nav_search) {
                 startActivity(new Intent(ProfileActivity.this, MainActivity.class));
                 overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.nav_home) {
+                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                overridePendingTransition(0, 0);
                 finish();
                 return true;
-            } else if (itemId == R.id.nav_profile) {
-                return true;
             }
-
             return false;
         });
-
     }
 
     private void setupClickListener(int layoutId, Class<?> destination) {
@@ -101,6 +99,7 @@ public class ProfileActivity extends AppCompatActivity {
                     v.getWidth() / 2, v.getHeight() / 2, // Tâm mở rộng
                     0, 0 // Kích thước ban đầu
             );
+
             startActivity(intent, options.toBundle());
         });
     }
@@ -108,7 +107,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void fetchUserFromFirestore(FirebaseUser firebaseUser) {
         Log.d("Firestore", "Fetching user data for: " + firebaseUser.getUid());
 
-        DocumentReference userRef = firestore.collection("users").document(firebaseUser.getUid());
+        DocumentReference userRef = firestore.collection("students").document(firebaseUser.getUid());
 
         userRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
@@ -117,7 +116,8 @@ public class ProfileActivity extends AppCompatActivity {
                     Log.d("Firestore", "User data retrieved: " + user.getEmail());
                     if (firebaseUser.getPhotoUrl() != null)
                         Glide.with(getApplicationContext()).load(firebaseUser.getPhotoUrl()).centerCrop().into(profileImageView);
-//                    nameTextView.setText(user.getName());
+
+                    nameTextView.setText(user.getName());
                     emailTextView.setText(user.getEmail());
                 } else {
                     Log.e("Firestore", "User object is null!");

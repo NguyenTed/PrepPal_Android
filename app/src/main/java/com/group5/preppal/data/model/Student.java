@@ -11,11 +11,11 @@ public class Student extends User {
 
     public Student() {}
 
-    public Student(String uid, String email, String name, Date dateOfBirth, Gender gender, float currentBand, float aimBand, List<String>courses ) {
+    public Student(String uid, String email, String name, Date dateOfBirth, Gender gender ) {
         super(uid, email, name, dateOfBirth, gender, "student");
-        this.courses = courses != null ? courses : new ArrayList<>();
-        this.currentBand = currentBand;
-        this.aimBand = aimBand;
+        this.currentBand = 0;
+        this.aimBand = 0;
+        this.courses = new ArrayList<>();
     }
 
     public float getCurrentBand() {
@@ -41,4 +41,5 @@ public class Student extends User {
     public void setCourses(List<String> courses) {
         this.courses = courses != null ? courses : new ArrayList<>();
     }
+
 }
