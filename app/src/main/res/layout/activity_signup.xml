@@ -105,7 +105,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:text="Mật khẩu"
+            android:text="Password"
             android:textSize="14sp"
             android:textColor="@color/black"/>
         <EditText
@@ -113,7 +113,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/input_background"
-            android:hint="Nhập mật khẩu"
+            android:hint="Enter password"
             android:padding="10dp"
             android:textSize="16sp"
             android:inputType="textPassword"
@@ -123,7 +123,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:text="Xác nhận mật khẩu"
+            android:text="Confirm password"
             android:textSize="14sp"
             android:textColor="@color/black"/>
         <EditText
@@ -131,7 +131,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/input_background"
-            android:hint="Nhập lại mật khẩu"
+            android:hint="Retype password"
             android:padding="10dp"
             android:textSize="16sp"
             android:inputType="textPassword"

@@ -16,6 +16,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.group5.preppal.data.model.Student;
@@ -54,16 +55,18 @@ public class AuthRepository {
     /** ✅ Sign up with Email & Password and save user in Firestore */
     public Task<FirebaseUser> signUpWithEmail(String email, String password, String name, Date dateOfBirth, User.Gender gender) {
         return firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .continueWith(task -> {
+                .continueWithTask(task -> {
                     if (task.isSuccessful()) {
-                        Log.d("AuthRepository", "New user created: " + email);
-                        checkAndSaveNativeUser(firebaseAuth.getUid(), email, name, dateOfBirth, gender);
-                        return firebaseAuth.getCurrentUser();
-                    } else {
-                        throw task.getException();
+                        FirebaseUser user = firebaseAuth.getCurrentUser();
+                        if (user != null) {
+                            Log.d("AuthRepository", "New user created: " + user.getEmail());
+                            return checkAndSaveNativeUser(user, name, dateOfBirth, gender).continueWith(t -> user);
+                        }
                     }
+                    throw task.getException();
                 });
     }
+
 
     public Task<AuthResult> signInWithGoogle(AuthCredential credential) {
         return firebaseAuth.signInWithCredential(credential)
@@ -138,23 +141,39 @@ public class AuthRepository {
 
 
     /** ✅ Check if user exists in Firestore, save if new (Email Sign-Up) */
-    private void checkAndSaveNativeUser(String uid, String email, String name, Date dateOfBirth, User.Gender gender) {
-        DocumentSnapshot documentSnapshot = firestore.collection("students").document(uid).get().getResult();
-        if (documentSnapshot != null && !documentSnapshot.exists()) {
-            Student student = new Student(
-                    uid,
-                    email,
-                    name,
-                    dateOfBirth,
-                    gender
-            );
-
-            firestore.collection("students").document(student.getUid())
-                    .set(student)
-                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Native user saved: " + email))
-                    .addOnFailureListener(e -> Log.e("Firestore", "Error saving native user", e));
+    private Task<Void> checkAndSaveNativeUser(FirebaseUser user, String name, Date dateOfBirth, User.Gender gender) {
+        if (user == null) {
+            return Tasks.forException(new Exception("FirebaseUser is null, cannot save profile."));
         }
+
+        DocumentReference userRef = firestore.collection("students").document(user.getUid());
+
+        return userRef.get().continueWithTask(task -> {
+            if (!task.isSuccessful()) {
+                throw task.getException();
+            }
+
+            if (!task.getResult().exists()) {
+                Log.d("Firestore", "User does not exist, saving new user...");
+
+                Student student = new Student(
+                        user.getUid(),
+                        user.getEmail(),
+                        name,
+                        dateOfBirth,
+                        gender
+                );
+
+                return userRef.set(student)
+                        .addOnSuccessListener(aVoid -> Log.d("Firestore", "User profile saved successfully: " + user.getUid()))
+                        .addOnFailureListener(e -> Log.e("Firestore", "Error saving user profile", e));
+            } else {
+                Log.d("Firestore", "User already exists: " + user.getUid());
+                return Tasks.forResult(null);
+            }
+        });
     }
+
 
     /** ✅ Get currently signed-in user */
     public FirebaseUser getCurrentUser() {

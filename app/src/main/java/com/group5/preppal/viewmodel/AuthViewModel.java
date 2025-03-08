@@ -47,9 +47,16 @@ public class AuthViewModel extends ViewModel {
 
     public void signUpWithEmail(String email, String password, String name, Date dateOfBirth, User.Gender gender) {
         authRepository.signUpWithEmail(email, password, name, dateOfBirth, gender)
-                .addOnSuccessListener(userLiveData::setValue)
-                .addOnFailureListener(e -> errorLiveData.setValue(e.getMessage()));
+                .addOnSuccessListener(user -> {
+                    Log.d("AuthViewModel", "User registered: " + user.getEmail());
+                    userLiveData.setValue(user);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("AuthViewModel", "Registration failed", e);
+                    errorLiveData.setValue(e.getMessage());
+                });
     }
+
 
     public void signInWithGoogle(AuthCredential credential) {
         authRepository.signInWithGoogle(credential)
