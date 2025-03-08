@@ -14,6 +14,7 @@ public class User {
         MALE, FEMALE, OTHER
     }
 
+
     public User() {}
 
     public User(String uid, String email, String name, Date dateOfBirth, Gender gender, String role) {

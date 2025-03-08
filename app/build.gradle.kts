@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -19,6 +22,16 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${project.findProperty("GOOGLE_CLIENT_ID")}\"")
+
+        // ✅ Load GOOGLE_CLIENT_ID from local.properties
+        val localProps = Properties()
+        val localPropsFile = rootProject.file("local.properties")
+        if (localPropsFile.exists()) {
+            localProps.load(FileInputStream(localPropsFile))
+        }
+        val googleClientId = localProps.getProperty("GOOGLE_CLIENT_ID", "")
+
+        buildConfigField("String", "GOOGLE_CLIENT_ID", "\"$googleClientId\"")
     }
 
     buildTypes {
@@ -37,6 +50,7 @@ android {
 }
 
 dependencies {
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.play.services.base)
@@ -56,4 +70,5 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
+
 }

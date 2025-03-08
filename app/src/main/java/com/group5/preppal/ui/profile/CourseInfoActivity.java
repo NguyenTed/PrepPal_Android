@@ -21,7 +21,7 @@ public class CourseInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_course_detail);
+        setContentView(R.layout.activity_course_profile_item);
         backButton = findViewById(R.id.backButton);
 
         backButton.setOnClickListener(v -> shrinkAndFinish());
@@ -40,13 +40,12 @@ public class CourseInfoActivity extends AppCompatActivity {
 
         shrinkAnimation.setDuration(100); // Thời gian hiệu ứng
         shrinkAnimation.setInterpolator(new AccelerateInterpolator()); // Tăng tốc hiệu ứng
-
         // Khi animation kết thúc, đóng Activity
         shrinkAnimation.addListener(new android.animation.AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(android.animation.Animator animation) {
                 finish();
-                overridePendingTransition(0, 0); // Không có hiệu ứng hệ thống để tránh xung đột
+                overridePendingTransition(0, 0);
             }
         });
 
