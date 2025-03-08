@@ -85,7 +85,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void fetchUserFromFirestore(FirebaseUser firebaseUser) {
         Log.d("Firestore", "Fetching user data for: " + firebaseUser.getUid());
 
-        DocumentReference userRef = firestore.collection("users").document(firebaseUser.getUid());
+        DocumentReference userRef = firestore.collection("students").document(firebaseUser.getUid());
 
         userRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {

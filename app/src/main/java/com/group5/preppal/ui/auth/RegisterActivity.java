@@ -95,7 +95,6 @@ public class RegisterActivity extends AppCompatActivity {
 //        }
 
         authViewModel.signUpWithEmail(email, password, name, new Date(), gender);
-
     }
 
     private void observeAuthState() {
