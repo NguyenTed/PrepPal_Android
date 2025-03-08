@@ -16,9 +16,57 @@ import androidx.lifecycle.ViewModelProvider;
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.User;
 import com.group5.preppal.ui.MainActivity;
+import com.group5.preppal.ui.profile.ProfileActivity;
 import com.group5.preppal.viewmodel.AuthViewModel;
 
 import java.util.Date;
+import java.util.Objects;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.InputType;
+import android.text.TextUtils;
+import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -30,6 +78,8 @@ public class RegisterActivity extends AppCompatActivity {
     private Spinner genderSpinner;
     private Button registerButton;
     private TextView loginTextView;
+
+    private Calendar selectedDate = Calendar.getInstance(); // ✅ Stores selected DOB
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,16 +95,38 @@ public class RegisterActivity extends AppCompatActivity {
         dobEditText = findViewById(R.id.dobEditText);
         genderSpinner = findViewById(R.id.genderSpinner);
         registerButton = findViewById(R.id.registerButton);
-//        loginTextView = findViewById(R.id.loginTextView);
+        loginTextView = findViewById(R.id.loginTextView);
 
-        ArrayAdapter<User.Gender> adapter = new ArrayAdapter<User.Gender>(this, android.R.layout.simple_spinner_item, User.Gender.values());
+        // ✅ Disable keyboard input for DOB field
+        dobEditText.setInputType(InputType.TYPE_NULL);
+        dobEditText.setFocusable(false);
+        dobEditText.setOnClickListener(v -> showDatePickerDialog());
+
+        // ✅ Populate Gender Spinner
+        ArrayAdapter<User.Gender> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, User.Gender.values());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinner.setAdapter(adapter);
 
         registerButton.setOnClickListener(v -> registerUser());
-//        loginTextView.setOnClickListener(v -> startActivity(new Intent(this, LoginActivity.class)));
+        loginTextView.setOnClickListener(v -> startActivity(new Intent(this, LoginActivity.class)));
 
         observeAuthState();
+    }
+
+    // ✅ Date Picker Dialog (Only Shows Dialog, No Keyboard)
+    private void showDatePickerDialog() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, year, month, dayOfMonth) -> {
+                    selectedDate.set(year, month, dayOfMonth);
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                    dobEditText.setText(sdf.format(selectedDate.getTime())); // ✅ Display selected DOB
+                },
+                selectedDate.get(Calendar.YEAR),
+                selectedDate.get(Calendar.MONTH),
+                selectedDate.get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.show();
     }
 
     private void registerUser() {
@@ -62,6 +134,7 @@ public class RegisterActivity extends AppCompatActivity {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         String confirmPassword = confirmPasswordEditText.getText().toString().trim();
+        String dob = dobEditText.getText().toString().trim();
         String genderStr = genderSpinner.getSelectedItem().toString();
         User.Gender gender;
 
@@ -72,7 +145,7 @@ public class RegisterActivity extends AppCompatActivity {
         else
             gender = User.Gender.OTHER;
 
-
+        // ✅ Input validation
         if (TextUtils.isEmpty(name)) {
             nameEditText.setError("Name is required");
             return;
@@ -89,29 +162,32 @@ public class RegisterActivity extends AppCompatActivity {
             confirmPasswordEditText.setError("Passwords do not match");
             return;
         }
-//        if (TextUtils.isEmpty(dob)) {
-//            dobEditText.setError("Date of Birth is required");
-//            return;
-//        }
+        if (TextUtils.isEmpty(dob)) {
+            dobEditText.setError("Date of Birth is required");
+            return;
+        }
 
-        authViewModel.signUpWithEmail(email, password, name, new Date(), gender);
+        // ✅ Pass DOB as a `Date` object
+        Date dateOfBirth = selectedDate.getTime();
+
+        authViewModel.signUpWithEmail(email, password, name, dateOfBirth, gender);
     }
 
     private void observeAuthState() {
         authViewModel.getUserLiveData().observe(this, firebaseUser -> {
             if (firebaseUser != null) {
-//                progressBar.setVisibility(View.GONE);
                 Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, ProfileActivity.class));
                 finish();
             }
         });
 
         authViewModel.getErrorLiveData().observe(this, errorMessage -> {
             if (errorMessage != null) {
-//                progressBar.setVisibility(View.GONE);
                 Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
             }
         });
     }
 }
+
+
