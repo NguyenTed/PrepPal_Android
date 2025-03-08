@@ -2,6 +2,8 @@ package com.group5.preppal.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +15,8 @@ import com.group5.preppal.data.model.Admin;
 import com.group5.preppal.data.model.Student;
 import com.group5.preppal.data.model.Teacher;
 import com.group5.preppal.data.model.User;
+import com.group5.preppal.ui.course.CourseListActivity;
+import com.group5.preppal.ui.course_payment.CoursePaymentActivity;
 import com.group5.preppal.ui.profile.ProfileActivity;
 import com.group5.preppal.viewmodel.UserViewModel;
 
@@ -20,26 +24,29 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
-    private UserViewModel userViewModel;
-    private TextView userInfoTextView;
+    private LinearLayout myCourseBtn, viewMoreBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize Views
-        userInfoTextView = findViewById(R.id.userInfoTextView);
+        myCourseBtn = findViewById(R.id.myCourseBtn);
+        viewMoreBtn = findViewById(R.id.viewMoreBtn);
 
-        // Initialize ViewModel using Hilt
-        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        myCourseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, CourseListActivity.class);
+                startActivity(intent);
+            }
+        });
 
-        // Observe user data
-        userViewModel.getCurrentUser().observe(this, user -> {
-            if (user != null) {
-                displayUserInfo(user);
-            } else {
-                userInfoTextView.setText("User not found.");
+        viewMoreBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, CoursePaymentActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -65,20 +72,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void displayUserInfo(User user) {
-        String userInfo;
-        if (user instanceof Admin) {
-            Admin admin = (Admin) user;
-            userInfo = "Admin: " + admin.getName();
-        } else if (user instanceof Teacher) {
-            Teacher teacher = (Teacher) user;
-            userInfo = "Teacher: " + teacher.getName();
-        } else if (user instanceof Student) {
-            Student student = (Student) user;
-            userInfo = "Student: " + student.getName();
-        } else {
-            userInfo = "Unknown user type.";
-        }
-        userInfoTextView.setText(userInfo);
-    }
 }

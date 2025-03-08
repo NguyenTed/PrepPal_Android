@@ -21,7 +21,7 @@ public class CourseInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_course_detail);
+        setContentView(R.layout.activity_course_profile_item);
         backButton = findViewById(R.id.backButton);
 
         backButton.setOnClickListener(v -> shrinkAndFinish());

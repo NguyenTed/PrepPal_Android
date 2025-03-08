@@ -117,7 +117,7 @@ public class ProfileActivity extends AppCompatActivity {
                     Log.d("Firestore", "User data retrieved: " + user.getEmail());
                     if (firebaseUser.getPhotoUrl() != null)
                         Glide.with(getApplicationContext()).load(firebaseUser.getPhotoUrl()).centerCrop().into(profileImageView);
-                    nameTextView.setText(user.getName());
+//                    nameTextView.setText(user.getName());
                     emailTextView.setText(user.getEmail());
                 } else {
                     Log.e("Firestore", "User object is null!");

@@ -20,11 +20,12 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
-
         </activity>
 
 <!--         Register Activity -->
-        <activity android:name=".ui.auth.RegisterActivity" />
+        <activity android:name=".ui.auth.RegisterActivity"
+            android:exported="true">
+        </activity>
 
         <!-- Main Activity (Home Screen) -->
         <activity
@@ -32,16 +33,22 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
-        </activity>
-
-        <activity android:name=".ui.choose_band.ChooseBandActivity"/>
-
-        <activity android:name=".ui.course_payment.CoursePaymentActivity"
-            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity android:name=".ui.choose_band.ChooseBandActivity"
+            android:exported="true">
+        </activity>
+
+        <activity android:name=".ui.course_payment.CoursePaymentActivity"
+            android:exported="true">
+        </activity>
+
+        <activity android:name=".ui.course.CourseListActivity"
+            android:exported="true">
         </activity>
 
         <activity android:name=".ui.profile.ProfileActivity" android:exported="true">

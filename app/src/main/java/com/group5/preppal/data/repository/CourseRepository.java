@@ -43,9 +43,10 @@ public class CourseRepository {
                     for (QueryDocumentSnapshot document : value) {
                         try {
                             String courseId = document.getId();
+                            String name = document.getString("name");
                             float entryLevel = document.getDouble("entryLevel").floatValue();
                             float targetLevel = document.getDouble("targetLevel").floatValue();
-                            Course course = new Course(courseId, entryLevel, targetLevel);
+                            Course course = new Course(courseId, name, entryLevel, targetLevel);
                             courseList.add(course);
                         } catch (Exception e) {
                             e.printStackTrace(); // Log lỗi nếu cần

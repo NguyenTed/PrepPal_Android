@@ -5,17 +5,134 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:background="#F5F6FA"
     android:gravity="center">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="0dp"
+                android:layout_marginRight="10dp"
+                android:background="#FFF5F6FA"
+                android:src="@drawable/img_profile"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical">
+                <TextView
+                    android:id="@+id/txtHello"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:text="Hello Nguyễn Thuần"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#80899B"
+                    android:text="You are currently enrolled in the IELTS"/>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:layout_marginTop="20dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:text="Explore"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="#F5F6FA"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:id="@+id/myCourseBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="15dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/rounded_20dp_white_border"
+                    android:orientation="horizontal">
+                    <FrameLayout
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/hexagon_blue_shape"
+                        android:padding="8dp">
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/img_book"
+                            android:layout_gravity="center"
+                            android:scaleType="centerCrop"/>
+                    </FrameLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textFontWeight="500"
+                        android:textColor="@color/black"
+                        android:fontFamily="sans-serif-black"
+                        android:textSize="14sp"
+                        android:text="My Courses"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/viewMoreBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="15dp"
+                    android:background="@drawable/rounded_20dp_white_border"
+                    android:orientation="horizontal">
+                    <FrameLayout
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/hexagon_blue_sky_shape"
+                        android:padding="8dp">
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/img_plus_blue"
+                            android:layout_gravity="center"
+                            android:padding="3dp"
+                            android:scaleType="centerCrop"/>
+                    </FrameLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textFontWeight="500"
+                        android:textColor="@color/black"
+                        android:fontFamily="sans-serif-black"
+                        android:textSize="14sp"
+                        android:text="View more"/>
+                </LinearLayout>
 
-    <TextView
-        android:id="@+id/userInfoTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Fetching user..."
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:padding="8dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"

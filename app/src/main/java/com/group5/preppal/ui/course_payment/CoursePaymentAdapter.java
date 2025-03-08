@@ -82,7 +82,7 @@ public class CoursePaymentAdapter extends RecyclerView.Adapter<CoursePaymentAdap
         }
 
         public void bind(Course course) {
-            courseName.setText("IELTS package practice " + Math.round((course.getTargetLevel() - course.getEntryLevel()) * 2) + " months");
+            courseName.setText(course.getName());
             entryLevel.setText("Entry Level: " + course.getEntryLevel() + " - " + (course.getEntryLevel() + 0.5));
             targetLevel.setText("Target Level: " + (course.getTargetLevel() == 6.5 ? course.getTargetLevel() +  " - " + "7.0+" : course.getTargetLevel() + "+"));
 

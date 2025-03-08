@@ -85,7 +85,7 @@
             android:background="@drawable/account_edittext_border"
             android:padding="12dp"
             android:textSize="16sp"
-            android:text="Trần Nhật Huy"
+            android:text="Nguyễn Thuần"
             android:textColor="@color/black"
             android:textColorHint="#777"/>
 
@@ -118,7 +118,7 @@
             android:background="@drawable/account_edittext_border"
             android:padding="12dp"
             android:textSize="16sp"
-            android:text="huy@example.com"
+            android:text="thuandeptrai2905@gmail.com"
             android:textColor="@color/black"
             android:focusable="false"
             android:enabled="false"/>
