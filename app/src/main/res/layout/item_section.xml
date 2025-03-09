@@ -1,0 +1,34 @@
+
+<!--    Section Card    -->
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_10dp_white_3dp_border_gray"
+        android:paddingHorizontal="15dp"
+        android:paddingBottom="20dp"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:id="@+id/sectionName"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="6"
+            android:gravity="center_vertical"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:text="Lesson 1: Writing Task 1 - Dynamic charts"
+            />
+
+        <TextView
+            android:id="@+id/sectionType"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:gravity="center_vertical"
+            android:padding="7dp"
+            android:background="@drawable/rounded_5dp_white_2dp_border_green"
+            android:textColor="@color/black"
+            android:text="Reading"/>
+    </LinearLayout>

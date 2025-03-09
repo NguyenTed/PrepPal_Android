@@ -13,6 +13,7 @@ import com.group5.preppal.data.model.Course;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -44,9 +45,11 @@ public class CourseRepository {
                         try {
                             String courseId = document.getId();
                             String name = document.getString("name");
+                            String introduction = document.getString("introduction");
                             float entryLevel = document.getDouble("entryLevel").floatValue();
                             float targetLevel = document.getDouble("targetLevel").floatValue();
-                            Course course = new Course(courseId, name, entryLevel, targetLevel);
+                            List<Map<String, Object>> sections = (List<Map<String, Object>>) document.get("sections");
+                            Course course = new Course(courseId, name, introduction, entryLevel, targetLevel, sections);
                             courseList.add(course);
                         } catch (Exception e) {
                             e.printStackTrace(); // Log lỗi nếu cần
@@ -59,4 +62,29 @@ public class CourseRepository {
 
         return coursesLiveData;
     }
+    public LiveData<Course> getCourseById(String courseId) {
+        MutableLiveData<Course> courseLiveData = new MutableLiveData<>();
+
+        courseCollection.document(courseId).addSnapshotListener((documentSnapshot, error) -> {
+            if (error != null || documentSnapshot == null || !documentSnapshot.exists()) {
+                return;
+            }
+
+            try {
+                String name = documentSnapshot.getString("name");
+                String introduction = documentSnapshot.getString("introduction");
+                float entryLevel = documentSnapshot.getDouble("entryLevel").floatValue();
+                float targetLevel = documentSnapshot.getDouble("targetLevel").floatValue();
+                List<Map<String, Object>> sections = (List<Map<String, Object>>) documentSnapshot.get("sections");
+
+                Course course = new Course(courseId, name, introduction, entryLevel, targetLevel, sections);
+                courseLiveData.setValue(course);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        return courseLiveData;
+    }
+
 }

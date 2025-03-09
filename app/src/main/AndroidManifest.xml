@@ -48,11 +48,19 @@
         <activity android:name=".ui.course.CourseListActivity"
             android:exported="true">
         </activity>
+        <activity android:name=".ui.course.CourseDetailActivity"/>
 
         <activity android:name=".ui.profile.ProfileActivity" android:exported="true">
         </activity>
         <activity android:name=".ui.profile.AccountInformationActivity"/>
         <activity android:name=".ui.profile.CourseInfoActivity"/>
+
+
+
+        <!-- Lessons -->
+        <activity android:name=".ui.lesson.LessonPDFDetailActivity"
+            android:exported="true">
+        </activity>
     </application>
 
 </manifest>

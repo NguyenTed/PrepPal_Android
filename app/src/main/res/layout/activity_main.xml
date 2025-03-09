@@ -71,7 +71,7 @@
                     android:layout_weight="1"
                     android:padding="15dp"
                     android:layout_marginRight="10dp"
-                    android:background="@drawable/rounded_20dp_white_border"
+                    android:background="@drawable/rounded_20dp_white_2dp_border_gray"
                     android:orientation="horizontal">
                     <FrameLayout
                         android:layout_width="50dp"
@@ -102,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:padding="15dp"
-                    android:background="@drawable/rounded_20dp_white_border"
+                    android:background="@drawable/rounded_20dp_white_2dp_border_gray"
                     android:orientation="horizontal">
                     <FrameLayout
                         android:layout_width="50dp"
