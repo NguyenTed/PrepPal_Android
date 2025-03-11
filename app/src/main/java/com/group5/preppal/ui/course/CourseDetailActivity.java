@@ -70,9 +70,9 @@ public class CourseDetailActivity extends AppCompatActivity {
             }
 
             List<Map<String, Object>> sections = course.getSections();
-            Log.d("CourseDetailActivity", "Section length: " + sections.size());
+//            Log.d("CourseDetailActivity", "Section length: " + sections.size());
             if (sections != null) {
-                sectionAdapter = new SectionAdapter(sections);
+                sectionAdapter = new SectionAdapter(sections, this, courseId);
                 recyclerViewSections.setAdapter(sectionAdapter);
             }
         });

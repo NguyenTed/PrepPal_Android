@@ -22,7 +22,7 @@
             android:contentDescription="@string/back_button" />
 
         <TextView
-            android:id="@+id/courseName"
+            android:id="@+id/lessonName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Lesson 1: Writing Task 1 - Dynamic charts"
@@ -34,16 +34,13 @@
             android:textColor="#ff0D0D0D"/>
     </FrameLayout>
 <!--    PDF View-->
-    <LinearLayout
+    <WebView
+        android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="9"
+        android:layout_weight="9"/>
 
-        android:orientation="vertical"
-        >
-
-    </LinearLayout>
-<!--    Bottom nav-->
+    <!--    Bottom nav-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="2dp"
@@ -53,6 +50,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="20dp"
+        android:paddingHorizontal="10dp"
         android:orientation="horizontal">
 <!--        Back button-->
         <LinearLayout

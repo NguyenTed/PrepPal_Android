@@ -61,6 +61,18 @@
         <activity android:name=".ui.lesson.LessonPDFDetailActivity"
             android:exported="true">
         </activity>
+        <activity
+            android:name=".ui.lesson.LessonVideoActivity"
+            android:exported="true">
+        </activity>
+
+        <!--    Quizs    -->
+        <activity
+            android:name=".ui.quiz.multiple_choice_quiz.MultipleChoiceActivity"
+            android:exported="true">
+        </activity>
     </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
 </manifest>

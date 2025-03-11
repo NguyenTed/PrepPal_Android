@@ -1,5 +1,7 @@
 package com.group5.preppal.ui.course;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,15 +11,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.group5.preppal.R;
+import com.group5.preppal.ui.lesson.LessonPDFDetailActivity;
+import com.group5.preppal.ui.lesson.LessonVideoActivity;
+import com.group5.preppal.ui.quiz.multiple_choice_quiz.MultipleChoiceActivity;
 
 import java.util.List;
 import java.util.Map;
 
 public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionViewHolder> {
     private final List<Map<String, Object>> sectionList;
+    private final Context context;
+    private String courseId;
 
-    public SectionAdapter(List<Map<String, Object>> sectionList) {
+    public SectionAdapter(List<Map<String, Object>> sectionList, Context context, String courseId) {
         this.sectionList = sectionList;
+        this.context = context;
+        this.courseId = courseId;
     }
 
     @NonNull
@@ -45,11 +54,56 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
 
             holder.sectionName.setText(sectionName);
             holder.sectionType.setText(type);
-        } else {
-            // Trường hợp không có lesson hoặc không phải kiểu Map
-            holder.sectionName.setText("No Lesson Info");
-            holder.sectionType.setText("Unknown");
+            if (type.equals("Reading")) {
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, LessonPDFDetailActivity.class);
+                        intent.putExtra("lessonId", lesson.get("id").toString());
+                        intent.putExtra("courseId", courseId);
+                        context.startActivity(intent);
+                    }
+                });
+            }
+            else if (type.equals("Video")) {
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, LessonVideoActivity.class);
+                        intent.putExtra("lessonId", lesson.get("id").toString());
+                        intent.putExtra("courseId", courseId);
+                        context.startActivity(intent);
+                    }
+                });
+            }
+
+        } else if ((section.containsKey("quiz") )) {
+            Map<String, Object> quiz = (Map<String, Object>) section.get("quiz");
+
+            String sectionName = quiz.containsKey("name") && quiz.get("name") != null
+                    ? quiz.get("name").toString()
+                    : "Unknown Lesson";
+
+            String type = quiz.containsKey("type") && quiz.get("type") != null
+                    ? quiz.get("type").toString()
+                    : "Unknown Type";
+
+            holder.sectionName.setText(sectionName);
+            holder.sectionType.setText(type);
+            if (type.equals("Multiple Choice Quiz")) {
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, MultipleChoiceActivity.class);
+                        intent.putExtra("quizId", quiz.get("id").toString());
+                        intent.putExtra("courseId", courseId);
+                        context.startActivity(intent);
+                    }
+                });
+            }
         }
+
+
     }
 
 

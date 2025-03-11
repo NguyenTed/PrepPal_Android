@@ -57,7 +57,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
     implementation("com.google.dagger:hilt-android:2.51.1")
+
     ksp("com.google.dagger:hilt-android-compiler:2.51.1")
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.9.0"))

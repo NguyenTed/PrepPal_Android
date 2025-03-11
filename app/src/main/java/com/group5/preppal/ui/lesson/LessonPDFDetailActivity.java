@@ -1,36 +1,85 @@
 package com.group5.preppal.ui.lesson;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageButton;
 import android.widget.MediaController;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.group5.preppal.R;
+import com.group5.preppal.ui.course.CourseDetailActivity;
+import com.group5.preppal.ui.course.CourseListActivity;
+import com.group5.preppal.viewmodel.LessonViewModel;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class LessonPDFDetailActivity extends AppCompatActivity {
-    private VideoView videoView;
-    private String videoUrl = "https://drive.google.com/uc?id=1GB0t-1gJpH_N8pI1hzhR7-Y7GxBO6Fxy";
+    private String lessonId;
+    private TextView lessonName;
+    private WebView webView;
+    private ImageButton backBtn;
+
+    private LessonViewModel lessonViewModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lesson_pdf_detail);
+        setContentView(R.layout.activity_reading_lesson);
 
-        videoView = findViewById(R.id.videoView);
-        Uri uri = Uri.parse(videoUrl);
-        videoView.setVideoURI(uri);
+        lessonId = getIntent().getStringExtra("lessonId");
 
-        // Thêm điều khiển phát/tạm dừng cho VideoView
-        MediaController mediaController = new MediaController(this);
-        mediaController.setAnchorView(videoView);
-        videoView.setMediaController(mediaController);
+        lessonName = findViewById(R.id.lessonName);
+        backBtn = findViewById(R.id.backButton);
+        webView = findViewById(R.id.webView);
 
-        videoView.start(); // Phát video ngay khi mở
+        lessonName.setText("");
+        backBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(this, CourseDetailActivity.class);
+            intent.putExtra("courseId", getIntent().getStringExtra("courseId"));
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
+
+        lessonViewModel = new ViewModelProvider(this).get(LessonViewModel.class);
+        lessonViewModel.fetchLessonById(lessonId);
+
+        lessonViewModel.getSelectedLesson().observe(this, lesson -> {
+            if (lesson != null) {
+                lessonName.setText(lesson.getName());
+
+                String pdfUrl = lesson.getReadingUrl();
+                if (pdfUrl != null && !pdfUrl.isEmpty()) {
+                    loadPdfInWebView(pdfUrl);
+                } else {
+                    Toast.makeText(this, "No PDF available", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
     }
+    private void loadPdfInWebView(String pdfUrl) {
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setAllowFileAccess(true);
+        webSettings.setSupportZoom(true);
+        webSettings.setBuiltInZoomControls(false);
+        webSettings.setDisplayZoomControls(false);
+
+        webView.setWebViewClient(new WebViewClient());
+
+        webView.loadUrl(pdfUrl);
+    }
+
 }
