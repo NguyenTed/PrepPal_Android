@@ -40,6 +40,7 @@ public class MultipleChoiceQuizRepository {
             MultipleChoiceQuiz quiz = documentSnapshot.toObject(MultipleChoiceQuiz.class);
             quiz.setId(documentSnapshot.getId());
             quizLiveData.setValue(quiz);
+            Log.d("isCorrect", "isCorrect: " + quiz.getQuestions().get(0).getOptions().get(1).isCorrect());
         });
 
         return quizLiveData;

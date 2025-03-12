@@ -35,7 +35,7 @@
     </FrameLayout>
     <!--  Main Content -->
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/quizFragmentContainer"
+        android:id="@+id/quizAnswerFragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="9" />
@@ -51,6 +51,7 @@
         android:layout_weight="1"
         android:layout_marginTop="20dp"
         android:paddingHorizontal="10dp"
+
         android:orientation="horizontal">
         <!--        Back button-->
         <LinearLayout
@@ -78,42 +79,51 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
-        <!--        Next Button-->
-        <RelativeLayout
+        <!--      Do again button -->
+            <LinearLayout
+                android:id="@+id/btnTryAgain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/rounded_5dp_blue"
+                android:gravity="center_vertical"
+                android:paddingVertical="13dp"
+                android:layout_gravity="end">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:fontFamily="sans-serif-black"
+                    android:text="Try again!"/>
+
+            </LinearLayout>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <!-- Next Button-->
+        <LinearLayout
+            android:id="@+id/btnNext"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/rounded_5dp_white_2dp_border_blue"
+            android:gravity="center_vertical"
+            android:layout_gravity="end">
             <TextView
-                android:id="@+id/btnSubmit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#2F60C2"
                 android:textSize="18sp"
                 android:fontFamily="sans-serif-black"
-                android:padding="13dp"
-                android:background="@drawable/rounded_5dp_white_2dp_border_blue"
-                android:text="Submit"/>
-            <LinearLayout
-                android:id="@+id/btnNext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/rounded_5dp_white_2dp_border_blue"
-                android:gravity="center_vertical"
-                android:layout_gravity="end">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#2F60C2"
-                    android:textSize="18sp"
-                    android:fontFamily="sans-serif-black"
-                    android:text="Next"/>
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_next_blue"
-                    android:layout_marginLeft="10dp"/>
-            </LinearLayout>
-        </RelativeLayout>
+                android:text="Next"/>
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_next_blue"
+                android:layout_marginLeft="10dp"/>
+        </LinearLayout>
 
     </LinearLayout>
 

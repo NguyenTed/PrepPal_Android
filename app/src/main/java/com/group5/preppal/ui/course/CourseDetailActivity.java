@@ -14,12 +14,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.Course;
 import com.group5.preppal.viewmodel.CourseViewModel;
 
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -32,6 +35,9 @@ public class CourseDetailActivity extends AppCompatActivity {
 
     private RecyclerView recyclerViewSections;
     private SectionAdapter sectionAdapter;
+
+    @Inject
+    FirebaseAuth firebaseAuth;
 
 
     @Override
@@ -72,7 +78,7 @@ public class CourseDetailActivity extends AppCompatActivity {
             List<Map<String, Object>> sections = course.getSections();
 //            Log.d("CourseDetailActivity", "Section length: " + sections.size());
             if (sections != null) {
-                sectionAdapter = new SectionAdapter(sections, this, courseId);
+                sectionAdapter = new SectionAdapter(sections, this, courseId, firebaseAuth);
                 recyclerViewSections.setAdapter(sectionAdapter);
             }
         });

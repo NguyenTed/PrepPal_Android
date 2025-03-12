@@ -74,7 +74,7 @@ public class LessonPDFDetailActivity extends AppCompatActivity {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowFileAccess(true);
         webSettings.setSupportZoom(true);
-        webSettings.setBuiltInZoomControls(false);
+        webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
 
         webView.setWebViewClient(new WebViewClient());

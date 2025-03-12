@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.Course;
 import com.group5.preppal.ui.MainActivity;
@@ -19,6 +20,8 @@ import com.group5.preppal.viewmodel.CourseViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -29,6 +32,7 @@ public class CourseListActivity extends AppCompatActivity {
     private CourseViewModel courseViewModel;
     private List<Course> courseList = new ArrayList<>();
     private ImageButton backButton;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
