@@ -1,50 +1,102 @@
 package com.group5.preppal.ui.test;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageView;
+import android.util.Log;
+import android.widget.ExpandableListView;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.group5.preppal.R;
-import com.group5.preppal.data.model.WritingTest;
+import com.group5.preppal.viewmodel.WritingTestViewModel;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WritingTopicsActivity extends AppCompatActivity {
-    private RecyclerView recyclerView;
-    private WritingTestAdapter adapter;
-    private List<WritingTest> topicList = new ArrayList<>();
-    private FirebaseFirestore db;
+    private ExpandableListView expandableListView;
+    private HashMap<String, List<Map<String, String>>> topicMap;
+    private List<String> topicList;
+    private WritingTopicsAdapter adapter;
+    private WritingTestViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_writing_topics);
 
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        expandableListView = findViewById(R.id.expandableListView);
+        topicMap = new HashMap<>();
+        topicList = new ArrayList<>();
 
-        db = FirebaseFirestore.getInstance();
-        fetchTopics();
+        // Khởi tạo ViewModel
+        viewModel = new ViewModelProvider(this).get(WritingTestViewModel.class);
 
-        // Xử lý nút back
-        ImageView btnBack = findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(v -> finish());
-    }
-
-    private void fetchTopics() {
-        db.collection("writing_tests").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
+        // Quan sát dữ liệu từ ViewModel
+        viewModel.getWritingTests().observe(this, tests -> {
+            if (tests != null) {
                 topicList.clear();
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    WritingTest topic = document.toObject(WritingTest.class);
-                    topicList.add(topic);
-                }
-                adapter = new WritingTestAdapter(this, topicList);
-                recyclerView.setAdapter(adapter);
+                topicMap.clear();
+                topicList.addAll(tests.keySet());
+                topicMap.putAll(tests);
+                adapter.notifyDataSetChanged();
             }
+        });
+
+        viewModel.getErrorMessage().observe(this, error -> {
+            if (error != null) {
+                Log.e("WritingTopicsActivity", "Lỗi khi tải dữ liệu: " + error);
+            }
+        });
+
+        // Gọi hàm fetch dữ liệu từ Firestore
+        viewModel.fetchWritingTests();
+
+        // Khởi tạo Adapter
+        adapter = new WritingTopicsAdapter(this, topicList, topicMap);
+        expandableListView.setAdapter(adapter);
+
+
+        expandableListView.setOnGroupClickListener((parent, v, groupPosition, id) -> {
+            if (expandableListView.isGroupExpanded(groupPosition)) {
+                expandableListView.collapseGroup(groupPosition);
+            } else {
+                expandableListView.expandGroup(groupPosition, true);
+            }
+            return true;
+        });
+
+
+        expandableListView.setOnChildClickListener((parent, v, groupPosition, childPosition, id) -> {
+            String topic = topicList.get(groupPosition);
+            List<Map<String, String>> tasks = topicMap.get(topic);
+
+            if (tasks == null || tasks.isEmpty()) {
+                Log.e("WritingTopicsActivity", "Không có task nào cho topic: " + topic);
+                return true;
+            }
+
+            if (childPosition < 0 || childPosition >= tasks.size()) {
+                Log.e("WritingTopicsActivity", "childPosition không hợp lệ!");
+                return true;
+            }
+
+            Map<String, String> task = tasks.get(childPosition);
+
+            Log.d("WritingTopicsActivity", "Title: " + task.get("title"));
+            Log.d("WritingTopicsActivity", "Description: " + task.get("description"));
+            Log.d("WritingTopicsActivity", "ImgUrl: " + task.get("imgUrl"));
+
+            Intent intent = new Intent(WritingTopicsActivity.this, WritingTestActivity.class);
+            intent.putExtra("title", task.get("title"));
+            intent.putExtra("description", task.get("description"));
+            intent.putExtra("imgUrl", task.get("imgUrl"));
+            startActivity(intent);
+
+            return true;
         });
     }
 }

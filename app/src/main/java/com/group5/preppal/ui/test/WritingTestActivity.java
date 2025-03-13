@@ -1,94 +1,93 @@
 package com.group5.preppal.ui.test;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.firebase.firestore.FirebaseFirestore;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource; // ✅ THÊM IMPORT NÀY
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.group5.preppal.R;
-import java.util.HashMap;
-import java.util.Map;
-import android.util.Log;
 
 public class WritingTestActivity extends AppCompatActivity {
-
-    private static final String TAG = "WritingTestActivity";
-    private TextView tvTitle;
-    private TextView tvQuestion;
+    private TextView tvTitle, tvQuestion;
     private EditText etAnswer;
     private Button btnSubmit;
-    private ImageView btnBack;
-    private FirebaseFirestore db;
-    private String writingTestId; // ID của bài viết từ Firestore
+    private ImageView btnBack, imgQuestion;
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint({"MissingInflatedId", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_writing_test); // Gán layout XML
+        setContentView(R.layout.activity_writing_test);
 
-        // Ánh xạ các thành phần giao diện
-        tvTitle=findViewById(R.id.tvTitle);
+        tvTitle = findViewById(R.id.tvTitle);
         tvQuestion = findViewById(R.id.tvQuestion);
         etAnswer = findViewById(R.id.etAnswer);
-        btnSubmit = findViewById(R.id.registerButton);
+        btnSubmit = findViewById(R.id.btnSubmit);
         btnBack = findViewById(R.id.btnBack);
+        imgQuestion = findViewById(R.id.imgQuestion);
 
-        // Khởi tạo Firestore
-        db = FirebaseFirestore.getInstance();
+        Intent intent = getIntent();
+        if (intent != null) {
+            String title = intent.getStringExtra("title");
+            String description = intent.getStringExtra("description");
+            String imgUrl = intent.getStringExtra("imgUrl");
 
-        // Nhận dữ liệu từ Intent
-        if (getIntent().hasExtra("topic_id") && getIntent().hasExtra("title")) {
-            writingTestId = getIntent().getStringExtra("topic_id");
-            String title = getIntent().getStringExtra("title");
-            String question = getIntent().getStringExtra("description");
+            Log.d("WritingTestActivity", "Image URL: " + imgUrl);
 
-            Log.d(TAG, "📥 Received Intent Data - ID: " + writingTestId + ", Question: " + question);
             tvTitle.setText(title);
-            tvQuestion.setText(question);
-        } else {
-            Log.e(TAG, "❌ Intent data missing!");
-            Toast.makeText(this, "Error: Missing test data!", Toast.LENGTH_LONG).show();
-            finish(); // Đóng activity nếu thiếu dữ liệu
-            return;
+            tvQuestion.setText(description);
+
+            if (imgUrl != null && !imgUrl.isEmpty()) {
+                imgQuestion.setVisibility(View.VISIBLE);
+
+                Glide.with(this)
+                        .load(imgUrl)
+                        .placeholder(R.drawable.loading)
+                        .error(new ColorDrawable(Color.TRANSPARENT))
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                imgQuestion.setVisibility(View.GONE);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                imgQuestion.setVisibility(View.VISIBLE);
+                                return false;
+                            }
+                        })
+                        .into(imgQuestion);
+            } else {
+                imgQuestion.setVisibility(View.GONE);
+            }
         }
 
-        // Xử lý khi nhấn nút back
         btnBack.setOnClickListener(v -> finish());
-
-        // Xử lý khi nhấn nút submit
-        btnSubmit.setOnClickListener(v -> saveAnswerToFirestore());
-    }
-
-    private void saveAnswerToFirestore() {
-        String answer = etAnswer.getText().toString().trim();
-
-        if (answer.isEmpty()) {
-            Toast.makeText(this, "Please write your answer before submitting!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Tạo dữ liệu để lưu
-        Map<String, Object> answerData = new HashMap<>();
-        answerData.put("writingTestId", writingTestId);
-        answerData.put("answer", answer);
-        answerData.put("timestamp", System.currentTimeMillis());
-
-        // Lưu vào Firestore
-        db.collection("WritingAnswers")
-                .add(answerData)
-                .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(WritingTestActivity.this, "✅ Answer submitted successfully!", Toast.LENGTH_SHORT).show();
-                    etAnswer.setText(""); // Xóa nội dung sau khi gửi
-                })
-                .addOnFailureListener(e -> {
-                    Log.e(TAG, "❌ Failed to submit answer", e);
-                    Toast.makeText(WritingTestActivity.this, "❌ Failed to submit answer.", Toast.LENGTH_SHORT).show();
-                });
+        btnSubmit.setOnClickListener(v -> {
+            String answer = etAnswer.getText().toString().trim();
+            if (answer.isEmpty()) {
+                Toast.makeText(this, "Please enter an answer", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Answer submitted successfully!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
-    app:cardCornerRadius="12dp"
+    android:layout_marginBottom="16dp"
     app:cardElevation="4dp"
     app:cardBackgroundColor="@color/white"
     android:background="@drawable/input_background">
@@ -15,23 +15,35 @@
         android:padding="16dp"
         android:orientation="horizontal"
         android:gravity="center_vertical">
+
+        <!-- Icon đầu -->
         <ImageView
             android:id="@+id/ivCopyWriting"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/copy_writing"
             android:contentDescription="Copy Writing Icon"
-            android:layout_marginRight="8dp"/>
+            android:layout_marginEnd="8dp"/>
+
+        <!-- Tiêu đề -->
         <TextView
             android:id="@+id/tvTopicTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Topic Title"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginEnd="8dp"/>
+            android:layout_weight="1"/>
 
+        <!-- Icon mũi tên xuống (Sát bên phải) -->
+        <ImageView
+            android:id="@+id/ivArrowDown"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_arrow_down"
+            android:contentDescription="Arrow Down Icon"
+            android:layout_gravity="end"/>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
