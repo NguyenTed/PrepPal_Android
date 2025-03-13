@@ -3,7 +3,6 @@ package com.group5.preppal.data.model;
 import java.util.List;
 import java.util.Map;
 
-
 public class Course {
     private String courseId;
     private String name;
@@ -11,6 +10,7 @@ public class Course {
     private float entryLevel, targetLevel;
     private List<Map<String, Object>> sections;
 
+    public Course() {}
 
     public Course(String courseId, String name, String introduction, float entryLevel, float targetLevel, List<Map<String, Object>> sections) {
         this.courseId = courseId;
