@@ -50,16 +50,13 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.play.services.base)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
     implementation("com.google.dagger:hilt-android:2.51.1")
-
     ksp("com.google.dagger:hilt-android-compiler:2.51.1")
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
@@ -72,5 +69,4 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
-
 }
