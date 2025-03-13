@@ -25,6 +25,7 @@ public class CourseViewModel extends ViewModel {
     private final UserRepository userRepository;
     private final MutableLiveData<List<Course>> filteredCoursePayment = new MutableLiveData<>(); // Course payment (not include band under student's current band and student's courses)
     private final MutableLiveData<List<Course>> studentCourses = new MutableLiveData<>(); // Courses that student have bought
+    private final MutableLiveData<Course> selectedCourse = new MutableLiveData<>(); //1 Course in detail
 
     @Inject
     public CourseViewModel(CourseRepository courseRepository, UserRepository userRepository) {
@@ -96,6 +97,16 @@ public class CourseViewModel extends ViewModel {
                 }
             });
         });
+    }
+
+    public void fetchCourseById(String courseId) {
+        courseRepository.getCourseById(courseId).observeForever(course -> {
+            selectedCourse.setValue(course);
+        });
+    }
+
+    public LiveData<Course> getSelectedCourse() {
+        return selectedCourse;
     }
 
 

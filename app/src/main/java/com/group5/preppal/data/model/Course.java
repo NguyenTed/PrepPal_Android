@@ -1,15 +1,24 @@
 package com.group5.preppal.data.model;
 
+import java.util.List;
+import java.util.Map;
+
 public class Course {
     private String courseId;
     private String name;
+    private String introduction;
     private float entryLevel, targetLevel;
+    private List<Map<String, Object>> sections;
 
-    public Course(String courseId, String name, float entryLevel, float targetLevel) {
+    public Course() {}
+
+    public Course(String courseId, String name, String introduction, float entryLevel, float targetLevel, List<Map<String, Object>> sections) {
         this.courseId = courseId;
         this.name = name;
+        this.introduction = introduction;
         this.entryLevel = entryLevel;
         this.targetLevel = targetLevel;
+        this.sections = sections;
     }
 
     public String getCourseId() {
@@ -28,6 +37,14 @@ public class Course {
         this.name = name;
     }
 
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
     public float getEntryLevel() {
         return entryLevel;
     }
@@ -42,5 +59,13 @@ public class Course {
 
     public void setTargetLevel(float targetLevel) {
         this.targetLevel = targetLevel;
+    }
+
+    public List<Map<String, Object>> getSections() {
+        return sections;
+    }
+
+    public void setSections(List<Map<String, Object>> sections) {
+        this.sections = sections;
     }
 }

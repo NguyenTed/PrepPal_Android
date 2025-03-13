@@ -45,6 +45,15 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         holder.txtCourseEntryLevel.setText("Entry Level: " + course.getEntryLevel() + " - " + (course.getEntryLevel() + 0.5));
         holder.txtCourseTargetLevel.setText("Target Level: " + (course.getTargetLevel() == 6.5 ? course.getTargetLevel() + " - " + "7.0+" : course.getTargetLevel() + "+"));
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, CourseDetailActivity.class);
+                intent.putExtra("courseId", course.getCourseId());
+                context.startActivity(intent);
+            }
+        });
+
 
     }
 

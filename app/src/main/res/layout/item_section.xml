@@ -1,0 +1,84 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/rounded_10dp_white_3dp_border_gray"
+    android:paddingHorizontal="15dp"
+    android:paddingBottom="20dp"
+    android:layout_marginBottom="10dp">
+
+    <TextView
+        android:id="@+id/sectionName"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="6"
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:text="Lesson 1: Writing Task 1 - Dynamic charts"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4">
+
+        <LinearLayout
+            android:id="@+id/sectionTypeFinish"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingVertical="8dp"
+            android:background="@drawable/rounded_5dp_white_2dp_border_green"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_tick"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/rounded_full_green"/>
+
+            <TextView
+                android:id="@+id/txtSectionTypeFinish"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:text="Reading"/>
+        </LinearLayout>
+
+        <!-- ✅ SectionType -->
+        <TextView
+            android:id="@+id/sectionType"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:padding="7dp"
+            android:background="@drawable/rounded_5dp_white_2dp_border_green"
+            android:textColor="@color/black"
+            android:text="Reading"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/sectionTypeFinish"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/txtPoint"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:padding="7dp"
+            android:background="@drawable/rounded_5dp_white_2dp_border_green"
+            android:textColor="@color/black"
+            android:text="Points: 1.5/2.5"
+            android:visibility="gone"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintStart_toEndOf="@id/sectionType"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
