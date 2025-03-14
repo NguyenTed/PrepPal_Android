@@ -1,5 +1,6 @@
 package com.group5.preppal.ui.dictionary;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,10 @@ import java.util.List;
 
 public class MeaningAdapter extends RecyclerView.Adapter<MeaningAdapter.MeaningViewHolder> {
     private List<DictionaryResponse.Meaning> meaningList;
+    private Context context;
 
-    public MeaningAdapter(List<DictionaryResponse.Meaning> meaningList) {
+    public MeaningAdapter(Context context, List<DictionaryResponse.Meaning> meaningList) {
+        this.context = context;
         this.meaningList = meaningList;
     }
 
@@ -29,12 +32,11 @@ public class MeaningAdapter extends RecyclerView.Adapter<MeaningAdapter.MeaningV
     @Override
     public void onBindViewHolder(@NonNull MeaningViewHolder holder, int position) {
         DictionaryResponse.Meaning meaning = meaningList.get(position);
-        holder.tvPartOfSpeech.setText(meaning.getPartOfSpeech());
 
         // Combine all definitions into one string
         StringBuilder definitionsText = new StringBuilder();
         for (DictionaryResponse.Meaning.Definition def : meaning.getDefinitions()) {
-            definitionsText.append("• ").append(def.getDefinition()).append("\n");
+            definitionsText.append("- ").append(def.getDefinition()).append("\n");
             if (def.getExample() != null && !def.getExample().isEmpty()) {
                 definitionsText.append("  Example: ").append(def.getExample()).append("\n");
             }
@@ -57,7 +59,6 @@ public class MeaningAdapter extends RecyclerView.Adapter<MeaningAdapter.MeaningV
 
         public MeaningViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvPartOfSpeech = itemView.findViewById(R.id.tvPartOfSpeech);
             tvDefinitions = itemView.findViewById(R.id.tvDefinitions);
         }
     }

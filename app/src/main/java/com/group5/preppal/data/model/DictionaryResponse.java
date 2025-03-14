@@ -27,6 +27,14 @@ public class DictionaryResponse {
         return result;
     }
 
+    public List<String> getPartsOfSpeech () {
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < meanings.size(); i++) {
+            result.add(meanings.get(i).getPartOfSpeech());
+        }
+        return result;
+    }
+
     public static class Phonetic {
         private String text;
         private String audio;
@@ -43,6 +51,9 @@ public class DictionaryResponse {
     public static class Meaning {
         private String partOfSpeech;
         private List<Definition> definitions;
+        private List<String> synonyms;
+        private List<String> antonyms;
+
         public String getPartOfSpeech() {
             return partOfSpeech;
         }

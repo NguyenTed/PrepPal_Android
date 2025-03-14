@@ -1,6 +1,7 @@
 package com.group5.preppal.ui.dictionary;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,10 +36,17 @@ public class PhoneticAdapter extends RecyclerView.Adapter<PhoneticAdapter.Phonet
     @Override
     public void onBindViewHolder(@NonNull PhoneticViewHolder holder, int position) {
         DictionaryResponse.Phonetic phonetic = phoneticList.get(position);
-        holder.tvPhonetic.setText("[" + phonetic.getText() + "]");
+        String phoneticText = phonetic.getText();
+        if (!phoneticText.contains("[")) {
+            holder.tvPhonetic.setText(phoneticText);
+        } else {
+            holder.tvPhonetic.setText(phoneticText);
+        }
+        holder.tvPhonetic.setTextColor(Color.parseColor("#0E6CF0"));
 
         if (phonetic.getAudio() != null && !phonetic.getAudio().isEmpty()) {
             holder.btnPlayAudio.setVisibility(View.VISIBLE);
+            holder.btnPlayAudio.setColorFilter(Color.parseColor("#0E6CF0"));
             holder.btnPlayAudio.setOnClickListener(v -> playAudio(phonetic.getAudio()));
         } else {
             holder.btnPlayAudio.setVisibility(View.GONE);
