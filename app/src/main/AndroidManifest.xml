@@ -20,6 +20,10 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
 <!--         Register Activity -->
@@ -31,7 +35,6 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
-
         </activity>
 
         <activity android:name=".ui.choose_band.ChooseBandActivity"
@@ -54,10 +57,14 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
+
+
         </activity>
         <activity android:name=".ui.test.WritingTestActivity"/>
         <activity android:name=".ui.profile.AccountInformationActivity"/>
         <activity android:name=".ui.profile.CourseInfoActivity"/>
+
+
 
         <!-- Lessons -->
         <activity android:name=".ui.lesson.LessonPDFDetailActivity"

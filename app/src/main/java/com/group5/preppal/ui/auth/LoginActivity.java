@@ -23,6 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.group5.preppal.BuildConfig;
 import com.group5.preppal.R;
+import com.group5.preppal.ui.test.WritingTopicsActivity;
 import com.group5.preppal.ui.MainActivity;
 import com.group5.preppal.ui.profile.ProfileActivity;
 import com.group5.preppal.viewmodel.AuthViewModel;
@@ -197,7 +198,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void goToMainActivity(FirebaseUser user) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, WritingTopicsActivity.class);
         startActivity(intent);
         finish();
     }

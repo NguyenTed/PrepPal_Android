@@ -1,6 +1,7 @@
 package com.group5.preppal.di;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -44,7 +45,9 @@ public class AppModule {
     }
 
     private String getGoogleClientId() {
-        return BuildConfig.GOOGLE_CLIENT_ID;
+        String clientId = BuildConfig.GOOGLE_CLIENT_ID;
+        Log.d("GoogleSignIn", "GOOGLE_CLIENT_ID: " + clientId);
+        return clientId;
     }
 
     @Provides
