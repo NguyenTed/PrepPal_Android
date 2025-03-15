@@ -13,4 +13,5 @@
     <color name="primaryBlue">#2F6FED</color>
     <color name="tabTextSelected">#FFFFFF</color>
     <color name="tabTextUnselected">#2F6FED</color>
+    <color name="wordExampleColor">#757575</color>
 </resources>

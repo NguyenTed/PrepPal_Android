@@ -1,8 +1,12 @@
 package com.group5.preppal.ui.dictionary;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -28,8 +32,7 @@ public class DictionaryActivity extends AppCompatActivity {
     private DictionaryViewModel dictionaryViewModel;
     private PhoneticAdapter phoneticAdapter;
     private EditText etWord;
-    private Button btnSearch;
-    private TextView tvWord;
+    private TextView tvWord, tvDefinitionText;
     private RecyclerView rvPhonetics;
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
@@ -41,8 +44,8 @@ public class DictionaryActivity extends AppCompatActivity {
 
         // Initialize Views
         etWord = findViewById(R.id.etWord);
-        btnSearch = findViewById(R.id.btnSearch);
         tvWord = findViewById(R.id.tvWord);
+        tvDefinitionText = findViewById(R.id.tvDefinitionText);
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
         rvPhonetics = findViewById(R.id.rvPhonetics);
@@ -60,6 +63,7 @@ public class DictionaryActivity extends AppCompatActivity {
             DictionaryResponse wordData = response.get(0);
             tvWord.setText(wordData.getWord());
             tvWord.setVisibility(View.VISIBLE);
+            tvDefinitionText.setVisibility(View.VISIBLE);
             rvPhonetics.setVisibility(View.VISIBLE);
             List<DictionaryResponse.Meaning> meanings = wordData.getMeanings();
             if (!meanings.isEmpty()) {
@@ -71,7 +75,9 @@ public class DictionaryActivity extends AppCompatActivity {
                     tabLayout.post(() -> {
                         View tabView = ((ViewGroup) tabLayout.getChildAt(0)).getChildAt(position);
                         if (tabView != null) {
-                            if (position == 0) {
+                            if (meanings.size() == 1) {
+                                tabView.setBackgroundResource(R.drawable.tab_middle);  // ✅ Middle tabs
+                            } else if (position == 0) {
                                 tabView.setBackgroundResource(R.drawable.tab_first);  // ✅ First tab
                             } else if (position == meanings.size() - 1) {
                                 tabView.setBackgroundResource(R.drawable.tab_last);  // ✅ Last tab
@@ -90,14 +96,29 @@ public class DictionaryActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error: " + error, Toast.LENGTH_SHORT).show()
         );
 
-        // Search Button Click
-        btnSearch.setOnClickListener(view -> {
-            String word = etWord.getText().toString().trim();
-            if (!word.isEmpty()) {
-                dictionaryViewModel.searchWord(word);
-            } else {
-                Toast.makeText(this, "Please enter a word!", Toast.LENGTH_SHORT).show();
+        etWord.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    hideSoftKeyboard(DictionaryActivity.this);
+                    String word = etWord.getText().toString().trim();
+                    dictionaryViewModel.searchWord(word);
+                    return true;
+                }
+                return false;
             }
         });
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        if(inputMethodManager.isAcceptingText()){
+            inputMethodManager.hideSoftInputFromWindow(
+                    activity.getCurrentFocus().getWindowToken(),
+                    0
+            );
+        }
     }
 }
