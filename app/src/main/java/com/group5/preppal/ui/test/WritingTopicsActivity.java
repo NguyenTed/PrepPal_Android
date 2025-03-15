@@ -94,6 +94,7 @@ public class WritingTopicsActivity extends AppCompatActivity {
             intent.putExtra("title", task.get("title"));
             intent.putExtra("description", task.get("description"));
             intent.putExtra("imgUrl", task.get("imgUrl"));
+            intent.putExtra("id", task.get("id"));
             startActivity(intent);
 
             return true;
