@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <!-- Header -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:paddingHorizontal="10dp"
+        android:layout_height="60dp">
+
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@null"
+            android:src="@drawable/ic_back_black"
+            android:scaleType="fitCenter"
+            android:padding="5dp"
+            android:layout_gravity="start|center_vertical"
+            android:contentDescription="@string/back_button" />
+
+        <TextView
+            android:id="@+id/lessonName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lesson 1: Writing Task 1 - Dynamic charts"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="40dp"
+            android:textSize="18sp"
+            android:gravity="center_vertical"
+            android:textStyle="bold"
+            android:textColor="#ff0D0D0D"/>
+    </FrameLayout>
+    <!--    Video View-->
+    <FrameLayout
+        android:id="@+id/webViewContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:rotation="0"> <!-- Xoay khi cần -->
+
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
+
+
+    <!--    Bottom nav-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#C2C2C2"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+        <!--        Back button-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/rounded_5dp_white_2dp_border_blue"
+            android:gravity="center_vertical"
+            android:layout_gravity="start">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_back_blue"
+                android:layout_marginRight="10dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#2F60C2"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-black"
+                android:text="Previous"/>
+        </LinearLayout>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <!--        Next Button-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/rounded_5dp_white_2dp_border_blue"
+            android:gravity="center_vertical"
+            android:layout_gravity="end">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#2F60C2"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-black"
+                android:text="Next"/>
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_next_blue"
+                android:layout_marginLeft="10dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

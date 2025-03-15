@@ -1,14 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingHorizontal="10dp"
-    android:paddingVertical="10dp">
-
+    android:layout_height="match_parent"
+    android:background="#F5F6FA"
+    android:orientation="vertical">
     <!-- Header -->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp">
+        android:background="@color/white"
+        android:layout_height="60dp"
+        android:paddingHorizontal="10dp">
 
         <ImageButton
             android:id="@+id/backButton"
@@ -21,59 +22,88 @@
             android:layout_gravity="start|center_vertical"
             android:contentDescription="@string/back_button" />
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Course"
-            android:textSize="18sp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textColor="#ff0D0D0D"/>
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical"
+            android:layout_marginLeft="40dp">
+            <TextView
+                android:id="@+id/courseLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Entry Level: 5.0 - 5.5 / Target Level: 6.0+"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:fontFamily="sans-serif-black"
+                android:textColor="#A3A5A4"/>
+            <TextView
+                android:id="@+id/courseName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="IELTS Skills Builder"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="#ff0D0D0D"/>
+        </LinearLayout>
     </FrameLayout>
-
-    <!-- Nội dung chính -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="10dp"
-        android:background="@drawable/course_item_background">
-
-        <!-- Thông tin khóa học -->
-        <LinearLayout
-            android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingHorizontal="10dp">
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="7"
-            android:orientation="vertical"
-            android:gravity="center_vertical"
-            android:padding="10dp">
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:text="Introduction"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-black" />
+        <TextView
+            android:id="@+id/txtIntroduction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="In this course, you will learn all type of writing skills includes Charts, Map, Process. In speaking, you will able to learn about environment, people."/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_weight="4"
+                android:background="#E3E3E3"
+                android:layout_marginVertical="20dp"
+                android:orientation="horizontal"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PREP69329 - 5.5"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"/>
-            <TextView
-                android:layout_marginTop="2dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Teacher: Alice"
-                android:textSize="13sp"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:layout_marginHorizontal="10dp"
+                android:text="Welcome"
+                android:textSize="12sp"
+                android:textFontWeight="500"
+                android:fontFamily="sans-serif-black"/>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_weight="4"
+                android:background="#E3E3E3"
+                android:orientation="horizontal"/>
         </LinearLayout>
 
-        <!-- Hình ảnh -->
-        <ImageView
-            android:id="@+id/courseImage"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="3"
-            android:scaleType="centerCrop"
-            android:padding="40dp"
-            android:src="@drawable/ic_course_item" />
+        <!--  Section List Recycler View -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewSections"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:paddingVertical="10dp"/>
     </LinearLayout>
+
 
 </LinearLayout>

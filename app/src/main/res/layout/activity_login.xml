@@ -94,27 +94,10 @@
             android:layout_height="wrap_content"
             android:minWidth="48dp"
             android:minHeight="48dp"
-            android:text="Don't have an account?"
+            android:text="Don't have an account? Sign up"
             android:textSize="14sp"
             android:textColor="@color/blue"
             android:onClick="registerWithPhone"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" | "
-            android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:text="Forgot password?"
-            android:textSize="14sp"
-            android:textColor="@color/blue"
-            android:onClick="forgotPassword"/>
     </LinearLayout>
 
 </LinearLayout>

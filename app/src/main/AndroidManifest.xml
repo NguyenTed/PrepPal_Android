@@ -28,13 +28,6 @@
         <!-- Main Activity (Home Screen) -->
         <activity
             android:name=".ui.MainActivity"
-            android:launchMode="singleTask"
-            android:configChanges="orientation|screenSize" />
-
-        <activity android:name=".ui.profile.ProfileActivity" android:exported="true">
-        </activity>
-        <activity
-            android:name=".ui.test.WritingTopicsActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
@@ -43,9 +36,55 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.choose_band.ChooseBandActivity"
+            android:exported="true">
+        </activity>
+
+        <activity android:name=".ui.course_payment.CoursePaymentActivity"
+            android:exported="true">
+        </activity>
+
+        <activity android:name=".ui.course.CourseListActivity"
+            android:exported="true">
+        </activity>
+        <activity android:name=".ui.course.CourseDetailActivity"/>
+
+        <activity android:name=".ui.profile.ProfileActivity" android:exported="true">
+        </activity>
+        <activity
+            android:name=".ui.test.WritingTopicsActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:configChanges="orientation|screenSize">
+        </activity>
         <activity android:name=".ui.test.WritingTestActivity"/>
         <activity android:name=".ui.profile.AccountInformationActivity"/>
         <activity android:name=".ui.profile.CourseInfoActivity"/>
+
+
+
+        <!-- Lessons -->
+        <activity android:name=".ui.lesson.LessonPDFDetailActivity"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".ui.lesson.LessonVideoActivity"
+            android:exported="true">
+        </activity>
+
+        <!--    Quizs    -->
+        <activity
+            android:name=".ui.quiz.multiple_choice_quiz.MultipleChoiceActivity"
+            android:exported="true">
+        </activity>
+        <!--    Quiz Answer    -->
+        <activity
+            android:name=".ui.quiz.multiple_choice_quiz.MultipleChoiceAnswerActivity"
+            android:exported="true">
+        </activity>
     </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
 </manifest>

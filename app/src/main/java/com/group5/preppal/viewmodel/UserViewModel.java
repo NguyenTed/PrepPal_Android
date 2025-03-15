@@ -1,5 +1,7 @@
 package com.group5.preppal.viewmodel;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -23,6 +25,11 @@ public class UserViewModel extends ViewModel {
 
     public LiveData<User> getCurrentUser() {
         return currentUserLiveData;
+    }
+
+    //  Update user currentBand & aimBand
+    public LiveData<Boolean> updateUserBand(double currentBand, double aimBand) {
+        return userRepository.updateUserBand(currentBand, aimBand);
     }
 }
 

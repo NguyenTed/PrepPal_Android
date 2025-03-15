@@ -6,6 +6,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.group5.preppal.BuildConfig;
 
@@ -49,5 +51,12 @@ public class AppModule {
     @Singleton
     public GoogleSignInClient provideGoogleSignInClient(Application application, GoogleSignInOptions gso) {
         return GoogleSignIn.getClient(application, gso);
+    }
+
+    // ✅ Provide SignInClient for Identity Services API
+    @Provides
+    @Singleton
+    public SignInClient provideSignInClient(Application application) {
+        return Identity.getSignInClient(application);
     }
 }
