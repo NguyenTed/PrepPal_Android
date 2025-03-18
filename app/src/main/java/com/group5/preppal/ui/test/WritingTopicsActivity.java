@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.group5.preppal.R;
+import com.group5.preppal.data.model.Task;
+import com.group5.preppal.data.model.WritingTest;
 import com.group5.preppal.viewmodel.WritingTestViewModel;
 
 import java.util.ArrayList;
@@ -16,11 +18,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class WritingTopicsActivity extends AppCompatActivity {
     private ExpandableListView expandableListView;
     private HashMap<String, List<Map<String, String>>> topicMap;
     private List<String> topicList;
     private WritingTopicsAdapter adapter;
+
+
     private WritingTestViewModel viewModel;
 
     @Override
@@ -40,8 +49,20 @@ public class WritingTopicsActivity extends AppCompatActivity {
             if (tests != null) {
                 topicList.clear();
                 topicMap.clear();
-                topicList.addAll(tests.keySet());
-                topicMap.putAll(tests);
+
+                for (WritingTest writingTest : tests) {
+                    List<Map<String, String>> tasksList = new ArrayList<>();
+
+                    for (Task task : writingTest.getTasks()) {
+                        Map<String, String> taskData = new HashMap<>();
+                        taskData.put("id", task.getId());
+                        tasksList.add(taskData);
+                    }
+
+                    topicList.add(writingTest.getName());
+                    topicMap.put(writingTest.getName(), tasksList);
+                }
+
                 adapter.notifyDataSetChanged();
             }
         });
@@ -91,9 +112,6 @@ public class WritingTopicsActivity extends AppCompatActivity {
             Log.d("WritingTopicsActivity", "ImgUrl: " + task.get("imgUrl"));
 
             Intent intent = new Intent(WritingTopicsActivity.this, WritingTestActivity.class);
-            intent.putExtra("title", task.get("title"));
-            intent.putExtra("description", task.get("description"));
-            intent.putExtra("imgUrl", task.get("imgUrl"));
             intent.putExtra("id", task.get("id"));
             startActivity(intent);
 

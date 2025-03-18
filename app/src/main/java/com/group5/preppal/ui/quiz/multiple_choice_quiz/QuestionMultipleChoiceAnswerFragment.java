@@ -1,7 +1,5 @@
 package com.group5.preppal.ui.quiz.multiple_choice_quiz;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,14 +18,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.group5.preppal.R;
-import com.group5.preppal.data.model.MultipleChoiceAnsweredQuestion;
 import com.group5.preppal.data.model.MultipleChoiceQuizResult;
-import com.group5.preppal.data.model.Question;
+import com.group5.preppal.data.model.MultipleChoiceQuestion;
 import com.group5.preppal.data.repository.AuthRepository;
-import com.group5.preppal.data.repository.UserRepository;
 import com.group5.preppal.viewmodel.MultipleChoiceQuizViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,17 +50,17 @@ public class QuestionMultipleChoiceAnswerFragment extends Fragment {
     private float passPoint;
 
     private int questionIndex;
-    private List<Question> questions;
+    private List<MultipleChoiceQuestion> multipleChoiceQuestions;
     private TextView questionName, questionOrder, questionPoint;
     private RadioGroup answerGroup;
     private LinearLayout btnNext, btnPrevious;
 
 
-    public static QuestionMultipleChoiceAnswerFragment newInstance(int questionIndex, List<Question> questions, String quizId, float passPoint) {
+    public static QuestionMultipleChoiceAnswerFragment newInstance(int questionIndex, List<MultipleChoiceQuestion> multipleChoiceQuestions, String quizId, float passPoint) {
         QuestionMultipleChoiceAnswerFragment fragment = new QuestionMultipleChoiceAnswerFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_QUESTION_INDEX, questionIndex);
-        args.putSerializable(ARG_QUESTIONS, (java.io.Serializable) questions);
+        args.putSerializable(ARG_QUESTIONS, (java.io.Serializable) multipleChoiceQuestions);
         args.putString(ARG_QUIZ_ID, quizId);
         args.putFloat(ARG_PASS_POINT, passPoint);
         fragment.setArguments(args);
@@ -77,7 +72,7 @@ public class QuestionMultipleChoiceAnswerFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             questionIndex = getArguments().getInt(ARG_QUESTION_INDEX);
-            questions = (List<Question>) getArguments().getSerializable(ARG_QUESTIONS);
+            multipleChoiceQuestions = (List<MultipleChoiceQuestion>) getArguments().getSerializable(ARG_QUESTIONS);
             quizId = getArguments().getString(ARG_QUIZ_ID);
             passPoint = getArguments().getFloat(ARG_PASS_POINT);
         }
@@ -127,30 +122,30 @@ public class QuestionMultipleChoiceAnswerFragment extends Fragment {
         if (multipleChoiceQuizResult == null) {
             return;
         }
-        if (questionIndex < 0 || questionIndex >= questions.size()) return;
+        if (questionIndex < 0 || questionIndex >= multipleChoiceQuestions.size()) return;
 
-        Question currentQuestion = questions.get(questionIndex);
-        questionName.setText(currentQuestion.getQuestionName());
+        MultipleChoiceQuestion currentMultipleChoiceQuestion = multipleChoiceQuestions.get(questionIndex);
+        questionName.setText(currentMultipleChoiceQuestion.getQuestionName());
 
 
-        questionPoint.setText(multipleChoiceQuizResult.getScore() + "/" + currentQuestion.getPoint() + " points");
-        questionOrder.setText("Question " + (questionIndex + 1) + "/" + questions.size());
+        questionPoint.setText(multipleChoiceQuizResult.getScore() + "/" + currentMultipleChoiceQuestion.getPoint() + " points");
+        questionOrder.setText("Question " + (questionIndex + 1) + "/" + multipleChoiceQuestions.size());
 
         answerGroup.removeAllViews();
 
 
-        for (int i = 0; i < currentQuestion.getOptions().size(); i++) {
+        for (int i = 0; i < currentMultipleChoiceQuestion.getOptions().size(); i++) {
             View optionView = LayoutInflater.from(getContext()).inflate(R.layout.item_answer_option, answerGroup, false);
             LinearLayout layout = optionView.findViewById(R.id.answerOptionLayout);
             RadioButton radioButton = optionView.findViewById(R.id.answerRadioButton);
 
-            radioButton.setText(currentQuestion.getOptions().get(i).getAnswer());
+            radioButton.setText(currentMultipleChoiceQuestion.getOptions().get(i).getAnswer());
             radioButton.setClickable(false);
 
             String selectedAnswer = multipleChoiceQuizResult.getAnsweredQuestions().get(questionIndex).getSelectedAnswer();
             boolean isCorrect = multipleChoiceQuizResult.getAnsweredQuestions().get(questionIndex).isCorrect();
 
-            if (Objects.equals(selectedAnswer, currentQuestion.getOptions().get(i).getAnswer()))
+            if (Objects.equals(selectedAnswer, currentMultipleChoiceQuestion.getOptions().get(i).getAnswer()))
             {
                 radioButton.setChecked(true);
                 if (isCorrect) {
@@ -168,15 +163,15 @@ public class QuestionMultipleChoiceAnswerFragment extends Fragment {
         }
 
         btnPrevious.setVisibility(questionIndex == 0 ? View.INVISIBLE : View.VISIBLE);
-        btnNext.setVisibility(questionIndex == questions.size() - 1 ? View.INVISIBLE : View.VISIBLE);
+        btnNext.setVisibility(questionIndex == multipleChoiceQuestions.size() - 1 ? View.INVISIBLE : View.VISIBLE);
 
     }
 
     private void navigateToQuestion(int newIndex) {
-        if (newIndex >= 0 && newIndex < questions.size()) {
+        if (newIndex >= 0 && newIndex < multipleChoiceQuestions.size()) {
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.quizAnswerFragmentContainer, QuestionMultipleChoiceAnswerFragment.newInstance(newIndex, questions,quizId, passPoint))
+                    .replace(R.id.quizAnswerFragmentContainer, QuestionMultipleChoiceAnswerFragment.newInstance(newIndex, multipleChoiceQuestions,quizId, passPoint))
                     .commit();
         }
     }

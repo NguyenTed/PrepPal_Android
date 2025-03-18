@@ -11,16 +11,21 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.group5.preppal.R;
+import com.group5.preppal.data.model.WritingQuizSubmission;
 import com.group5.preppal.ui.lesson.LessonPDFDetailActivity;
 import com.group5.preppal.ui.lesson.LessonVideoActivity;
 import com.group5.preppal.ui.quiz.multiple_choice_quiz.MultipleChoiceActivity;
 import com.group5.preppal.ui.quiz.multiple_choice_quiz.MultipleChoiceAnswerActivity;
+import com.group5.preppal.ui.quiz.writing_quiz.WritingQuizActivity;
+import com.group5.preppal.viewmodel.WritingTestViewModel;
 
 import java.util.List;
 import java.util.Map;
@@ -33,18 +38,19 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
     private final List<Map<String, Object>> sectionList;
     private final Context context;
     private String courseId;
-
+    private final ViewModelStoreOwner viewModelStoreOwner;
     private final FirebaseAuth firebaseAuth;
     private FirebaseUser user;
     private boolean isDone;
 
 
-    public SectionAdapter(List<Map<String, Object>> sectionList, Context context, String courseId, FirebaseAuth firebaseAuth) {
+    public SectionAdapter(List<Map<String, Object>> sectionList, Context context, String courseId, FirebaseAuth firebaseAuth, ViewModelStoreOwner viewModelStoreOwner) {
         this.sectionList = sectionList;
         this.context = context;
         this.courseId = courseId;
         this.firebaseAuth = firebaseAuth;
         this.user = firebaseAuth.getCurrentUser();
+        this.viewModelStoreOwner = viewModelStoreOwner;
     }
 
     @NonNull
@@ -92,15 +98,29 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
             String sectionName = quiz.containsKey("name") ? quiz.get("name").toString() : "Unknown Lesson";
             String type = quiz.containsKey("type") ? quiz.get("type").toString() : "Unknown Type";
             String quizId = quiz.containsKey("id") ? quiz.get("id").toString() : null;
-            String maxPoints = quiz.containsKey("maxPoints") ? quiz.get("maxPoints").toString() : "0";
+            String maxPoints;
+            if (quiz.containsKey("maxPoints")) {
+                maxPoints = Float.toString(Float.parseFloat(quiz.get("maxPoints").toString()));
+            } else {
+                maxPoints = "0.0";
+            }
 
             holder.sectionName.setText(sectionName);
             holder.sectionType.setText(type);
             holder.txtTypeFinish.setText(type);
 
-
             if (type.equals("Multiple Choice Quiz")) {
                 checkQuizResult(holder, quizId, maxPoints);
+            } else if (type.contains("Writing")) {
+                holder.sectionName.setText("Writing: " + sectionName);
+                holder.sectionType.setVisibility(View.VISIBLE);
+                holder.itemView.setOnClickListener(view -> {
+                    Intent intent = new Intent(context, WritingQuizActivity.class);
+                    intent.putExtra("id", quizId);
+                    intent.putExtra("courseId", courseId);
+                    context.startActivity(intent);
+                });
+                checkWritingQuizResult(holder, quizId, maxPoints);
             }
         }
 }
@@ -112,7 +132,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
     }
 
     public static class SectionViewHolder extends RecyclerView.ViewHolder {
-        TextView sectionName, sectionType, txtTypeFinish, txtPoint;
+        TextView sectionName, sectionType, txtTypeFinish, txtPoint, txtState;
         LinearLayout sectionTypeFinish;
 
         public SectionViewHolder(@NonNull View itemView) {
@@ -121,6 +141,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
             sectionType = itemView.findViewById(R.id.sectionType);
             txtTypeFinish = itemView.findViewById(R.id.txtSectionTypeFinish);
             txtPoint = itemView.findViewById(R.id.txtPoint);
+            txtState = itemView.findViewById(R.id.txtState);
             sectionTypeFinish = itemView.findViewById(R.id.sectionTypeFinish);
         }
     }
@@ -155,7 +176,6 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
                     else {
                         holder.sectionType.setVisibility(View.VISIBLE);
                     }
-                    // ✅ Sau khi có kết quả, cập nhật sự kiện OnClickListener
                     boolean finalQuizCompleted = quizCompleted;
                     holder.itemView.setOnClickListener(view -> {
                         Intent intent;
@@ -174,6 +194,20 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
                 });
     }
 
+    private void checkWritingQuizResult(SectionViewHolder holder, String taskId, String maxPoints) {
+        String userId = user.getUid();
 
+        WritingTestViewModel writingTestViewModel = new ViewModelProvider(viewModelStoreOwner).get(WritingTestViewModel.class);
 
+        writingTestViewModel.getWritingQuizSubmissionById(taskId, userId).observeForever(writingQuizSubmission -> {
+            if (writingQuizSubmission != null) {
+                if (writingQuizSubmission.getState() != null && !writingQuizSubmission.getState().equals("pass")) {
+                    holder.txtState.setText(writingQuizSubmission.getState());
+                    holder.txtState.setVisibility(View.VISIBLE);
+                }
+                holder.txtPoint.setText("Score: " + writingQuizSubmission.getPoints() + "/" + maxPoints);
+                holder.txtPoint.setVisibility(View.VISIBLE);
+            }
+        });
+    }
 }
