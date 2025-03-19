@@ -58,7 +58,6 @@
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
 
-
         </activity>
         <activity android:name=".ui.test.WritingTestActivity"/>
         <activity android:name=".ui.profile.AccountInformationActivity"/>
@@ -80,6 +79,11 @@
             android:name=".ui.quiz.multiple_choice_quiz.MultipleChoiceActivity"
             android:exported="true">
         </activity>
+        <activity
+            android:name=".ui.quiz.writing_quiz.WritingQuizActivity"
+            android:exported="true">
+
+        </activity>
         <!--    Quiz Answer    -->
         <activity
             android:name=".ui.quiz.multiple_choice_quiz.MultipleChoiceAnswerActivity"
@@ -93,6 +97,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>

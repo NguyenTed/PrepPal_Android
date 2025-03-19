@@ -8,22 +8,23 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Question implements Parcelable {
+// 1 MultipleChoiceQuiz includes many MultipleChoiceQuestion
+public class MultipleChoiceQuestion implements Parcelable {
     private String id;
     private String questionName;
     private float point;
     private List<Option> options;
 
-    public Question() {}
+    public MultipleChoiceQuestion() {}
 
-    public Question(String id, String questionName, List<Option> options, Float point) {
+    public MultipleChoiceQuestion(String id, String questionName, List<Option> options, Float point) {
         this.id = id;
         this.questionName = questionName;
         this.options = options;
         this.point = point;
     }
 
-    protected Question(Parcel in) {
+    protected MultipleChoiceQuestion(Parcel in) {
         id = in.readString();
         questionName = in.readString();
         point = in.readFloat();
@@ -31,15 +32,15 @@ public class Question implements Parcelable {
         in.readTypedList(options, Option.CREATOR); // Đọc danh sách `Option`
     }
 
-    public static final Creator<Question> CREATOR = new Creator<Question>() {
+    public static final Creator<MultipleChoiceQuestion> CREATOR = new Creator<MultipleChoiceQuestion>() {
         @Override
-        public Question createFromParcel(Parcel in) {
-            return new Question(in);
+        public MultipleChoiceQuestion createFromParcel(Parcel in) {
+            return new MultipleChoiceQuestion(in);
         }
 
         @Override
-        public Question[] newArray(int size) {
-            return new Question[size];
+        public MultipleChoiceQuestion[] newArray(int size) {
+            return new MultipleChoiceQuestion[size];
         }
     };
 

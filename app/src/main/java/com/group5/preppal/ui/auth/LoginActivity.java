@@ -198,7 +198,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void goToMainActivity(FirebaseUser user) {
-        Intent intent = new Intent(this, WritingTopicsActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
     }
