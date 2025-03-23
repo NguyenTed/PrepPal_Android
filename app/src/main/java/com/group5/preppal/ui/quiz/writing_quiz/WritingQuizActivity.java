@@ -1,5 +1,6 @@
 package com.group5.preppal.ui.quiz.writing_quiz;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -7,6 +8,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.group5.preppal.R;
+import com.group5.preppal.ui.course.CourseDetailActivity;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -24,7 +26,12 @@ public class WritingQuizActivity extends AppCompatActivity {
         tvTaskType = findViewById(R.id.tvTaskType);
         btnBack = findViewById(R.id.backButton);
 
-        btnBack.setOnClickListener(v -> finish());
+        btnBack.setOnClickListener(view -> {
+            Intent intent = new Intent(this, CourseDetailActivity.class);
+            intent.putExtra("courseId", getIntent().getStringExtra("courseId"));
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
     }
 
     // Cho phép Fragment cập nhật tiêu đề

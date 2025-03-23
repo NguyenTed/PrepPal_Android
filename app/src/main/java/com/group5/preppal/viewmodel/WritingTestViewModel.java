@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.group5.preppal.data.model.Task;
 import com.group5.preppal.data.model.WritingQuizSubmission;
 import com.group5.preppal.data.model.WritingTest;
 import com.group5.preppal.data.repository.WritingQuizSubmissionRepository;
@@ -31,7 +32,23 @@ public class WritingTestViewModel extends ViewModel {
         this.writingQuizSubmissionRepository = writingQuizSubmissionRepository;
     }
 
-    public LiveData<WritingQuizSubmission> getWritingQuizSubmissionById(String taskId, String userId) {
+    public LiveData<List<WritingQuizSubmission>> getAllWritingQuizSubmission() {
+        return writingQuizSubmissionRepository.getAllQuizSubmission();
+    }
+
+    public LiveData<Task> getTaskById(String taskId) {
+        return repository.getTaskById(taskId);
+    }
+
+    public LiveData<List<WritingQuizSubmission>> getAllPendingWritingQuizSubmissionWithTaskId(String taskId) {
+        return writingQuizSubmissionRepository.getPendingSubmissionsWithTaskId(taskId);
+    }
+
+    public LiveData<WritingQuizSubmission> getQuizSubmissionById(String submissionId) {
+        return writingQuizSubmissionRepository.getQuizSubmissionById(submissionId);
+    }
+
+    public LiveData<WritingQuizSubmission> getWritingQuizSubmissionByTasKId(String taskId, String userId) {
         return writingQuizSubmissionRepository.getQuizSubmissionByTaskId(taskId,userId);
     }
 
@@ -40,8 +57,7 @@ public class WritingTestViewModel extends ViewModel {
     }
 
 
-    public LiveData<List<WritingTest>> getWritingTests() {
-//        Log.d("size", "size: " + writingTests.getValue().size());
+    public LiveData<List<WritingTest>> getAllWritingTests() {
         return writingTests;
     }
 
@@ -55,7 +71,6 @@ public class WritingTestViewModel extends ViewModel {
             public void onSuccess(List<WritingTest> tests) {
                 writingTests.setValue(tests);
             }
-
             @Override
             public void onFailure(Exception e) {
                 errorMessage.setValue("Lỗi khi lấy dữ liệu: " + e.getMessage());

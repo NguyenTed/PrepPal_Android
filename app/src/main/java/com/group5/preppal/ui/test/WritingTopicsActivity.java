@@ -18,8 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -45,7 +43,7 @@ public class WritingTopicsActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(WritingTestViewModel.class);
 
         // Quan sát dữ liệu từ ViewModel
-        viewModel.getWritingTests().observe(this, tests -> {
+        viewModel.getAllWritingTests().observe(this, tests -> {
             if (tests != null) {
                 topicList.clear();
                 topicMap.clear();

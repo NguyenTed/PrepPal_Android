@@ -3,6 +3,8 @@ package com.group5.preppal.data.repository;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -82,4 +84,38 @@ public class WritingTestRepository {
             }
         });
     }
+
+    public LiveData<Task> getTaskById(String taskId) {
+        MutableLiveData<Task> taskLiveData = new MutableLiveData<>();
+
+        db.collection(COLLECTION_NAME).get().addOnSuccessListener(testSnapshot -> {
+            if (testSnapshot != null) {
+                for (DocumentSnapshot writingTestDoc : testSnapshot.getDocuments()) {
+                    String writingTestId = writingTestDoc.getId();
+
+                    // Tìm trong subcollection "tasks" của mỗi writing test
+                    db.collection(COLLECTION_NAME)
+                            .document(writingTestId)
+                            .collection(SUBCOLLECTION_NAME)
+                            .document(taskId)
+                            .get()
+                            .addOnSuccessListener(taskDoc -> {
+                                if (taskDoc.exists()) {
+                                    Task task = taskDoc.toObject(Task.class);
+                                    if (task != null) {
+                                        task.setId(taskDoc.getId());
+                                        taskLiveData.setValue(task);
+                                    }
+                                }
+                            });
+                }
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("Firestore", "Error finding task by ID", e);
+            taskLiveData.setValue(null);
+        });
+
+        return taskLiveData;
+    }
+
 }

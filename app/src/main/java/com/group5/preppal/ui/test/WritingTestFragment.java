@@ -29,6 +29,7 @@ import com.group5.preppal.R;
 import com.group5.preppal.data.model.WritingQuizSubmission;
 import com.group5.preppal.data.repository.AuthRepository;
 import com.group5.preppal.data.repository.WritingQuizSubmissionRepository;
+import com.group5.preppal.ui.course.CourseDetailActivity;
 import com.group5.preppal.ui.quiz.writing_quiz.WritingQuizActivity;
 import com.group5.preppal.viewmodel.TaskViewModel;
 import com.group5.preppal.viewmodel.WritingTestViewModel;
@@ -42,7 +43,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class WritingTestFragment extends Fragment {
-    private TextView tvQuestion;
+    private TextView tvQuestion, tvComment, tvCommentInteract;
     private EditText etAnswer;
     private Button btnSubmit, btnSubmitQuiz;
     private ImageView imgQuestion;
@@ -74,6 +75,8 @@ public class WritingTestFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         writingTestViewModel = new ViewModelProvider(this).get(WritingTestViewModel.class);
 
+        tvCommentInteract = view.findViewById(R.id.tvCommentInteract);
+        tvComment = view.findViewById(R.id.tvComment);
         tvQuestion = view.findViewById(R.id.tvQuestion);
         etAnswer = view.findViewById(R.id.etAnswer);
         btnSubmit = view.findViewById(R.id.btnSubmit);
@@ -141,11 +144,23 @@ public class WritingTestFragment extends Fragment {
         if (getActivity() instanceof  WritingQuizActivity) {
             btnSubmitQuiz = getActivity().findViewById(R.id.btnSubmitQuiz);
             btnSubmitQuiz.setOnClickListener(v -> submitAnswer(true));
-            writingTestViewModel.getWritingQuizSubmissionById(taskId, user.getUid()).observe(getViewLifecycleOwner(), submission -> {
+            writingTestViewModel.getWritingQuizSubmissionByTasKId(taskId, user.getUid()).observe(getViewLifecycleOwner(), submission -> {
                 if (submission != null) {
+                    if (submission.getComment() != "") {
+                        tvComment.setVisibility(View.VISIBLE);
+                        tvComment.setText(submission.getComment());
+                        tvCommentInteract.setText("Teacher comment: ");
+                    } else tvCommentInteract.setText("Teacher has not reviewed yet.");
                     etAnswer.setText(submission.getAnswer());
-                    if (!Objects.equals(submission.getState(), "pass")) {
+                    if (!Objects.equals(submission.getState(), "pass") && !Objects.equals(submission.getState(), "pending")) {
                         btnSubmitQuiz.setText("Update");
+                    } else {
+                        btnSubmitQuiz.setEnabled(false);
+                        btnSubmitQuiz.setText("Submitted");
+                        btnSubmitQuiz.setBackgroundResource(R.drawable.rounded_5dp_white_2dp_border_gray);
+                        btnSubmitQuiz.setTextColor(Color.parseColor("#A3A5A4"));
+                        etAnswer.setEnabled(false);
+                        etAnswer.setTextColor(Color.parseColor("#000000"));
                     }
                 }
             });
@@ -174,12 +189,18 @@ public class WritingTestFragment extends Fragment {
         }
 
         if (isQuiz) {
-            WritingQuizSubmission writingQuizSubmission = new WritingQuizSubmission(answer, 0.0F, taskId, user.getUid(), "pending");
+            WritingQuizSubmission writingQuizSubmission = new WritingQuizSubmission(answer, 0.0F, taskId, user.getUid(), "pending", "");
 
             writingTestViewModel.saveWritingQuizSubmission(writingQuizSubmission, taskId, user.getUid(), new WritingQuizSubmissionRepository.SubmissionCallback() {
                 @Override
                 public void onSuccess(String message) {
                     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                    if (getActivity() instanceof WritingQuizActivity) {
+                        Intent intent = new Intent(requireContext(), CourseDetailActivity.class);
+                        intent.putExtra("courseId", requireActivity().getIntent().getStringExtra("courseId"));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    }
                     requireActivity().finish();
                 }
                 @Override
