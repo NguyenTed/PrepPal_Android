@@ -20,15 +20,11 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
         </activity>
 
 <!--         Register Activity -->
-        <activity android:name=".ui.auth.RegisterActivity" />
+        <activity android:name=".ui.auth.RegisterActivity" android:exported="true">
+        </activity>
 
         <!-- Main Activity (Home Screen) -->
         <activity
@@ -36,6 +32,10 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
 
         <activity android:name=".ui.choose_band.ChooseBandActivity"
@@ -58,14 +58,11 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
-
-
         </activity>
+
         <activity android:name=".ui.test.WritingTestActivity"/>
         <activity android:name=".ui.profile.AccountInformationActivity"/>
         <activity android:name=".ui.profile.CourseInfoActivity"/>
-
-
 
         <!-- Lessons -->
         <activity android:name=".ui.lesson.LessonPDFDetailActivity"
@@ -91,11 +88,23 @@
             android:name=".ui.quiz.multiple_choice_quiz.MultipleChoiceAnswerActivity"
             android:exported="true">
         </activity>
-
         <activity
             android:name=".ui.dictionary.DictionaryActivity"
             android:exported="true">
         </activity>
+        <activity
+            android:name=".ui.vocabulary.FlashcardActivity"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".ui.vocabulary.TopicActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".ui.grading.GradingTestActivity"
             android:exported="true"
