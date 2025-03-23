@@ -6,11 +6,6 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Writing Topics"/>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_topics"
         android:layout_width="0dp"
