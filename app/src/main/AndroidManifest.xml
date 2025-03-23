@@ -58,9 +58,16 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
+                        <intent-filter>
+                            <action android:name="android.intent.action.MAIN" />
+                            <category android:name="android.intent.category.LAUNCHER" />
+                        </intent-filter>
         </activity>
 
-        <activity android:name=".ui.test.WritingTestActivity"/>
+        <activity android:name=".ui.test.WritingTestActivity"
+            android:windowSoftInputMode="adjustResize">
+
+        </activity>
         <activity android:name=".ui.profile.AccountInformationActivity"/>
         <activity android:name=".ui.profile.CourseInfoActivity"/>
 
@@ -99,10 +106,10 @@
         <activity
             android:name=".ui.vocabulary.TopicActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
 
         <activity
