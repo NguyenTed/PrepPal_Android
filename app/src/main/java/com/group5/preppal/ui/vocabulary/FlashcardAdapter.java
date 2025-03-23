@@ -36,16 +36,10 @@ public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardAdapter.Card
 
     private final List<Vocabulary> vocabList;
     private final Context context;
-    private final OnLearnedClickListener learnedClickListener;
 
-    public interface OnLearnedClickListener {
-        void onClick(String word);
-    }
-
-    public FlashcardAdapter(List<Vocabulary> vocabList, Context context, OnLearnedClickListener learnedClickListener) {
+    public FlashcardAdapter(List<Vocabulary> vocabList, Context context) {
         this.vocabList = vocabList;
         this.context = context;
-        this.learnedClickListener = learnedClickListener;
     }
 
     @NonNull
@@ -68,69 +62,21 @@ public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardAdapter.Card
     class CardViewHolder extends RecyclerView.ViewHolder {
 
         private final View frontView, backView;
-        private final TextView txtWord, txtPhonetic, txtMeanings, txtExamples;
-        private final ImageButton btnAudio;
-        private final Button btnLearned;
-
-        private MediaPlayer mediaPlayer;
         private boolean isFlipped = false;
 
         public CardViewHolder(@NonNull View itemView) {
             super(itemView);
+
             frontView = itemView.findViewById(R.id.card_front);
             backView = itemView.findViewById(R.id.card_back);
 
-            txtWord = itemView.findViewById(R.id.front_word);
-            txtPhonetic = itemView.findViewById(R.id.front_phonetic);
-            btnAudio = itemView.findViewById(R.id.btn_play_audio);
-
-            txtMeanings = itemView.findViewById(R.id.back_meanings);
-            txtExamples = itemView.findViewById(R.id.back_examples);
-            btnLearned = itemView.findViewById(R.id.btn_learned);
-
-            frontView.setOnClickListener(v -> flip());
-            backView.setOnClickListener(v -> flip());
+            frontView.setOnClickListener(v -> flipCard());
+            backView.setOnClickListener(v -> flipCard());
         }
 
-        public void bind(Vocabulary vocab) {
-            txtWord.setText(vocab.getWord());
-            txtPhonetic.setText(vocab.getPhonetic());
-
-            txtMeanings.setText(String.join("\n", vocab.getMeanings()));
-            txtExamples.setText("• " + String.join("\n• ", vocab.getExamples()));
-
-            btnAudio.setOnClickListener(v -> {
-                if (mediaPlayer != null) mediaPlayer.release();
-                mediaPlayer = new MediaPlayer();
-                try {
-                    mediaPlayer.setDataSource(vocab.getAudio());
-                    mediaPlayer.prepare();
-                    mediaPlayer.start();
-                } catch (IOException e) {
-                    Toast.makeText(context, "Error playing audio", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            btnLearned.setEnabled(true);
-            btnLearned.setText("I have learned this word!");
-
-            btnLearned.setOnClickListener(v -> {
-                btnLearned.setEnabled(false);
-                btnLearned.setText("✓ Learned!");
-                learnedClickListener.onClick(vocab.getWord());
-            });
-
-            // Reset state
-            frontView.setVisibility(View.VISIBLE);
-            backView.setVisibility(View.GONE);
-            frontView.setRotationY(0f);
-            backView.setRotationY(0f);
-            isFlipped = false;
-        }
-
-        private void flip() {
-            View visible = isFlipped ? backView : frontView;
-            View hidden = isFlipped ? frontView : backView;
+        private void flipCard() {
+            final View visible = isFlipped ? backView : frontView;
+            final View hidden = isFlipped ? frontView : backView;
 
             visible.animate()
                     .rotationY(90f)
@@ -147,6 +93,36 @@ public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardAdapter.Card
                     }).start();
 
             isFlipped = !isFlipped;
+        }
+
+        public void bind(Vocabulary vocab) {
+            TextView txtWord = itemView.findViewById(R.id.front_word);
+            TextView phonetic = itemView.findViewById(R.id.front_phonetic);
+            ImageButton btnPlayAudio = itemView.findViewById(R.id.btn_play_audio);
+            TextView txtMeanings = itemView.findViewById(R.id.back_meanings);
+            TextView txtExamples = itemView.findViewById(R.id.back_examples);
+
+            txtWord.setText(vocab.getWord());
+            phonetic.setText(vocab.getPhonetic());
+            btnPlayAudio.setOnClickListener(v -> {
+                MediaPlayer mediaPlayer = new MediaPlayer();
+                try {
+                    mediaPlayer.setDataSource(vocab.getAudio());
+                    mediaPlayer.prepare();
+                    mediaPlayer.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            txtMeanings.setText(String.join("\n", vocab.getMeanings()));
+            txtExamples.setText(String.join("\n", vocab.getExamples()));
+
+            // Reset flip state every time a new flashcard is shown
+            frontView.setVisibility(View.VISIBLE);
+            backView.setVisibility(View.GONE);
+            frontView.setRotationY(0f);
+            backView.setRotationY(0f);
+            isFlipped = false;
         }
     }
 }

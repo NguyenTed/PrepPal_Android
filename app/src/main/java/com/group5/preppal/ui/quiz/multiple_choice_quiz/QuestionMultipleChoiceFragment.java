@@ -18,9 +18,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.MultipleChoiceAnsweredQuestion;
-import com.group5.preppal.data.model.Question;
+import com.group5.preppal.data.model.MultipleChoiceQuestion;
 import com.group5.preppal.data.repository.AuthRepository;
-import com.group5.preppal.data.repository.UserRepository;
 import com.group5.preppal.ui.course.CourseDetailActivity;
 import com.group5.preppal.viewmodel.MultipleChoiceQuizViewModel;
 
@@ -47,7 +46,7 @@ public class QuestionMultipleChoiceFragment extends Fragment {
     private float passPoint;
 
     private int questionIndex;
-    private List<Question> questions;
+    private List<MultipleChoiceQuestion> multipleChoiceQuestions;
     private TextView questionName, questionOrder, questionPoint;
     private RadioGroup answerGroup;
     private LinearLayout btnNext, btnPrevious;
@@ -55,11 +54,11 @@ public class QuestionMultipleChoiceFragment extends Fragment {
     private String courseId;
 
 
-    public static QuestionMultipleChoiceFragment newInstance(int questionIndex, List<Question> questions, String quizId, float passPoint, String courseId) {
+    public static QuestionMultipleChoiceFragment newInstance(int questionIndex, List<MultipleChoiceQuestion> multipleChoiceQuestions, String quizId, float passPoint, String courseId) {
         QuestionMultipleChoiceFragment fragment = new QuestionMultipleChoiceFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_QUESTION_INDEX, questionIndex);
-        args.putSerializable(ARG_QUESTIONS, (java.io.Serializable) questions);
+        args.putSerializable(ARG_QUESTIONS, (java.io.Serializable) multipleChoiceQuestions);
         args.putString("quizId", quizId);
         args.putFloat("passPoint", passPoint);
         args.putString("courseId", courseId);
@@ -72,7 +71,7 @@ public class QuestionMultipleChoiceFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             questionIndex = getArguments().getInt(ARG_QUESTION_INDEX);
-            questions = (List<Question>) getArguments().getSerializable(ARG_QUESTIONS);
+            multipleChoiceQuestions = (List<MultipleChoiceQuestion>) getArguments().getSerializable(ARG_QUESTIONS);
             quizId = getArguments().getString("quizId");
             passPoint = getArguments().getFloat("passPoint");
             courseId = getArguments().getString("courseId");
@@ -96,23 +95,23 @@ public class QuestionMultipleChoiceFragment extends Fragment {
         btnSubmit.setOnClickListener(v -> {
             float score = 0;
             List<MultipleChoiceAnsweredQuestion> answeredQuestions = new ArrayList<>();
-            for (int i = 0; i < questions.size(); i++) {
-                Question currentQuestion = questions.get(i);
+            for (int i = 0; i < multipleChoiceQuestions.size(); i++) {
+                MultipleChoiceQuestion currentMultipleChoiceQuestion = multipleChoiceQuestions.get(i);
                 Integer selectedOptionIndex = quizViewModel.getSavedAnswer(i);
                 if (selectedOptionIndex != null) {
-                    boolean isCorrect = currentQuestion.getOptions().get(selectedOptionIndex).isCorrect();
+                    boolean isCorrect = currentMultipleChoiceQuestion.getOptions().get(selectedOptionIndex).isCorrect();
                     if (isCorrect) {
-                        score += currentQuestion.getPoint();
+                        score += currentMultipleChoiceQuestion.getPoint();
                     }
                     answeredQuestions.add(new MultipleChoiceAnsweredQuestion(
-                            currentQuestion.getId(),
-                            currentQuestion.getOptions().get(selectedOptionIndex).getAnswer(),
+                            currentMultipleChoiceQuestion.getId(),
+                            currentMultipleChoiceQuestion.getOptions().get(selectedOptionIndex).getAnswer(),
                             isCorrect
                     ));
                 }
                 else {
                     answeredQuestions.add(new MultipleChoiceAnsweredQuestion(
-                            currentQuestion.getId(),
+                            currentMultipleChoiceQuestion.getId(),
                             "",
                             false
                     ));
@@ -137,26 +136,26 @@ public class QuestionMultipleChoiceFragment extends Fragment {
     }
 
     private void loadQuestion(LayoutInflater inflater) {
-        if (questionIndex < 0 || questionIndex >= questions.size()) return;
+        if (questionIndex < 0 || questionIndex >= multipleChoiceQuestions.size()) return;
 
-        Question currentQuestion = questions.get(questionIndex);
-        questionName.setText(currentQuestion.getQuestionName());
+        MultipleChoiceQuestion currentMultipleChoiceQuestion = multipleChoiceQuestions.get(questionIndex);
+        questionName.setText(currentMultipleChoiceQuestion.getQuestionName());
 
 
-        questionPoint.setText(currentQuestion.getPoint() + " points");
-        questionOrder.setText("Question " + (questionIndex + 1) + "/" + questions.size());
+        questionPoint.setText(currentMultipleChoiceQuestion.getPoint() + " points");
+        questionOrder.setText("Question " + (questionIndex + 1) + "/" + multipleChoiceQuestions.size());
 
         answerGroup.removeAllViews();
 
         Integer savedAnswerIndex = quizViewModel.getSavedAnswer(questionIndex);
 
 
-        for (int i = 0; i < currentQuestion.getOptions().size(); i++) {
+        for (int i = 0; i < currentMultipleChoiceQuestion.getOptions().size(); i++) {
             View optionView = inflater.inflate(R.layout.item_answer_option, answerGroup, false);
             LinearLayout layout = optionView.findViewById(R.id.answerOptionLayout);
             RadioButton radioButton = optionView.findViewById(R.id.answerRadioButton);
 
-            radioButton.setText(currentQuestion.getOptions().get(i).getAnswer());
+            radioButton.setText(currentMultipleChoiceQuestion.getOptions().get(i).getAnswer());
 
             if (savedAnswerIndex != null && savedAnswerIndex == i) {
                 radioButton.setChecked(true);
@@ -182,16 +181,16 @@ public class QuestionMultipleChoiceFragment extends Fragment {
         }
 
         btnPrevious.setVisibility(questionIndex == 0 ? View.INVISIBLE : View.VISIBLE);
-        btnNext.setVisibility(questionIndex == questions.size() - 1 ? View.INVISIBLE : View.VISIBLE);
-        btnSubmit.setVisibility(questionIndex == questions.size() - 1 ? View.VISIBLE : View.INVISIBLE);
+        btnNext.setVisibility(questionIndex == multipleChoiceQuestions.size() - 1 ? View.INVISIBLE : View.VISIBLE);
+        btnSubmit.setVisibility(questionIndex == multipleChoiceQuestions.size() - 1 ? View.VISIBLE : View.INVISIBLE);
 
     }
 
     private void navigateToQuestion(int newIndex) {
-        if (newIndex >= 0 && newIndex < questions.size()) {
+        if (newIndex >= 0 && newIndex < multipleChoiceQuestions.size()) {
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.quizFragmentContainer, QuestionMultipleChoiceFragment.newInstance(newIndex, questions,quizId, passPoint, courseId))
+                    .replace(R.id.quizFragmentContainer, QuestionMultipleChoiceFragment.newInstance(newIndex, multipleChoiceQuestions,quizId, passPoint, courseId))
                     .commit();
         }
     }

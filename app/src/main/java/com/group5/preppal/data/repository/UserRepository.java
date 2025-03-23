@@ -35,7 +35,7 @@ public class UserRepository {
     public LiveData<User> getCurrentUser() {
         MutableLiveData<User> userLiveData = new MutableLiveData<>();
         String uid = firebaseAuth.getCurrentUser() != null ? firebaseAuth.getCurrentUser().getUid() : null;
-
+        Log.d("uid:", "uid: " + uid);
         if (uid == null) {
             userLiveData.setValue(null);
             return userLiveData;

@@ -23,6 +23,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.group5.preppal.BuildConfig;
 import com.group5.preppal.R;
+import com.group5.preppal.data.repository.AuthRepository;
+import com.group5.preppal.ui.TeacherMainActivity;
 import com.group5.preppal.ui.test.WritingTopicsActivity;
 import com.group5.preppal.ui.MainActivity;
 import com.group5.preppal.ui.profile.ProfileActivity;
@@ -76,6 +78,7 @@ import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.common.api.ApiException;
 import com.google.firebase.auth.FirebaseUser;
+import com.group5.preppal.viewmodel.UserViewModel;
 
 import javax.inject.Inject;
 
@@ -86,9 +89,10 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText, passwordEditText;
     private Button emailSignInButton, googleSignInButton;
     private TextView signUpTextView;
-
+    private UserViewModel userViewModel;
     private AuthViewModel authViewModel;
-
+    @Inject
+    AuthRepository authRepository;
     @Inject
     SignInClient signInClient; // ✅ Inject SignInClient for Google Identity Services
 
@@ -128,15 +132,14 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+//        authRepository.signOut();
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         emailSignInButton = findViewById(R.id.loginButton);
@@ -152,12 +155,26 @@ public class LoginActivity extends AppCompatActivity {
         googleSignInButton.setOnClickListener(v -> signInWithGoogle());
         signUpTextView.setOnClickListener(v -> goToSignUpActivity());
 
-        authViewModel.getUserLiveData().observe(this, user -> {
-            if (user != null) {
-                Log.d("LoginActivity", "User logged in: " + user.getEmail());
-                goToMainActivity(user);
+        authViewModel.getUserLiveData().observe(this, firebaseUser -> {
+            if (firebaseUser != null) {
+                Log.d("LoginActivity", "Firebase login success. UID: " + firebaseUser.getUid());
+                userViewModel.getCurrentUser().observe(this, user -> {
+                    if (user != null) {
+                        Log.d("LoginActivity", "Role: " + user.getRole());
+
+                        if ("student".equals(user.getRole())) {
+                            goToMainActivity(firebaseUser);
+                        } else if ("teacher".equals(user.getRole())) {
+                            goToTeacherMainActivity();
+                        }
+                    } else {
+                        Log.e("LoginActivity", "User info not found in Firestore");
+                        Toast.makeText(this, "Tài khoản chưa được khởi tạo trong hệ thống.", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
+
 
         authViewModel.getErrorLiveData().observe(this, error -> {
             if (error != null) {
@@ -168,6 +185,7 @@ public class LoginActivity extends AppCompatActivity {
 
     // ✅ Uses IntentSenderRequest instead of deprecated startIntentSenderForResult()
     private void signInWithGoogle() {
+        Log.d("cmm", "signInWithGoogle: " + BuildConfig.GOOGLE_CLIENT_ID);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID) // ✅ Your Web Client ID
                 .requestEmail()
@@ -197,7 +215,13 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void goToMainActivity(FirebaseUser user) {
-        Intent intent = new Intent(this, WritingTopicsActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void goToTeacherMainActivity() {
+        Intent intent = new Intent(this, TeacherMainActivity.class);
         startActivity(intent);
         finish();
     }

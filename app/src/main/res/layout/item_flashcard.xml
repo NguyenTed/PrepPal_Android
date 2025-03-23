@@ -1,13 +1,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_marginVertical="16dp">
 
-    <!-- FRONT SIDE -->
+    <!-- FRONT -->
     <LinearLayout
         android:id="@+id/card_front"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
         android:background="@drawable/card_bg"
@@ -20,22 +20,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Word"
-            android:textSize="28sp"
+            android:textSize="32sp"
             android:textStyle="bold" />
 
         <LinearLayout
-            android:layout_marginTop="12dp"
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp">
 
             <TextView
                 android:id="@+id/front_phonetic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="/phonetic/"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:layout_marginEnd="8dp" />
 
             <ImageButton
@@ -48,52 +48,38 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- BACK SIDE -->
+    <!-- BACK -->
     <LinearLayout
         android:id="@+id/card_back"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
         android:background="@drawable/card_bg"
+        android:visibility="gone"
         android:clickable="true"
         android:focusable="true"
-        android:padding="24dp"
-        android:visibility="gone">
+        android:padding="24dp">
 
-        <TextView
-            android:text="Meanings"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/back_meanings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:text="Examples"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/back_examples"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/btn_learned"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="I have learned this word!"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="#4CAF50"
-            android:textColor="#FFFFFF"
-            android:textAllCaps="false"/>
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/back_meanings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:id="@+id/back_examples"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"/>
+        </LinearLayout>
     </LinearLayout>
 </FrameLayout>

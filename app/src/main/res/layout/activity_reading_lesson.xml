@@ -39,65 +39,32 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="9"/>
-
-    <!--    Bottom nav-->
+    <!--    Bottom nav -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="1dp"
         android:background="#C2C2C2"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="20dp"
-        android:paddingHorizontal="10dp"
-        android:orientation="horizontal">
-<!--        Back button-->
-        <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:paddingRight="20dp">
+        <!--        Submit Button-->
+        <Button
+            android:id="@+id/btnComplete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:textAllCaps="false"
+            android:textColor="#2F60C2"
+            android:textSize="18sp"
+            android:padding="20dp"
+            android:gravity="center"
+            android:fontFamily="sans-serif-black"
             android:background="@drawable/rounded_5dp_white_2dp_border_blue"
-            android:gravity="center_vertical"
-            android:layout_gravity="start">
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_back_blue"
-                android:layout_marginRight="10dp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#2F60C2"
-                android:textSize="18sp"
-                android:fontFamily="sans-serif-black"
-                android:text="Previous"/>
-        </LinearLayout>
-        <View
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-<!--        Next Button-->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@drawable/rounded_5dp_white_2dp_border_blue"
-            android:gravity="center_vertical"
-            android:layout_gravity="end">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#2F60C2"
-                android:textSize="18sp"
-                android:fontFamily="sans-serif-black"
-                android:text="Next"/>
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_next_blue"
-                android:layout_marginLeft="10dp"/>
-        </LinearLayout>
+            android:text="Complete"/>
     </LinearLayout>
 
 </LinearLayout>

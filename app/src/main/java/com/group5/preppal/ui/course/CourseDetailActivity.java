@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.Course;
 import com.group5.preppal.viewmodel.CourseViewModel;
+import com.group5.preppal.viewmodel.StudentViewModel;
 
 import java.util.List;
 import java.util.Map;
@@ -32,13 +33,12 @@ public class CourseDetailActivity extends AppCompatActivity {
     private CourseViewModel courseViewModel;
     private TextView courseName, courseLevel, txtIntroduction;
     private ImageButton backBtn;
-
     private RecyclerView recyclerViewSections;
     private SectionAdapter sectionAdapter;
+    private StudentViewModel studentViewModel;
 
     @Inject
     FirebaseAuth firebaseAuth;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,21 +66,27 @@ public class CourseDetailActivity extends AppCompatActivity {
         });
 
         courseViewModel = new ViewModelProvider(this).get(CourseViewModel.class);
-        courseViewModel.fetchCourseById(courseId);
+        studentViewModel = new ViewModelProvider(this).get(StudentViewModel.class);
 
-        courseViewModel.getSelectedCourse().observe(this, course -> {
-            if (course != null) {
-                courseName.setText(course.getName());
-                courseLevel.setText("Entry Level: " + course.getEntryLevel() + " - " + (course.getEntryLevel() + 0.5) + " / " + "Target Level: " + (course.getTargetLevel() == 6.5 ? course.getTargetLevel() +  " - " + "7.0+" : course.getTargetLevel() + "+") );
-                txtIntroduction.setText(course.getIntroduction());
-            }
+        String studentId = firebaseAuth.getCurrentUser().getUid();
+        studentViewModel.getStudentById(studentId).observe(this, student -> {
+            if (student == null) return;
+            List<String> finishedLessons = student.getFinishedLessons();
+            courseViewModel.fetchCourseById(courseId);
+            courseViewModel.getSelectedCourse().observe(this, course -> {
+                if (course != null) {
+                    courseName.setText(course.getName());
+                    courseLevel.setText("Entry Level: " + course.getEntryLevel() + " - " + (course.getEntryLevel() + 0.5) +
+                            " / Target Level: " + (course.getTargetLevel() == 6.5 ? "6.5 - 7.0+" : course.getTargetLevel() + "+"));
+                    txtIntroduction.setText(course.getIntroduction());
 
-            List<Map<String, Object>> sections = course.getSections();
-//            Log.d("CourseDetailActivity", "Section length: " + sections.size());
-            if (sections != null) {
-                sectionAdapter = new SectionAdapter(sections, this, courseId, firebaseAuth);
-                recyclerViewSections.setAdapter(sectionAdapter);
-            }
+                    List<Map<String, Object>> sections = course.getSections();
+                    if (sections != null) {
+                        sectionAdapter = new SectionAdapter(sections, this, courseId, firebaseAuth, this, finishedLessons);
+                        recyclerViewSections.setAdapter(sectionAdapter);
+                    }
+                }
+            });
         });
     }
 

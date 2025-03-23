@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.group5.preppal.R;
-import com.group5.preppal.data.model.Question;
+import com.group5.preppal.data.model.MultipleChoiceQuestion;
 import com.group5.preppal.ui.course.CourseDetailActivity;
 import com.group5.preppal.viewmodel.MultipleChoiceQuizViewModel;
 
@@ -64,10 +64,10 @@ public class MultipleChoiceAnswerActivity extends AppCompatActivity {
         });
 
     }
-    private void loadFirstQuestion(List<Question> questions, String quizId, float passPoint) {
+    private void loadFirstQuestion(List<MultipleChoiceQuestion> multipleChoiceQuestions, String quizId, float passPoint) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.quizAnswerFragmentContainer, QuestionMultipleChoiceAnswerFragment.newInstance(0, questions, quizId, passPoint))
+                .replace(R.id.quizAnswerFragmentContainer, QuestionMultipleChoiceAnswerFragment.newInstance(0, multipleChoiceQuestions, quizId, passPoint))
                 .commit();
     }
 }

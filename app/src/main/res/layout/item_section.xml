@@ -79,6 +79,20 @@
             app:layout_constraintStart_toEndOf="@id/sectionType"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
+        <TextView
+            android:id="@+id/txtState"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:padding="7dp"
+            android:background="@drawable/rounded_5dp_white_2dp_border_green"
+            android:textColor="@color/black"
+            android:text="pending"
+            android:visibility="gone"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintStart_toEndOf="@id/txtPoint"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
