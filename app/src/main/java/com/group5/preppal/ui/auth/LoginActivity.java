@@ -168,7 +168,6 @@ public class LoginActivity extends AppCompatActivity {
 
     // ✅ Uses IntentSenderRequest instead of deprecated startIntentSenderForResult()
     private void signInWithGoogle() {
-        Log.d("cmm", "signInWithGoogle: " + BuildConfig.GOOGLE_CLIENT_ID);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID) // ✅ Your Web Client ID
                 .requestEmail()
