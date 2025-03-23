@@ -2,4 +2,9 @@
     <string name="app_name" translatable="false">PrepPal</string>
     <string name="account" translatable="false">Account</string>
     <string name="back_button" translatable="false">Back button</string>
+    <string-array name="submission_states">
+        <item>Pending</item>
+        <item>Pass</item>
+        <item>Unpassed</item>
+    </string-array>
 </resources>

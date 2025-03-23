@@ -1,7 +1,5 @@
 package com.group5.preppal.ui.test;
 
-import static android.content.Intent.getIntent;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -45,7 +43,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class WritingTestFragment extends Fragment {
-    private TextView tvQuestion;
+    private TextView tvQuestion, tvComment, tvCommentInteract;
     private EditText etAnswer;
     private Button btnSubmit, btnSubmitQuiz;
     private ImageView imgQuestion;
@@ -77,6 +75,8 @@ public class WritingTestFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         writingTestViewModel = new ViewModelProvider(this).get(WritingTestViewModel.class);
 
+        tvCommentInteract = view.findViewById(R.id.tvCommentInteract);
+        tvComment = view.findViewById(R.id.tvComment);
         tvQuestion = view.findViewById(R.id.tvQuestion);
         etAnswer = view.findViewById(R.id.etAnswer);
         btnSubmit = view.findViewById(R.id.btnSubmit);
@@ -144,8 +144,13 @@ public class WritingTestFragment extends Fragment {
         if (getActivity() instanceof  WritingQuizActivity) {
             btnSubmitQuiz = getActivity().findViewById(R.id.btnSubmitQuiz);
             btnSubmitQuiz.setOnClickListener(v -> submitAnswer(true));
-            writingTestViewModel.getWritingQuizSubmissionById(taskId, user.getUid()).observe(getViewLifecycleOwner(), submission -> {
+            writingTestViewModel.getWritingQuizSubmissionByTasKId(taskId, user.getUid()).observe(getViewLifecycleOwner(), submission -> {
                 if (submission != null) {
+                    if (submission.getComment() != "") {
+                        tvComment.setVisibility(View.VISIBLE);
+                        tvComment.setText(submission.getComment());
+                        tvCommentInteract.setText("Teacher comment: ");
+                    } else tvCommentInteract.setText("Teacher has not reviewed yet.");
                     etAnswer.setText(submission.getAnswer());
                     if (!Objects.equals(submission.getState(), "pass") && !Objects.equals(submission.getState(), "pending")) {
                         btnSubmitQuiz.setText("Update");
@@ -184,7 +189,7 @@ public class WritingTestFragment extends Fragment {
         }
 
         if (isQuiz) {
-            WritingQuizSubmission writingQuizSubmission = new WritingQuizSubmission(answer, 0.0F, taskId, user.getUid(), "pending");
+            WritingQuizSubmission writingQuizSubmission = new WritingQuizSubmission(answer, 0.0F, taskId, user.getUid(), "pending", "");
 
             writingTestViewModel.saveWritingQuizSubmission(writingQuizSubmission, taskId, user.getUid(), new WritingQuizSubmissionRepository.SubmissionCallback() {
                 @Override

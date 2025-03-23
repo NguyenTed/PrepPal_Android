@@ -24,6 +24,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
 <!--         Register Activity -->
@@ -57,6 +58,7 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
+
 
         </activity>
         <activity android:name=".ui.test.WritingTestActivity"/>
@@ -93,11 +95,27 @@
         <activity
             android:name=".ui.dictionary.DictionaryActivity"
             android:exported="true">
+        </activity>
+        <activity
+            android:name=".ui.grading.GradingTestActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:configChanges="orientation|screenSize">
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 <!--                <category android:name="android.intent.category.LAUNCHER" />-->
 <!--            </intent-filter>-->
-
+        </activity>
+        <activity android:name=".ui.grading.WritingAnswerListActivity"/>
+        <activity android:name=".ui.grading.GradingWritingTestActivity"/>
+<!--     Teacher   -->
+        <activity
+            android:name=".ui.TeacherMainActivity"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".ui.profile.teacher.TeacherProfileActivity"
+            android:exported="true">
         </activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>

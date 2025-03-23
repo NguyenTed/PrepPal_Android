@@ -11,17 +11,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.group5.preppal.R;
-import com.group5.preppal.data.model.WritingQuizSubmission;
 import com.group5.preppal.ui.lesson.LessonPDFDetailActivity;
 import com.group5.preppal.ui.lesson.LessonVideoActivity;
 import com.group5.preppal.ui.quiz.multiple_choice_quiz.MultipleChoiceActivity;
@@ -32,10 +29,6 @@ import com.group5.preppal.viewmodel.WritingTestViewModel;
 
 import java.util.List;
 import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.hilt.android.AndroidEntryPoint;
 
 public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionViewHolder> {
     private final List<Map<String, Object>> sectionList;
@@ -243,7 +236,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
 
                 WritingTestViewModel writingTestViewModel = new ViewModelProvider(viewModelStoreOwner).get(WritingTestViewModel.class);
 
-                writingTestViewModel.getWritingQuizSubmissionById(quizId, userId).observeForever(writingQuizSubmission -> {
+                writingTestViewModel.getWritingQuizSubmissionByTasKId(quizId, userId).observeForever(writingQuizSubmission -> {
                     if (writingQuizSubmission != null) {
                         String submissionState = writingQuizSubmission.getState();
                         if (submissionState != null && !submissionState.equals("pass")) {
@@ -340,7 +333,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
 
         WritingTestViewModel writingTestViewModel = new ViewModelProvider(viewModelStoreOwner).get(WritingTestViewModel.class);
 
-        writingTestViewModel.getWritingQuizSubmissionById(taskId, userId).observeForever(writingQuizSubmission -> {
+        writingTestViewModel.getWritingQuizSubmissionByTasKId(taskId, userId).observeForever(writingQuizSubmission -> {
             if (writingQuizSubmission != null) {
                 if (writingQuizSubmission.getState() != null && !writingQuizSubmission.getState().equals("pass")) {
                     holder.txtState.setText(writingQuizSubmission.getState());
