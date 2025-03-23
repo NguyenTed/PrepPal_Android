@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.group5.preppal.data.model.Topic;
+import com.group5.preppal.data.model.TopicWithProgress;
 import com.group5.preppal.data.repository.TopicRepository;
 
 import java.util.List;
@@ -22,7 +23,8 @@ public class TopicViewModel extends ViewModel {
         this.repository = repository;
     }
 
-    public LiveData<List<Topic>> getTopics() {
-        return repository.getTopics();
+    public LiveData<List<TopicWithProgress>> getTopics(String userId) {
+        return repository.getTopicsWithProgress(userId); // ✅ with userId
     }
+
 }

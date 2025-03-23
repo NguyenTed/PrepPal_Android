@@ -5,9 +5,12 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.group5.preppal.data.model.Topic;
+import com.group5.preppal.data.model.TopicWithProgress;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,5 +48,42 @@ public class TopicRepository {
                 });
 
         return topicsLiveData;
+    }
+
+    public LiveData<List<TopicWithProgress>> getTopicsWithProgress(String userId) {
+        MutableLiveData<List<TopicWithProgress>> liveData = new MutableLiveData<>();
+
+        db.collection("vocabulary").get().addOnSuccessListener(snapshot -> {
+            List<TopicWithProgress> result = new ArrayList<>();
+            List<Task<DocumentSnapshot>> progressTasks = new ArrayList<>();
+
+            for (DocumentSnapshot doc : snapshot) {
+                String topicId = doc.getId();
+                String topicName = doc.getString("topic");
+                List<?> vocabList = (List<?>) doc.get("vocabularies");
+                int totalCount = vocabList != null ? vocabList.size() : 0;
+
+                Task<DocumentSnapshot> progressTask = db.collection("students")
+                        .document(userId)
+                        .collection("vocabularyProgress")
+                        .document(topicId)
+                        .get()
+                        .addOnSuccessListener(progressDoc -> {
+                            List<String> learned = (List<String>) progressDoc.get("learnedVocabs");
+                            int learnedCount = learned != null ? learned.size() : 0;
+
+                            result.add(new TopicWithProgress(topicId, topicName, learnedCount, totalCount));
+                        });
+
+                progressTasks.add(progressTask);
+            }
+
+            Tasks.whenAllComplete(progressTasks).addOnSuccessListener(done -> {
+                liveData.setValue(result);
+            });
+
+        });
+
+        return liveData;
     }
 }

@@ -26,45 +26,28 @@ public class VocabularyRepository {
     }
 
     public LiveData<List<Vocabulary>> getVocabularies(String topicId) {
-        MutableLiveData<List<Vocabulary>> vocabLiveData = new MutableLiveData<>();
+        MutableLiveData<List<Vocabulary>> liveData = new MutableLiveData<>();
 
-        db.collection("vocabulary").document(topicId)
-                .get()
+        db.collection("vocabulary").document(topicId).get()
                 .addOnSuccessListener(doc -> {
-                    List<Vocabulary> vocabList = new ArrayList<>();
+                    List<Vocabulary> list = new ArrayList<>();
 
-                    if (doc.exists()) {
-                        Object raw = doc.get("vocabularies");
-                        if (raw instanceof List) {
-                            for (Object item : (List<?>) raw) {
-                                if (item instanceof Map) {
-                                    Map<String, Object> vocabMap = (Map<String, Object>) item;
+                    List<Map<String, Object>> rawList = (List<Map<String, Object>>) doc.get("vocabularies");
+                    if (rawList != null) {
+                        for (Map<String, Object> map : rawList) {
+                            String word = (String) map.get("word");
+                            String phonetic = (String) map.get("phonetic");
+                            String audio = (String) map.get("audio");
+                            List<String> meanings = (List<String>) map.get("meanings");
+                            List<String> examples = (List<String>) map.get("examples");
 
-                                    String word = (String) vocabMap.get("word");
-                                    String phonetic = (String) vocabMap.get("phonetic");
-                                    String audio = (String) vocabMap.get("audio");
-
-                                    List<String> meanings = vocabMap.get("meanings") instanceof List
-                                            ? (List<String>) vocabMap.get("meanings") : new ArrayList<>();
-
-                                    List<String> examples = vocabMap.get("examples") instanceof List
-                                            ? (List<String>) vocabMap.get("examples") : new ArrayList<>();
-
-                                    vocabList.add(new Vocabulary(word, phonetic, audio, meanings, examples));
-                                }
-                            }
+                            list.add(new Vocabulary(word, phonetic, audio, meanings, examples));
                         }
                     }
 
-                    vocabLiveData.setValue(vocabList);
-                    Log.d("VocabularyRepository", "Loading vocab successfully");
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("VocabularyRepository", "Error loading vocab", e);
-                    vocabLiveData.setValue(null);
+                    liveData.setValue(list);
                 });
 
-        return vocabLiveData;
+        return liveData;
     }
 }
-
