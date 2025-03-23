@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Selected state -->
+    <item android:state_selected="true">
+        <shape android:shape="rectangle">
+            <corners android:topLeftRadius="12dp" android:bottomLeftRadius="12dp"/> <!-- ✅ Reduce rounding -->
+            <solid android:color="@color/primaryBlue"/>
+        </shape>
+    </item>
+
+    <!-- Default state -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:topLeftRadius="12dp" android:bottomLeftRadius="12dp"/> <!-- ✅ Reduce rounding -->
+            <stroke android:width="2dp" android:color="@color/primaryBlue"/>
+            <solid android:color="@android:color/white"/>
+        </shape>
+    </item>
+
+</selector>

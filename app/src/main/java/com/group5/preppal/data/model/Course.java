@@ -1,5 +1,6 @@
 package com.group5.preppal.data.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -67,5 +68,21 @@ public class Course {
 
     public void setSections(List<Map<String, Object>> sections) {
         this.sections = sections;
+    }
+
+    public List<Map<String, Object>> extractWritingQuizzes() {
+        List<Map<String, Object>> writingQuizzes = new ArrayList<>();
+
+        for (Map<String, Object> section : sections) {
+            if (section.containsKey("quiz")) {
+                Map<String, Object> quiz = (Map<String, Object>) section.get("quiz");
+
+                String type = quiz.get("type") != null ? quiz.get("type").toString() : "";
+                if (type.toLowerCase().contains("writing")) {
+                    writingQuizzes.add(quiz);
+                }
+            }
+        }
+        return writingQuizzes;
     }
 }

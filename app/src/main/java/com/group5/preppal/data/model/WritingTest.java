@@ -7,17 +7,16 @@ import java.util.Map;
 public class WritingTest {
     private String id;
     private String name;
-    private List<Map<String, String>> tasks; // Danh sách các task (id, title, description)
+    private List<Task> tasks;
 
     public WritingTest() {
-        // Firebase yêu cầu constructor rỗng
-        this.tasks = new ArrayList<>(); // Đảm bảo không bị null
+        this.tasks = new ArrayList<>();
     }
 
-    public WritingTest(String id, String name, List<Map<String, String>> tasks) {
+    public WritingTest(String id, String name, List<Task> tasks) {
         this.id = id;
         this.name = name;
-        this.tasks = (tasks != null) ? tasks : new ArrayList<>(); // Tránh null
+        this.tasks = (tasks != null) ? tasks : new ArrayList<>();
     }
 
     public String getId() {
@@ -36,11 +35,11 @@ public class WritingTest {
         this.name = name;
     }
 
-    public List<Map<String, String>> getTasks() {
+    public List<Task> getTasks() {
         return (tasks != null) ? tasks : new ArrayList<>(); // Tránh null
     }
 
-    public void setTasks(List<Map<String, String>> tasks) {
+    public void setTasks(List<Task> tasks) {
         this.tasks = (tasks != null) ? tasks : new ArrayList<>(); // Tránh null
     }
 }

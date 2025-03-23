@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.group5.preppal.data.model.Course;
 import com.group5.preppal.data.model.Student;
+import com.group5.preppal.data.model.Teacher;
 import com.group5.preppal.data.model.User;
 import com.group5.preppal.data.repository.CourseRepository;
 import com.group5.preppal.data.repository.UserRepository;
@@ -25,6 +26,7 @@ public class CourseViewModel extends ViewModel {
     private final UserRepository userRepository;
     private final MutableLiveData<List<Course>> filteredCoursePayment = new MutableLiveData<>(); // Course payment (not include band under student's current band and student's courses)
     private final MutableLiveData<List<Course>> studentCourses = new MutableLiveData<>(); // Courses that student have bought
+    private final MutableLiveData<List<Course>> teacherCourses = new MutableLiveData<>();
     private final MutableLiveData<Course> selectedCourse = new MutableLiveData<>(); //1 Course in detail
 
     @Inject
@@ -33,6 +35,7 @@ public class CourseViewModel extends ViewModel {
         this.userRepository = userRepository;
         loadFilteredCoursePayment();
         loadStudentCourses();
+        loadTeacherCourses();
     }
 
     private void loadFilteredCoursePayment() {
@@ -99,6 +102,34 @@ public class CourseViewModel extends ViewModel {
         });
     }
 
+    private void loadTeacherCourses() {
+        LiveData<List<Course>> allCourses = courseRepository.getAllCourses();
+        LiveData<User> currentUser = userRepository.getCurrentUser();
+
+        allCourses.observeForever(courseList -> {
+            currentUser.observeForever(user -> {
+                if (courseList == null) {
+                    teacherCourses.setValue(new ArrayList<>());
+                    return;
+                }
+                if (user instanceof Teacher && courseList != null) {
+                    Teacher teacher = (Teacher) user;
+
+                    List<String> asssignCourse = teacher.getCourses();
+                    List<Course> filteredList = new ArrayList<>();
+                    for (Course course : courseList) {
+                        if (asssignCourse.contains(course.getCourseId())) {
+                            filteredList.add(course);
+                        }
+                    }
+                    teacherCourses.setValue(filteredList);
+                } else {
+                    teacherCourses.setValue(new ArrayList<>());
+                }
+            });
+        });
+    }
+
     public void fetchCourseById(String courseId) {
         courseRepository.getCourseById(courseId).observeForever(course -> {
             selectedCourse.setValue(course);
@@ -117,6 +148,11 @@ public class CourseViewModel extends ViewModel {
     public  LiveData<List<Course>> getStudentCourses() {
         return studentCourses;
     }
+
+    public  LiveData<List<Course>> getTeacherCourses() {
+        return teacherCourses;
+    }
+
 }
 
 
