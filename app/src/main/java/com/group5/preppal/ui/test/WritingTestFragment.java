@@ -1,10 +1,12 @@
 package com.group5.preppal.ui.test;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,6 +70,7 @@ public class WritingTestFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_writing_test, container, false);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -77,8 +80,23 @@ public class WritingTestFragment extends Fragment {
 
         tvCommentInteract = view.findViewById(R.id.tvCommentInteract);
         tvComment = view.findViewById(R.id.tvComment);
+        tvComment.setMovementMethod(new ScrollingMovementMethod());
+        tvComment.setVerticalScrollBarEnabled(true);
+        tvComment.setScrollbarFadingEnabled(false);
+        tvComment.setOnTouchListener((v, event) -> {
+            v.getParent().requestDisallowInterceptTouchEvent(true);
+            return false;
+        });
+
         tvQuestion = view.findViewById(R.id.tvQuestion);
         etAnswer = view.findViewById(R.id.etAnswer);
+        etAnswer.setMovementMethod(new ScrollingMovementMethod());
+        etAnswer.setVerticalScrollBarEnabled(true);
+        etAnswer.setScrollbarFadingEnabled(false);
+        etAnswer.setOnTouchListener((v, event) -> {
+            v.getParent().requestDisallowInterceptTouchEvent(true);
+            return false;
+        });
         btnSubmit = view.findViewById(R.id.btnSubmit);
         imgQuestion = view.findViewById(R.id.imgQuestion);
 
@@ -159,7 +177,10 @@ public class WritingTestFragment extends Fragment {
                         btnSubmitQuiz.setText("Submitted");
                         btnSubmitQuiz.setBackgroundResource(R.drawable.rounded_5dp_white_2dp_border_gray);
                         btnSubmitQuiz.setTextColor(Color.parseColor("#A3A5A4"));
-                        etAnswer.setEnabled(false);
+                        etAnswer.setFocusable(false);
+                        etAnswer.setFocusableInTouchMode(false);
+                        etAnswer.setCursorVisible(false);
+                        etAnswer.setLongClickable(false);
                         etAnswer.setTextColor(Color.parseColor("#000000"));
                     }
                 }

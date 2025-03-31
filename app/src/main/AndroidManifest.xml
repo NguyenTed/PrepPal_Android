@@ -20,6 +20,10 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
 <!--         Register Activity -->
@@ -91,10 +95,6 @@
         <activity
             android:name=".ui.dictionary.DictionaryActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.vocabulary.FlashcardActivity"
@@ -103,6 +103,10 @@
         <activity
             android:name=".ui.vocabulary.TopicActivity"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <activity
@@ -126,8 +130,24 @@
             android:name=".ui.profile.teacher.TeacherProfileActivity"
             android:exported="true">
         </activity>
+<!--    Speaking    -->
+        <activity
+            android:name=".ui.video_call.VideoCallActivity"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".ui.quiz.speaking.SpeakingBookingActivity"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".ui.quiz.speaking.SpeakingWaitingActivity"
+            android:exported="true">
+        </activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
+    <uses-feature android:name="android.hardware.microphone" android:required="true" />
 </manifest>

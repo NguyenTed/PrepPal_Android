@@ -9,6 +9,7 @@ public class Student extends User {
     protected float aimBand;
     private List<String> courses;
     private List<String> finishedLessons;
+    private List<StudentBookedSpeaking> studentBookedSpeaking;
 
     public Student() {}
 
@@ -20,12 +21,13 @@ public class Student extends User {
         this.finishedLessons = new ArrayList<>();
     }
 
-    public Student(String uid, String email, String name, Date dateOfBirth, Gender gender, String role, float currentBand, float aimBand, List<String> courses, List<String> finishedLessons) {
+    public Student(String uid, String email, String name, Date dateOfBirth, Gender gender, String role, float currentBand, float aimBand, List<String> courses, List<String> finishedLessons, List<StudentBookedSpeaking> studentBookedSpeaking) {
         super(uid, email, name, dateOfBirth, gender, role);
         this.currentBand = currentBand;
         this.aimBand = aimBand;
         this.courses = courses;
         this.finishedLessons = finishedLessons;
+        this.studentBookedSpeaking = studentBookedSpeaking;
     }
 
     public float getCurrentBand() {
@@ -58,5 +60,13 @@ public class Student extends User {
 
     public void setFinishedLessons(List<String> finishedLessons) {
         this.finishedLessons = finishedLessons;
+    }
+
+    public List<StudentBookedSpeaking> getBookedSpeaking() {
+        return studentBookedSpeaking;
+    }
+
+    public void setBookedSpeaking(List<StudentBookedSpeaking> studentBookedSpeaking) {
+        this.studentBookedSpeaking = studentBookedSpeaking;
     }
 }
