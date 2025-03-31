@@ -15,21 +15,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class UserViewModel extends ViewModel {
     private final UserRepository userRepository;
-    private final LiveData<User> currentUserLiveData;
 
     @Inject
     public UserViewModel(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.currentUserLiveData = userRepository.getCurrentUser();
     }
 
+    // ✅ Đừng cache lại, mà gọi mỗi lần cần
     public LiveData<User> getCurrentUser() {
-        return currentUserLiveData;
+        return userRepository.getCurrentUser();
     }
 
-    //  Update user currentBand & aimBand
     public LiveData<Boolean> updateUserBand(double currentBand, double aimBand) {
         return userRepository.updateUserBand(currentBand, aimBand);
     }
 }
+
 

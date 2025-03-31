@@ -82,7 +82,7 @@ public class CourseDetailActivity extends AppCompatActivity {
 
                     List<Map<String, Object>> sections = course.getSections();
                     if (sections != null) {
-                        sectionAdapter = new SectionAdapter(sections, this, courseId, firebaseAuth, this, finishedLessons);
+                        sectionAdapter = new SectionAdapter(sections, this, courseId, firebaseAuth, this, finishedLessons, studentViewModel);
                         recyclerViewSections.setAdapter(sectionAdapter);
                     }
                 }

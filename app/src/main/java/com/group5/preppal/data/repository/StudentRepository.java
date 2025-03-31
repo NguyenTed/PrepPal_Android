@@ -6,7 +6,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.group5.preppal.data.model.StudentBookedSpeaking;
 import com.group5.preppal.data.model.Student;
 import com.group5.preppal.data.model.User;
 
@@ -47,6 +49,7 @@ public class StudentRepository {
                 float aimBand = documentSnapshot.getDouble("aimBand").floatValue();
                 List<String> courses = (List<String>) documentSnapshot.get("courses");
                 List<String> finishedLessons = (List<String>) documentSnapshot.get("finishedLessons");
+                List<StudentBookedSpeaking> studentBookedSpeakingList = (List<StudentBookedSpeaking>) documentSnapshot.get("bookedSpeaking");
                 Student student = new Student(
                         uid,
                         email,
@@ -57,7 +60,8 @@ public class StudentRepository {
                         currentBand,
                         aimBand,
                         courses,
-                        finishedLessons
+                        finishedLessons,
+                        studentBookedSpeakingList
                 );
 
                 studentLiveData.setValue(student);
@@ -68,6 +72,30 @@ public class StudentRepository {
 
         return studentLiveData;
     }
+
+    public MutableLiveData<StudentBookedSpeaking> getBookedSpeakingById(String speakingTestId, String studentId) {
+        MutableLiveData<StudentBookedSpeaking> resultLiveData = new MutableLiveData<>();
+
+        studentCollection.document(studentId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
+                Student student = task.getResult().toObject(Student.class);
+                if (student != null && student.getBookedSpeaking() != null) {
+                    for (StudentBookedSpeaking booked : student.getBookedSpeaking()) {
+                        if (speakingTestId.equals(booked.getSpeakingTestId())) {
+                            resultLiveData.setValue(booked);
+                            return;
+                        }
+                    }
+                }
+                resultLiveData.setValue(null);
+            } else {
+                resultLiveData.setValue(null);
+            }
+        });
+
+        return resultLiveData;
+    }
+
 
     public void saveFinishedLesson(String lessonId, String studentId) {
         studentCollection.document(studentId).get().addOnCompleteListener(task -> {
@@ -94,4 +122,40 @@ public class StudentRepository {
             }
         });
     }
+
+    public void saveBookedSpeaking(String studentId, StudentBookedSpeaking studentBookedSpeaking) {
+        studentCollection.document(studentId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
+                DocumentSnapshot snapshot = task.getResult();
+
+                List<StudentBookedSpeaking> studentBookedSpeakingList = snapshot.toObject(Student.class).getBookedSpeaking();
+                if (studentBookedSpeakingList == null) studentBookedSpeakingList = new ArrayList<>();
+
+                boolean updated = false;
+                for (StudentBookedSpeaking bs : studentBookedSpeakingList) {
+                    if (bs.getSpeakingTestId().equals(studentBookedSpeaking.getSpeakingTestId())) {
+                        bs.setBookedDate(studentBookedSpeaking.getBookedDate());
+                        updated = true;
+                        break;
+                    }
+                }
+
+                if (!updated) {
+                    studentBookedSpeakingList.add(studentBookedSpeaking);
+                }
+
+                boolean finalUpdated = updated;
+                studentCollection.document(studentId)
+                        .update("bookedSpeaking", studentBookedSpeakingList)
+                        .addOnSuccessListener(aVoid -> Log.d("Firestore", finalUpdated ? "Updated booked time" : "Added new booking"))
+                        .addOnFailureListener(e -> Log.e("Firestore", "Failed to update bookedSpeaking", e));
+
+            } else {
+                Log.e("Firestore", "Student document not found", task.getException());
+            }
+        });
+    }
+
+
+
 }

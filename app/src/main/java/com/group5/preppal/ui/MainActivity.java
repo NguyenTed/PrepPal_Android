@@ -2,6 +2,7 @@ package com.group5.preppal.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int sdkVersion = android.os.Build.VERSION.SDK_INT;
+        Log.d("SDK_VERSION", "Current SDK: " + sdkVersion);
+
         setContentView(R.layout.activity_main);
 
         myCourseBtn = findViewById(R.id.myCourseBtn);
