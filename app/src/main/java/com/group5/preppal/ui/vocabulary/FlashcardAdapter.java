@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +16,13 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.DocumentReference;
@@ -98,12 +103,14 @@ public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardAdapter.Card
         public void bind(Vocabulary vocab) {
             TextView txtWord = itemView.findViewById(R.id.front_word);
             TextView phonetic = itemView.findViewById(R.id.front_phonetic);
+            TextView wordText = itemView.findViewById(R.id.back_word);
+
             ImageButton btnPlayAudio = itemView.findViewById(R.id.btn_play_audio);
-            TextView txtMeanings = itemView.findViewById(R.id.back_meanings);
-            TextView txtExamples = itemView.findViewById(R.id.back_examples);
 
             txtWord.setText(vocab.getWord());
+            wordText.setText(vocab.getWord());
             phonetic.setText(vocab.getPhonetic());
+
             btnPlayAudio.setOnClickListener(v -> {
                 MediaPlayer mediaPlayer = new MediaPlayer();
                 try {
@@ -114,10 +121,18 @@ public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardAdapter.Card
                     e.printStackTrace();
                 }
             });
-            txtMeanings.setText(String.join("\n", vocab.getMeanings()));
-            txtExamples.setText(String.join("\n", vocab.getExamples()));
 
-            // Reset flip state every time a new flashcard is shown
+            RecyclerView backRecycler = itemView.findViewById(R.id.back_recycler);
+            backRecycler.setLayoutManager(new LinearLayoutManager(context));
+            backRecycler.setAdapter(new MeaningAdapter(vocab.getMeanings()));
+            View backFlipOverlay = itemView.findViewById(R.id.back_flip_overlay);
+
+            // ✅ Add flip interaction for both sides
+            frontView.setOnClickListener(v -> flipCard());
+            backView.setOnClickListener(v -> flipCard());
+            backFlipOverlay.setOnClickListener(v -> flipCard());
+
+            // ✅ Reset flip state
             frontView.setVisibility(View.VISIBLE);
             backView.setVisibility(View.GONE);
             frontView.setRotationY(0f);
