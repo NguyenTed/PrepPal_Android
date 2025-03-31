@@ -49,7 +49,6 @@ public class UserRepository {
                         )
                 )
         );
-
         return userLiveData;
     }
 
@@ -59,14 +58,28 @@ public class UserRepository {
 
         firestore.collection(collection).document(uid).get()
                 .addOnSuccessListener(document -> {
+                    Log.d("UserRepo", "Checking " + collection + " for UID: " + uid);
                     if (document.exists()) {
-                        userLiveData.setValue(document.toObject(clazz));
+                        Log.d("UserRepo", "User found in " + collection + ": " + document.getData());
+
+                        try {
+                            T user = document.toObject(clazz);
+                            userLiveData.setValue(user);
+                        } catch (Exception e) {
+                            Log.e("UserRepo", "Failed to convert Firestore doc to " + clazz.getSimpleName(), e);
+                            userLiveData.setValue(null);
+                        }
                     } else {
+                        Log.d("UserRepo", "User not found in collection: " + collection);
                         nextAttempt.run();
                     }
                 })
-                .addOnFailureListener(e -> nextAttempt.run());
+                .addOnFailureListener(e -> {
+                    Log.e("UserRepo", "Failed to fetch from collection: " + collection, e);
+                    nextAttempt.run();
+                });
     }
+
 
     //  Update currentBand and aimBand to Firestore
     public LiveData<Boolean> updateUserBand(double currentBand, double aimBand) {

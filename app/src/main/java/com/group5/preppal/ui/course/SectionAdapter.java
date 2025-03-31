@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,7 +24,10 @@ import com.group5.preppal.ui.lesson.LessonPDFDetailActivity;
 import com.group5.preppal.ui.lesson.LessonVideoActivity;
 import com.group5.preppal.ui.quiz.multiple_choice_quiz.MultipleChoiceActivity;
 import com.group5.preppal.ui.quiz.multiple_choice_quiz.MultipleChoiceAnswerActivity;
+import com.group5.preppal.ui.quiz.speaking.SpeakingBookingActivity;
+import com.group5.preppal.ui.quiz.speaking.SpeakingWaitingActivity;
 import com.group5.preppal.ui.quiz.writing_quiz.WritingQuizActivity;
+import com.group5.preppal.ui.video_call.VideoCallActivity;
 import com.group5.preppal.viewmodel.StudentViewModel;
 import com.group5.preppal.viewmodel.WritingTestViewModel;
 
@@ -37,15 +41,17 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
     private final ViewModelStoreOwner viewModelStoreOwner;
     private FirebaseUser user;
     private final List<String> finishedLessons;
+    private StudentViewModel studentViewModel;
 
 
-    public SectionAdapter(List<Map<String, Object>> sectionList, Context context, String courseId, FirebaseAuth firebaseAuth, ViewModelStoreOwner viewModelStoreOwner,List<String> finishedLessons) {
+    public SectionAdapter(List<Map<String, Object>> sectionList, Context context, String courseId, FirebaseAuth firebaseAuth, ViewModelStoreOwner viewModelStoreOwner,List<String> finishedLessons, StudentViewModel studentViewModel) {
         this.sectionList = sectionList;
         this.context = context;
         this.courseId = courseId;
         this.user = firebaseAuth.getCurrentUser();
         this.viewModelStoreOwner = viewModelStoreOwner;
         this.finishedLessons = finishedLessons;
+        this.studentViewModel = studentViewModel;
     }
 
     @NonNull
@@ -103,10 +109,10 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
             String type = quiz.get("type").toString();
             String quizId = quiz.get("id").toString();
 
-            if (type.contains("Writing")) {
+            if (type.contains("Writing") || type.contains("Speaking")) {
                 if (position == 0) callback.onResult(true);
                 else checkPreviousSectionCompleted(sectionList.get(position - 1), sectionList, position, callback);
-            } else {
+            } else if (type.contains("Multiple Choice Quiz")){
                 String studentId = user.getUid();
 
                 FirebaseFirestore.getInstance()
@@ -252,96 +258,47 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
                         holder.sectionType.setVisibility(View.VISIBLE);
                     }
                     holder.itemView.setOnClickListener(view -> {
+                        if (!isUnlocked ) {
+                            Toast.makeText(context, "Vui lòng hoàn thành các phần trước!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         Intent intent = new Intent(context, WritingQuizActivity.class);
                         intent.putExtra("id", quizId);
                         intent.putExtra("courseId", courseId);
                         context.startActivity(intent);
                     });
                 });
+            } else if (type.contains("Speaking")) {
+                holder.sectionName.setText(name);
+                holder.sectionType.setText(type);
+                holder.txtTypeFinish.setText(type);
+                holder.sectionType.setVisibility(View.VISIBLE);
+
+                holder.itemView.setAlpha(isUnlocked ? 1.0f : 0.4f);
+                holder.itemView.setOnClickListener(view -> {
+                    if (!isUnlocked ) {
+                        Toast.makeText(context, "Vui lòng hoàn thành các phần trước!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    handleSpeakingNavigate(quizId);
+                });
             }
+
         }
     }
 
-    private void checkResourceComplete(SectionViewHolder holder, String lessonId) {
-        if (user == null) return;
-
-        StudentViewModel studentViewModel = new ViewModelProvider(viewModelStoreOwner).get(StudentViewModel.class);
-
-        studentViewModel.getStudentById(user.getUid()).observeForever(student -> {
-            if (student != null && student.getFinishedLessons() != null) {
-                if (student.getFinishedLessons().contains(lessonId)) {
-                    holder.sectionTypeFinish.setVisibility(View.VISIBLE);
-                } else {
-                    holder.sectionType.setVisibility(View.VISIBLE);
-                }
+    private void handleSpeakingNavigate(String speakingTestId) {
+        studentViewModel.fetchStudentBookedSpeakingById(speakingTestId, user.getUid()).observe((LifecycleOwner) viewModelStoreOwner, booked -> {
+            Intent intent;
+            if (booked != null) {
+                intent = new Intent(context, SpeakingWaitingActivity.class);
             }
-        });
-
-
-    }
-
-    private void checkQuizResult(SectionViewHolder holder, String quizId, String maxPoints) {
-        if (user == null) return;
-
-        String userId = user.getUid();
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-
-        firestore.collection("multiple_choice_quiz_result")
-                .document(userId + "_" + quizId)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    boolean quizCompleted = false;
-                    if (documentSnapshot.exists()) {
-                        quizCompleted = true;
-                        if (documentSnapshot.contains("score")) {
-                            String score = documentSnapshot.get("score").toString();
-                            holder.txtPoint.setText("Score: " + score + "/" + maxPoints);
-                            holder.txtPoint.setVisibility(View.VISIBLE);
-                        }
-
-                        if (documentSnapshot.contains("pass")) {
-                            Boolean isPass = documentSnapshot.getBoolean("pass");
-                            if (isPass != null && isPass) {
-                                holder.sectionTypeFinish.setVisibility(View.VISIBLE);
-                            }
-                            else holder.sectionType.setVisibility(View.VISIBLE);
-                        }
-                    }
-                    else {
-                        holder.sectionType.setVisibility(View.VISIBLE);
-                    }
-                    boolean finalQuizCompleted = quizCompleted;
-                    holder.itemView.setOnClickListener(view -> {
-                        Intent intent;
-                        if (finalQuizCompleted) {
-                            intent = new Intent(context, MultipleChoiceAnswerActivity.class);
-                        } else {
-                            intent = new Intent(context, MultipleChoiceActivity.class);
-                        }
-                        intent.putExtra("quizId", quizId);
-                        intent.putExtra("courseId", courseId);
-                        context.startActivity(intent);
-                    });
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("Firestore", "Lỗi khi lấy kết quả quiz", e);
-                });
-    }
-
-    private void checkWritingQuizResult(SectionViewHolder holder, String taskId, String maxPoints) {
-        String userId = user.getUid();
-
-        WritingTestViewModel writingTestViewModel = new ViewModelProvider(viewModelStoreOwner).get(WritingTestViewModel.class);
-
-        writingTestViewModel.getWritingQuizSubmissionByTasKId(taskId, userId).observeForever(writingQuizSubmission -> {
-            if (writingQuizSubmission != null) {
-                if (writingQuizSubmission.getState() != null && !writingQuizSubmission.getState().equals("pass")) {
-                    holder.txtState.setText(writingQuizSubmission.getState());
-                    holder.txtState.setVisibility(View.VISIBLE);
-                }
-                holder.txtPoint.setText("Score: " + writingQuizSubmission.getPoints() + "/" + maxPoints);
-                holder.txtPoint.setVisibility(View.VISIBLE);
+            else {
+                intent = new Intent(context, SpeakingBookingActivity.class);
             }
+            intent.putExtra("quizId", speakingTestId);
+            intent.putExtra("courseId", courseId);
+            context.startActivity(intent);
         });
     }
 }

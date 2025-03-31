@@ -9,80 +9,32 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.group5.preppal.BuildConfig;
 import com.group5.preppal.R;
+import com.group5.preppal.data.model.User;
 import com.group5.preppal.data.repository.AuthRepository;
 import com.group5.preppal.ui.TeacherMainActivity;
-import com.group5.preppal.ui.test.WritingTopicsActivity;
 import com.group5.preppal.ui.MainActivity;
-import com.group5.preppal.ui.profile.ProfileActivity;
 import com.group5.preppal.viewmodel.AuthViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import javax.inject.Inject;
-
-
-import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
-import com.google.android.gms.common.api.ApiException;
-import com.google.firebase.auth.FirebaseUser;
-
-import javax.inject.Inject;
-
-import dagger.hilt.android.AndroidEntryPoint;
-
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.IntentSenderRequest;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.gms.auth.api.identity.BeginSignInRequest;
-import com.google.android.gms.auth.api.identity.Identity;
-import com.google.android.gms.auth.api.identity.SignInClient;
-import com.google.android.gms.auth.api.identity.SignInCredential;
-import com.google.android.gms.common.api.ApiException;
-import com.google.firebase.auth.FirebaseUser;
 import com.group5.preppal.viewmodel.UserViewModel;
-
-import javax.inject.Inject;
-
-import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity {
@@ -158,10 +110,14 @@ public class LoginActivity extends AppCompatActivity {
         authViewModel.getUserLiveData().observe(this, firebaseUser -> {
             if (firebaseUser != null) {
                 Log.d("LoginActivity", "Firebase login success. UID: " + firebaseUser.getUid());
-                userViewModel.getCurrentUser().observe(this, user -> {
+
+                // 👉 Gọi tách riêng ra để dễ debug
+                LiveData<User> userData = userViewModel.getCurrentUser();
+
+                userData.observe(this, user -> {
+                    Log.d("LoginActivity", "User value: " + user);
                     if (user != null) {
                         Log.d("LoginActivity", "Role: " + user.getRole());
-
                         if ("student".equals(user.getRole())) {
                             goToMainActivity(firebaseUser);
                         } else if ("teacher".equals(user.getRole())) {
@@ -176,12 +132,25 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
+
+
+
         authViewModel.getErrorLiveData().observe(this, error -> {
             if (error != null) {
                 Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
             }
         });
     }
+    public static <T> void observeOnce(LiveData<T> liveData, LifecycleOwner owner, Observer<T> observer) {
+        liveData.observe(owner, new Observer<T>() {
+            @Override
+            public void onChanged(T t) {
+                liveData.removeObserver(this); // Xoá observer sau khi chạy 1 lần
+                observer.onChanged(t);
+            }
+        });
+    }
+
 
     // ✅ Uses IntentSenderRequest instead of deprecated startIntentSenderForResult()
     private void signInWithGoogle() {

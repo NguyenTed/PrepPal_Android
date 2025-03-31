@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -41,48 +40,31 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
             <TextView
-                android:id="@+id/tvTaskType"
+                android:id="@+id/tvTestType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Writing Task 1"
+                android:text="Speaking Test"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="40dp"
                 android:textSize="14sp"
                 android:gravity="center_vertical"
-                android:textColor="#ff0D0D0D"/></LinearLayout>
+                android:textColor="#ff0D0D0D"/>
+        </LinearLayout>
     </FrameLayout>
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="9"
-        android:name="com.group5.preppal.ui.test.WritingTestFragment"/>
-
-    <!--    Bottom nav-->
-    <LinearLayout
+        android:name="com.group5.preppal.ui.quiz.speaking.BookingSpeakingFragment"/>
+    <Button
+        android:id="@+id/btnBook"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#C2C2C2"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal"
-        android:gravity="end"
-        android:paddingRight="20dp">
-        <!--        Submit Button-->
-        <Button
-            android:id="@+id/btnSubmitQuiz"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#2F60C2"
-            android:textSize="18sp"
-            android:padding="20dp"
-            android:gravity="center"
-            android:fontFamily="sans-serif-black"
-            android:background="@drawable/rounded_5dp_white_2dp_border_blue"
-            android:text="Submit"/>
-    </LinearLayout>
-
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/rounded_full_green_deep"
+        android:textColor="@color/white"
+        android:text="BOOK"/>
 </LinearLayout>
