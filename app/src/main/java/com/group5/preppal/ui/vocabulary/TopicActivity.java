@@ -39,6 +39,8 @@ public class TopicActivity extends AppCompatActivity {
             // Launch FlashcardActivity and wait for result
             Intent intent = new Intent(this, FlashcardActivity.class);
             intent.putExtra("topicId", topic.getTopicId());
+            intent.putExtra("learnedCount", topic.getLearnedCount());
+            intent.putExtra("totalCount", topic.getTotalCount());
             flashcardLauncher.launch(intent);
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

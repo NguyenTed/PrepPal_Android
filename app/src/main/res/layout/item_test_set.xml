@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_card"
+    android:padding="16dp"
+    android:layout_marginBottom="16dp">
+
+    <TextView
+        android:id="@+id/testSetTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="IELTS - Prep Exclusive Tests"
+        android:textStyle="bold"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/testCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0/10 Tests"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp"/>
+
+    <LinearLayout
+        android:id="@+id/testPreviewContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp">
+        <!-- Dynamically add test preview items here -->
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/btnViewMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View more 10 tests"
+        android:textColor="@color/blue"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"/>
+</LinearLayout>

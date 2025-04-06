@@ -1,18 +1,14 @@
 package com.group5.preppal.data.repository;
-import android.content.Intent;
 import android.util.Log;
 
 import com.google.android.gms.auth.api.identity.SignInClient;
-import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import com.google.android.gms.tasks.Task;
@@ -22,6 +18,7 @@ import com.group5.preppal.data.model.Student;
 import com.group5.preppal.data.model.User;
 
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Singleton
 public class AuthRepository {
@@ -66,7 +63,6 @@ public class AuthRepository {
                 });
     }
 
-
     public Task<AuthResult> signInWithGoogle(AuthCredential credential) {
         return firebaseAuth.signInWithCredential(credential)
                 .addOnSuccessListener(authResult -> {
@@ -76,33 +72,6 @@ public class AuthRepository {
                     }
                 })
                 .addOnFailureListener(e -> Log.e("AuthRepository", "Google sign-in failed", e));
-    }
-
-
-    /** ✅ Sign in with Google using new SignInClient */
-    public Task<AuthResult> firebaseAuthWithGoogle(Intent data) {
-        try {
-            // ✅ Retrieve Google Sign-In credentials from the intent
-            SignInCredential credential = signInClient.getSignInCredentialFromIntent(data);
-            String idToken = credential.getGoogleIdToken();
-
-            if (idToken != null) {
-                AuthCredential authCredential = GoogleAuthProvider.getCredential(idToken, null);
-
-                // ✅ Sign in with Firebase using the Google credential
-                return firebaseAuth.signInWithCredential(authCredential)
-                        .addOnSuccessListener(authResult -> {
-                            FirebaseUser user = authResult.getUser();
-                            if (user != null) {
-                                checkAndSaveFirebaseUser(user); // ✅ Save user info in Firestore
-                            }
-                        });
-            } else {
-                throw new ApiException(Status.RESULT_CANCELED);
-            }
-        } catch (ApiException e) {
-            return Tasks.forException(e);
-        }
     }
 
     /** ✅ Check if user exists in Firestore, save if new (Google Sign-In) */
@@ -172,7 +141,6 @@ public class AuthRepository {
             }
         });
     }
-
 
     /** ✅ Get currently signed-in user */
     public FirebaseUser getCurrentUser() {

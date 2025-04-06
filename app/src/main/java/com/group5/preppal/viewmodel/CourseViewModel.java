@@ -140,7 +140,6 @@ public class CourseViewModel extends ViewModel {
         return selectedCourse;
     }
 
-
     public LiveData<List<Course>> getFilteredCourses() {
         return filteredCoursePayment;
     }
