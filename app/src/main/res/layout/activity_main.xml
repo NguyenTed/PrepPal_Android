@@ -31,18 +31,13 @@
                 android:orientation="vertical"
                 android:layout_gravity="center_vertical">
                 <TextView
-                    android:id="@+id/txtHello"
+                    android:id="@+id/txtGreetingUser"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:text="Hello Nguyễn Thuần"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="#80899B"
-                    android:text="You are currently enrolled in the IELTS"/>
+                    android:text="Hello Current user's name"/>
             </LinearLayout>
         </LinearLayout>
         <LinearLayout

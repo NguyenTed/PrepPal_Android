@@ -1,5 +1,6 @@
 package com.group5.preppal.ui.auth;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -9,9 +10,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -25,6 +24,7 @@ import com.group5.preppal.BuildConfig;
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.User;
 import com.group5.preppal.data.repository.AuthRepository;
+import com.group5.preppal.ui.admin.AdminMainActivity;
 import com.group5.preppal.ui.TeacherMainActivity;
 import com.group5.preppal.ui.MainActivity;
 import com.group5.preppal.viewmodel.AuthViewModel;
@@ -88,7 +88,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-//        authRepository.signOut();
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
@@ -117,11 +116,21 @@ public class LoginActivity extends AppCompatActivity {
                 userData.observe(this, user -> {
                     Log.d("LoginActivity", "User value: " + user);
                     if (user != null) {
+                        String userRole = user.getRole();
                         Log.d("LoginActivity", "Role: " + user.getRole());
-                        if ("student".equals(user.getRole())) {
+                        if (userRole.equals("student")) {
                             goToMainActivity(firebaseUser);
-                        } else if ("teacher".equals(user.getRole())) {
+                        } else if (userRole.equals("teacher")) {
                             goToTeacherMainActivity();
+                        } else if (userRole.equals("admin")) {
+                            goToAdminMainActivity();
+                            // Somewhere in your login logic
+                            SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
+                            prefs.edit()
+                                    .putString("admin_email", emailEditText.getText().toString())
+                                    .putString("admin_password", passwordEditText.getText().toString())
+                                    .apply();
+
                         }
                     } else {
                         Log.e("LoginActivity", "User info not found in Firestore");
@@ -131,30 +140,15 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-
         authViewModel.getErrorLiveData().observe(this, error -> {
             if (error != null) {
                 Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
             }
         });
     }
-    public static <T> void observeOnce(LiveData<T> liveData, LifecycleOwner owner, Observer<T> observer) {
-        liveData.observe(owner, new Observer<T>() {
-            @Override
-            public void onChanged(T t) {
-                liveData.removeObserver(this); // Xoá observer sau khi chạy 1 lần
-                observer.onChanged(t);
-            }
-        });
-    }
-
 
     // ✅ Uses IntentSenderRequest instead of deprecated startIntentSenderForResult()
     private void signInWithGoogle() {
-        Log.d("cmm", "signInWithGoogle: " + BuildConfig.GOOGLE_CLIENT_ID);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID) // ✅ Your Web Client ID
                 .requestEmail()
@@ -167,22 +161,6 @@ public class LoginActivity extends AppCompatActivity {
         googleSignInLauncher.launch(signInIntent);
     }
 
-
-    private void openGoogleAccountPicker() {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID)
-                .requestEmail()
-                .build();
-
-        GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        // ✅ Launch explicit Google Account Picker
-        Intent signInIntent = googleSignInClient.getSignInIntent();
-        googleSignInLauncher.launch(signInIntent);
-    }
-
-
-
     private void goToMainActivity(FirebaseUser user) {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
@@ -191,6 +169,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private void goToTeacherMainActivity() {
         Intent intent = new Intent(this, TeacherMainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void goToAdminMainActivity() {
+        Intent intent = new Intent(this, AdminMainActivity.class);
         startActivity(intent);
         finish();
     }

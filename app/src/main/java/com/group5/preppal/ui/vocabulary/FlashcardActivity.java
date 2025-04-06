@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.Vocabulary;
 import com.group5.preppal.viewmodel.FlashcardViewModel;
@@ -26,7 +25,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class FlashcardActivity extends AppCompatActivity {
-
     private FlashcardViewModel viewModel;
     private FlashcardAdapter adapter;
     private List<Vocabulary> vocabList = new ArrayList<>();
