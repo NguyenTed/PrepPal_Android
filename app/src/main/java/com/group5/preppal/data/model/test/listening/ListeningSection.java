@@ -1,14 +1,24 @@
 package com.group5.preppal.data.model.test.listening;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.firestore.PropertyName;
 
-public class ListeningSection {
+public class ListeningSection implements Parcelable {
     private ListeningPart part1;
     private ListeningPart part2;
     private ListeningPart part3;
     private ListeningPart part4;
 
     public ListeningSection() {}
+
+    protected ListeningSection(Parcel in) {
+        part1 = in.readParcelable(ListeningPart.class.getClassLoader());
+        part2 = in.readParcelable(ListeningPart.class.getClassLoader());
+        part3 = in.readParcelable(ListeningPart.class.getClassLoader());
+        part4 = in.readParcelable(ListeningPart.class.getClassLoader());
+    }
 
     @PropertyName("part_1")
     public ListeningPart getPart1() {
@@ -49,4 +59,29 @@ public class ListeningSection {
     public void setPart4(ListeningPart part4) {
         this.part4 = part4;
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(part1, flags);
+        dest.writeParcelable(part2, flags);
+        dest.writeParcelable(part3, flags);
+        dest.writeParcelable(part4, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ListeningSection> CREATOR = new Creator<ListeningSection>() {
+        @Override
+        public ListeningSection createFromParcel(Parcel in) {
+            return new ListeningSection(in);
+        }
+
+        @Override
+        public ListeningSection[] newArray(int size) {
+            return new ListeningSection[size];
+        }
+    };
 }

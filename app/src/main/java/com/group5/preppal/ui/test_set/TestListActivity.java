@@ -11,9 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.test.Test;
+import com.group5.preppal.data.model.test.listening.ListeningSection;
 import com.group5.preppal.data.model.test.speaking.SpeakingSection;
 import com.group5.preppal.data.model.test.writing.WritingSection;
 import com.group5.preppal.data.model.test.writing.WritingTask;
+import com.group5.preppal.ui.test_set.listening.ListeningActivity;
 import com.group5.preppal.ui.test_set.speaking.SpeakingActivity;
 import com.group5.preppal.ui.test_set.writing.WritingActivity;
 import com.group5.preppal.viewmodel.TestListViewModel;
@@ -37,6 +39,20 @@ public class TestListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         adapter = new TestListAdapter(new TestListAdapter.OnTestClickListener() {
+            @Override
+            public void onListeningClick(Test test) {
+                ListeningSection listening = test.getListeningSection();
+                if (listening == null) {
+                    Log.e("TEST_DEBUG", "Listening section is NULL!");
+                    return;
+                }
+
+                Intent intent = new Intent(TestListActivity.this, ListeningActivity.class);
+                intent.putExtra("testName", test.getName());
+                intent.putExtra("listeningSection", listening);
+                startActivity(intent);
+            }
+
             @Override
             public void onWritingClick(Test test) {
                 Log.d("TEST_DEBUG", "Test: " + test.getName());

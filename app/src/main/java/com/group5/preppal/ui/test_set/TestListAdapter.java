@@ -21,6 +21,7 @@ public class TestListAdapter extends RecyclerView.Adapter<TestListAdapter.TestVi
     private final OnTestClickListener listener;
 
     public interface OnTestClickListener {
+        void onListeningClick(Test test);
         void onWritingClick(Test test);
         void onSpeakingClick(Test test);
     }
@@ -47,6 +48,7 @@ public class TestListAdapter extends RecyclerView.Adapter<TestListAdapter.TestVi
     public void onBindViewHolder(@NonNull TestViewHolder holder, int position) {
         Test test = testList.get(position);
         holder.testTitle.setText(test.getName());
+        holder.btnListening.setOnClickListener(v -> listener.onListeningClick(test));
         holder.btnWriting.setOnClickListener(v -> listener.onWritingClick(test));
         holder.btnSpeaking.setOnClickListener(v -> listener.onSpeakingClick(test));
     }
@@ -58,11 +60,12 @@ public class TestListAdapter extends RecyclerView.Adapter<TestListAdapter.TestVi
 
     static class TestViewHolder extends RecyclerView.ViewHolder {
         TextView testTitle;
-        Button btnWriting, btnSpeaking;
+        Button btnListening, btnWriting, btnSpeaking;
 
         public TestViewHolder(@NonNull View itemView) {
             super(itemView);
             testTitle = itemView.findViewById(R.id.testTitleTextView);
+            btnListening = itemView.findViewById(R.id.btnListening);
             btnWriting = itemView.findViewById(R.id.btnWriting);
             btnSpeaking = itemView.findViewById(R.id.btnSpeaking);
         }
