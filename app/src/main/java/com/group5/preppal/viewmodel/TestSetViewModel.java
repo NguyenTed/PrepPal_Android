@@ -7,11 +7,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.group5.preppal.data.model.test.TestSet;
-import com.group5.preppal.data.repository.TestRepository;
-import com.group5.preppal.data.repository.TestSetRepository;
-import com.group5.preppal.ui.test_set.TestSetAdapter;
+import com.group5.preppal.data.repository.practise_test.TestSetRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;

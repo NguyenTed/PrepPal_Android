@@ -15,16 +15,29 @@ import com.group5.preppal.R;
 import com.group5.preppal.data.model.test.listening.QuestionGroup;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class QuestionGroupAdapter extends RecyclerView.Adapter<QuestionGroupAdapter.GroupViewHolder> {
 
     private final List<QuestionGroup> groupList = new ArrayList<>();
+    private final List<ListeningQuestionAdapter> questionAdapters = new ArrayList<>();
+    private Map<Integer, String> userAnswers = new HashMap<>();
+    private boolean isTimeUp;
 
     public void submitList(List<QuestionGroup> newList) {
         groupList.clear();
         groupList.addAll(newList);
         notifyDataSetChanged();
+    }
+
+    public void setTimeUp(boolean isTimeUp) {
+        this.isTimeUp = isTimeUp;
+    }
+
+    public void setUserAnswers(Map<Integer, String> userAnswers) {
+        this.userAnswers = userAnswers;
     }
 
     @NonNull
@@ -46,14 +59,25 @@ public class QuestionGroupAdapter extends RecyclerView.Adapter<QuestionGroupAdap
                 .into(holder.groupImage);
 
         ListeningQuestionAdapter questionAdapter = new ListeningQuestionAdapter();
+        questionAdapter.setTimeUp(isTimeUp);
         holder.questionRecyclerView.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
         holder.questionRecyclerView.setAdapter(questionAdapter);
-        questionAdapter.setData(group.getQuestions(), group.getType(), group.getOptions());
+        questionAdapter.setData(group.getQuestions(), group.getType(), group.getOptions(), userAnswers);
+
+        if (!questionAdapters.contains(questionAdapter)) {
+            questionAdapters.add(questionAdapter);
+        }
     }
 
     @Override
     public int getItemCount() {
         return groupList.size();
+    }
+
+    public void disableAllInputs() {
+        for (ListeningQuestionAdapter adapter : questionAdapters) {
+            adapter.disableInputs();
+        }
     }
 
     static class GroupViewHolder extends RecyclerView.ViewHolder {

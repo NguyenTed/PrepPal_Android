@@ -1,4 +1,4 @@
-package com.group5.preppal.data.repository;
+package com.group5.preppal.data.repository.practise_test;
 
 import androidx.annotation.NonNull;
 

@@ -28,6 +28,11 @@ public class Test {
         return testSetId;
     }
 
+    @PropertyName("test_set_id")
+    public void setTestSetId(String testSetId) {
+        this.testSetId = testSetId;
+    }
+
     public String getName() {
         return name;
     }

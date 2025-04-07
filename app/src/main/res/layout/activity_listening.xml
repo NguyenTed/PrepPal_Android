@@ -6,6 +6,17 @@
     android:padding="16dp">
 
     <TextView
+        android:id="@+id/tvListeningTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="60:00"
+        android:textSize="18sp"
+        android:textColor="#D32F2F"
+        android:fontFamily="sans-serif-medium"
+        android:layout_margin="16dp"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
         android:id="@+id/partLabelTextView"
         android:text="Part 1"
         android:textSize="20sp"
@@ -34,5 +45,33 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
+
+    <LinearLayout
+        android:id="@+id/navigationBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:background="#F2F2F2"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnPreviousPart"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Previous" />
+
+        <Space
+            android:layout_width="16dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnNextPart"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Next" />
+    </LinearLayout>
 
 </LinearLayout>

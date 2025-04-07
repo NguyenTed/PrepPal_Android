@@ -48,6 +48,8 @@ public class TestListActivity extends AppCompatActivity {
                 }
 
                 Intent intent = new Intent(TestListActivity.this, ListeningActivity.class);
+                intent.putExtra("testId", test.getId());
+                intent.putExtra("testSetId", test.getTestSetId());
                 intent.putExtra("testName", test.getName());
                 intent.putExtra("listeningSection", listening);
                 startActivity(intent);

@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 
 import com.group5.preppal.data.model.test.Test;
-import com.group5.preppal.data.repository.TestRepository;
+import com.group5.preppal.data.repository.practise_test.TestRepository;
 
 import java.util.List;
 
