@@ -7,22 +7,21 @@ import com.google.firebase.firestore.PropertyName;
 
 import java.util.List;
 
-public class QuestionGroup implements Parcelable {
+public class ListeningQuestionGroup implements Parcelable {
     private String type;
     private String imageUrl;
     private List<ListeningQuestion> questions;
     private List<String> options;         // Optional for MCQ/matching
     private List<String> correctAnswers;  // Only used for mcq_multiple
 
-    public QuestionGroup() {}
+    public ListeningQuestionGroup() {}
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(type);
-        dest.writeString(imageUrl);
-        dest.writeTypedList(questions);
-        dest.writeStringList(options);
-        dest.writeStringList(correctAnswers);
+    protected ListeningQuestionGroup(Parcel in) {
+        type = in.readString();
+        imageUrl = in.readString();
+        questions = in.createTypedArrayList(ListeningQuestion.CREATOR);
+        options = in.createStringArrayList();
+        correctAnswers = in.createStringArrayList();
     }
 
     public String getType() {
@@ -69,12 +68,13 @@ public class QuestionGroup implements Parcelable {
         this.correctAnswers = correctAnswers;
     }
 
-    protected QuestionGroup(Parcel in) {
-        type = in.readString();
-        imageUrl = in.readString();
-        questions = in.createTypedArrayList(ListeningQuestion.CREATOR);
-        options = in.createStringArrayList();
-        correctAnswers = in.createStringArrayList();
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(type);
+        dest.writeString(imageUrl);
+        dest.writeTypedList(questions);
+        dest.writeStringList(options);
+        dest.writeStringList(correctAnswers);
     }
 
     @Override
@@ -82,15 +82,15 @@ public class QuestionGroup implements Parcelable {
         return 0;
     }
 
-    public static final Creator<QuestionGroup> CREATOR = new Creator<QuestionGroup>() {
+    public static final Creator<ListeningQuestionGroup> CREATOR = new Creator<ListeningQuestionGroup>() {
         @Override
-        public QuestionGroup createFromParcel(Parcel in) {
-            return new QuestionGroup(in);
+        public ListeningQuestionGroup createFromParcel(Parcel in) {
+            return new ListeningQuestionGroup(in);
         }
 
         @Override
-        public QuestionGroup[] newArray(int size) {
-            return new QuestionGroup[size];
+        public ListeningQuestionGroup[] newArray(int size) {
+            return new ListeningQuestionGroup[size];
         }
     };
 }

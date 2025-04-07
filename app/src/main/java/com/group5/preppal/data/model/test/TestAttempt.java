@@ -1,11 +1,13 @@
 package com.group5.preppal.data.model.test;
 
 import com.group5.preppal.data.model.test.listening.ListeningAttempt;
+import com.group5.preppal.data.model.test.reading.ReadingAttempt;
 
 public class TestAttempt {
     private String testId;
     private String testSetId;
     private ListeningAttempt listeningAttempt;
+    private ReadingAttempt readingAttempt;
 
     public TestAttempt() {}
 

@@ -1,34 +1,32 @@
-package com.group5.preppal.data.model.test.listening;
+package com.group5.preppal.data.model.test.reading;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class ListeningGrader {
+public class ReadingGrader {
 
-    public static int gradeListeningSection(
-            ListeningSection section,
-            Map<Integer, String> userAnswers
-    ) {
+    public static int grade(ReadingSection section, Map<Integer, String> userAnswers) {
+        if (section == null || userAnswers == null) return 0;
+
         int score = 0;
 
-        List<ListeningPart> parts = Arrays.asList(
-                section.getPart1(),
-                section.getPart2(),
-                section.getPart3(),
-                section.getPart4()
+        List<ReadingPassage> passages = Arrays.asList(
+                section.getPassage1(),
+                section.getPassage2(),
+                section.getPassage3()
         );
 
-        for (ListeningPart part : parts) {
-            if (part == null || part.getListeningQuestionGroups() == null) continue;
+        for (ReadingPassage passage : passages) {
+            if (passage == null || passage.getReadingQuestionGroups() == null) continue;
 
-            for (ListeningQuestionGroup group : part.getListeningQuestionGroups()) {
-                List<ListeningQuestion> questions = group.getQuestions();
+            for (ReadingQuestionGroup group : passage.getReadingQuestionGroups()) {
+                List<ReadingQuestion> questions = group.getQuestions();
                 List<String> groupCorrectAnswers = group.getCorrectAnswers(); // optional (used in MCQ_MULTIPLE)
 
                 for (int i = 0; i < questions.size(); i++) {
-                    ListeningQuestion question = questions.get(i);
+                    ReadingQuestion question = questions.get(i);
                     int number = question.getNumber();
 
                     // Fetch user answer

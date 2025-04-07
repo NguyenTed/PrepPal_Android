@@ -2,6 +2,7 @@ package com.group5.preppal.data.model.test;
 
 import com.google.firebase.firestore.PropertyName;
 import com.group5.preppal.data.model.test.listening.ListeningSection;
+import com.group5.preppal.data.model.test.reading.ReadingSection;
 import com.group5.preppal.data.model.test.speaking.SpeakingSection;
 import com.group5.preppal.data.model.test.writing.WritingSection;
 
@@ -10,6 +11,7 @@ public class Test {
     private String testSetId;
     private String name;
     private ListeningSection listeningSection;
+    private ReadingSection readingSection;
     private SpeakingSection speakingSection;
     private WritingSection writingSection;
 
@@ -49,6 +51,16 @@ public class Test {
     @PropertyName("listening_section")
     public void setListeningSection(ListeningSection listeningSection) {
         this.listeningSection = listeningSection;
+    }
+
+    @PropertyName("reading_section")
+    public ReadingSection getReadingSection() {
+        return readingSection;
+    }
+
+    @PropertyName("reading_section")
+    public void setReadingSection(ReadingSection readingSection) {
+        this.readingSection = readingSection;
     }
 
     @PropertyName("speaking_section")

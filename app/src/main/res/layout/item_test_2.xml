@@ -35,7 +35,20 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Listening"/>
+                android:text="Listening"
+                android:textSize="10dp"/>
+
+            <View
+                android:layout_width="8dp"
+                android:layout_height="0dp" />
+
+            <Button
+                android:id="@+id/btnReading"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Reading"
+                android:textSize="10dp"/>
 
             <View
                 android:layout_width="8dp"
@@ -46,7 +59,8 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Writing"/>
+                android:text="Writing"
+                android:textSize="10dp"/>
 
             <View
                 android:layout_width="8dp"
@@ -57,7 +71,9 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Speaking"/>
+                android:text="Speaking"
+                android:textSize="10dp"
+                />
         </LinearLayout>
     </LinearLayout>
 

@@ -156,8 +156,9 @@
         <activity android:name=".ui.admin.AddNewTeacherActivity"/>
         <activity android:name=".ui.test_set.TestListActivity"/>
         <activity android:name=".ui.test_set.TestSetListActivity"/>
+        <activity android:name=".ui.test_set.listening.ListeningActivity"/>
+        <activity android:name=".ui.test_set.reading.ReadingActivity"/>
         <activity android:name=".ui.test_set.writing.WritingActivity"/>
         <activity android:name=".ui.test_set.speaking.SpeakingActivity"/>
-        <activity android:name=".ui.test_set.listening.ListeningActivity"/>
     </application>
 </manifest>

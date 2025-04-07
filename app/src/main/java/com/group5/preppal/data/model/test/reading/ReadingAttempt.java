@@ -1,9 +1,9 @@
-package com.group5.preppal.data.model.test.listening;
+package com.group5.preppal.data.model.test.reading;
 
 import java.util.Date;
 import java.util.Map;
 
-public class ListeningAttempt {
+public class ReadingAttempt {
     private String testId;
     private String testSetId;
     private Map<String, String> answers;// questionNumber -> userAnswer
@@ -12,7 +12,7 @@ public class ListeningAttempt {
     private Date startedAt;
     private Date submittedAt;
 
-    public ListeningAttempt() {}
+    public ReadingAttempt() {}
 
     // Getters & setters
     public String getTestId() { return testId; }
@@ -36,3 +36,4 @@ public class ListeningAttempt {
     public Date getSubmittedAt() { return submittedAt; }
     public void setSubmittedAt(Date submittedAt) { this.submittedAt = submittedAt; }
 }
+

@@ -8,11 +8,15 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.group5.preppal.data.model.test.TestAttempt;
+import com.group5.preppal.data.model.test.reading.ReadingAttempt;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -97,6 +101,30 @@ public class TestAttemptRepository {
                         onFailure.onFailure(new Exception("Attempt not found"));
                     }
                 })
+                .addOnFailureListener(onFailure);
+    }
+
+    public void submitReadingAttempt(
+            String userId,
+            String testSetId,
+            String testId,
+            ReadingAttempt readingAttempt,
+            OnSuccessListener<Void> onSuccess,
+            OnFailureListener onFailure
+    ) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("test_id", testId);
+        data.put("test_set_id", testSetId);
+        data.put("started_at", FieldValue.serverTimestamp());
+        data.put("submitted_at", FieldValue.serverTimestamp());
+        data.put("reading_attempt", readingAttempt);
+
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(userId)
+                .collection("test_attempts")
+                .add(data)
+                .addOnSuccessListener(doc -> onSuccess.onSuccess(null))
                 .addOnFailureListener(onFailure);
     }
 }
