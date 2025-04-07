@@ -22,7 +22,7 @@
         tools:targetApi="31" >
 
         <!-- Shared Activities -->
-            <!-- Login Activity -->
+        <!-- Login Activity -->
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="true"
@@ -34,12 +34,12 @@
             </intent-filter>
         </activity>
 
-            <!-- Register Activity -->
+        <!-- Register Activity -->
         <activity android:name=".ui.auth.RegisterActivity" android:exported="true">
         </activity>
 
         <!-- Student's Activity -->
-            <!-- Main Activity (Home Screen) -->
+        <!-- Main Activity (Home Screen) -->
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
@@ -47,11 +47,11 @@
             android:configChanges="orientation|screenSize">
         </activity>
 
-            <!-- Student chooses band -->
+        <!-- Student chooses band -->
         <activity android:name=".ui.choose_band.ChooseBandActivity" android:exported="true">
         </activity>
 
-            <!-- List of courses -->
+        <!-- List of courses -->
         <activity android:name=".ui.course.CourseListActivity" android:exported="true">
         </activity>
 
@@ -122,14 +122,14 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!--            <intent-filter>-->
+            <!--                <action android:name="android.intent.action.MAIN" />-->
+            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+            <!--            </intent-filter>-->
         </activity>
         <activity android:name=".ui.grading.WritingAnswerListActivity"/>
         <activity android:name=".ui.grading.GradingWritingTestActivity"/>
-<!--     Teacher   -->
+        <!--     Teacher   -->
         <activity
             android:name=".ui.TeacherMainActivity"
             android:exported="true">
@@ -138,7 +138,7 @@
             android:name=".ui.profile.teacher.TeacherProfileActivity"
             android:exported="true">
         </activity>
-<!--    Speaking    -->
+        <!--    Speaking    -->
         <activity
             android:name=".ui.video_call.VideoCallActivity"
             android:exported="true">

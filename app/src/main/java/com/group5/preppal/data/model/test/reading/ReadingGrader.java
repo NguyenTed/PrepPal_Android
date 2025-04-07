@@ -2,8 +2,10 @@ package com.group5.preppal.data.model.test.reading;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ReadingGrader {
 
@@ -23,32 +25,34 @@ public class ReadingGrader {
 
             for (ReadingQuestionGroup group : passage.getReadingQuestionGroups()) {
                 List<ReadingQuestion> questions = group.getQuestions();
-                List<String> groupCorrectAnswers = group.getCorrectAnswers(); // optional (used in MCQ_MULTIPLE)
+                List<String> groupCorrectAnswers = group.getCorrectAnswers();
 
-                for (int i = 0; i < questions.size(); i++) {
-                    ReadingQuestion question = questions.get(i);
-                    int number = question.getNumber();
+                if ("MCQ_MULTIPLE".equalsIgnoreCase(group.getType())) {
+                    if (questions == null || questions.isEmpty()) continue;
 
-                    // Fetch user answer
-                    String userAnswer = userAnswers.get(number);
-                    if (userAnswer == null || userAnswer.trim().isEmpty()) continue;
+                    int qNum = questions.get(0).getNumber(); // all share this answer field
+                    String saved = userAnswers.get(qNum);
+                    if (saved == null || groupCorrectAnswers == null) continue;
 
-                    List<String> correctAnswers;
+                    Set<String> selected = new HashSet<>(Arrays.asList(saved.split(",")));
+                    Set<String> correct = new HashSet<>(groupCorrectAnswers);
 
-                    if (group.getType().equalsIgnoreCase("MCQ_MULTIPLE")) {
-                        // Each question gets one correct answer from group-level
-                        correctAnswers = Collections.singletonList(
-                                groupCorrectAnswers.get(i)
-                        );
-                    } else {
-                        correctAnswers = question.getCorrectAnswers();
-                    }
+                    selected.retainAll(correct); // only count correct matches
+                    score += selected.size();
 
-                    // Compare: case-insensitive, trim
-                    for (String correct : correctAnswers) {
-                        if (userAnswer.trim().equalsIgnoreCase(correct.trim())) {
-                            score++;
-                            break;
+                } else {
+                    for (ReadingQuestion question : questions) {
+                        int number = question.getNumber();
+                        String answer = userAnswers.get(number);
+                        List<String> correctAnswers = question.getCorrectAnswers();
+
+                        if (answer == null || correctAnswers == null) continue;
+
+                        for (String correct : correctAnswers) {
+                            if (answer.trim().equalsIgnoreCase(correct.trim())) {
+                                score++;
+                                break;
+                            }
                         }
                     }
                 }

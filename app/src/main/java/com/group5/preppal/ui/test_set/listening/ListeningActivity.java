@@ -2,7 +2,6 @@ package com.group5.preppal.ui.test_set.listening;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.group5.preppal.R;
-import com.group5.preppal.data.model.test.listening.ListeningPart;
 import com.group5.preppal.data.model.test.listening.ListeningSection;
 import com.group5.preppal.viewmodel.ListeningViewModel;
 
@@ -34,7 +32,7 @@ public class ListeningActivity extends AppCompatActivity {
     private RecyclerView groupRecyclerView;
     private Button btnPrevious, btnNextOrSubmit;
 
-    private QuestionGroupAdapter adapter;
+    private ListeningQuestionGroupAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +46,7 @@ public class ListeningActivity extends AppCompatActivity {
         groupRecyclerView = findViewById(R.id.questionGroupRecyclerView);
         groupRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new QuestionGroupAdapter();
+        adapter = new ListeningQuestionGroupAdapter();
         adapter.setUserAnswers(viewModel != null ? viewModel.getUserAnswers() : new HashMap<>());
         groupRecyclerView.setAdapter(adapter);
 
@@ -81,13 +79,12 @@ public class ListeningActivity extends AppCompatActivity {
         });
 
         // Observe part switching
-        viewModel.getCurrentPart().observe(this, partNum -> {
-            tvPartLabel.setText("Part " + partNum);
-            btnPrevious.setVisibility(partNum == 1 ? View.INVISIBLE : View.VISIBLE);
-            btnNextOrSubmit.setText(partNum == 4 ? "Submit" : "Next");
-
-            ListeningPart part = viewModel.getCurrentPartData();
+        viewModel.getCurrentPartData().observe(this, part -> {
             if (part != null) {
+                int partNum = viewModel.getCurrentPart().getValue();
+                tvPartLabel.setText("Part " + partNum);
+                btnPrevious.setVisibility(partNum == 1 ? View.INVISIBLE : View.VISIBLE);
+                btnNextOrSubmit.setText(partNum == 4 ? "Submit" : "Next");
                 adapter.setTimeUp(viewModel.isTimeUp());
                 adapter.submitList(part.getListeningQuestionGroups());
                 playAudio(part.getAudioUrl());

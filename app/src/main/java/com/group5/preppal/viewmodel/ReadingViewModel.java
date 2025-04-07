@@ -18,11 +18,15 @@ import com.group5.preppal.data.model.test.reading.ReadingSection;
 import com.group5.preppal.data.repository.practise_test.ReadingAttemptRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -138,23 +142,7 @@ public class ReadingViewModel extends ViewModel {
             @NonNull OnSuccessListener<Void> onSuccess,
             @NonNull OnFailureListener onFailure
     ) {
-        int rawScore = 0;
-        List<ReadingQuestionGroup> allGroups = new ArrayList<>();
-        if (readingSection != null) {
-            if (readingSection.getPassage1() != null) allGroups.addAll(readingSection.getPassage1().getReadingQuestionGroups());
-            if (readingSection.getPassage2() != null) allGroups.addAll(readingSection.getPassage2().getReadingQuestionGroups());
-            if (readingSection.getPassage3() != null) allGroups.addAll(readingSection.getPassage3().getReadingQuestionGroups());
-        }
-
-        for (ReadingQuestionGroup group : allGroups) {
-            for (ReadingQuestion question : group.getQuestions()) {
-                String ans = userAnswers.get(question.getNumber());
-                if (ans != null && question.getCorrectAnswers().contains(ans.trim())) {
-                    rawScore++;
-                }
-            }
-        }
-
+        int rawScore = ReadingGrader.grade(readingSection, userAnswers);
         float bandScore = ReadingGrader.convertRawScoreToBand(rawScore);
 
         // Firestore maps must have string keys

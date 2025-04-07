@@ -58,10 +58,12 @@ public class ReadingQuestionGroup implements Parcelable {
         this.options = options;
     }
 
+    @PropertyName("correct_answers")
     public List<String> getCorrectAnswers() {
         return correctAnswers;
     }
 
+    @PropertyName("correct_answers")
     public void setCorrectAnswers(List<String> correctAnswers) {
         this.correctAnswers = correctAnswers;
     }

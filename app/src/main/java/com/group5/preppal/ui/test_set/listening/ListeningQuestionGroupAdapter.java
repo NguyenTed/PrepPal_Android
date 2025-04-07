@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class QuestionGroupAdapter extends RecyclerView.Adapter<QuestionGroupAdapter.GroupViewHolder> {
+public class ListeningQuestionGroupAdapter extends RecyclerView.Adapter<ListeningQuestionGroupAdapter.GroupViewHolder> {
 
     private final List<ListeningQuestionGroup> groupList = new ArrayList<>();
     private final List<ListeningQuestionAdapter> questionAdapters = new ArrayList<>();
@@ -52,7 +52,7 @@ public class QuestionGroupAdapter extends RecyclerView.Adapter<QuestionGroupAdap
     public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
         ListeningQuestionGroup group = groupList.get(position);
 
-        Log.d("QuestionGroupAdapter"," Group Type: " + group.getType());
+        Log.d("ListeningQuestionGroupAdapter"," Group Type: " + group.getType());
 
         Glide.with(holder.itemView.getContext())
                 .load(group.getImageUrl())

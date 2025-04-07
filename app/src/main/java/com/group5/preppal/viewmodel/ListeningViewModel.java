@@ -35,7 +35,7 @@ public class ListeningViewModel extends ViewModel {
     private final ListeningAttemptRepository attemptRepository;
 
     private final MutableLiveData<Integer> currentPart = new MutableLiveData<>(1);
-    private final MutableLiveData<ListeningPart> currentPassage = new MutableLiveData<>();
+    private final MutableLiveData<ListeningPart> currentPartData = new MutableLiveData<>();
     private ListeningSection listeningSection;
 
     private final Map<Integer, String> userAnswers = new HashMap<>();
@@ -53,13 +53,14 @@ public class ListeningViewModel extends ViewModel {
         this.attemptRepository = attemptRepository;
     }
 
-    // --- Setup ---
+    // --- Meta ---
     public void setMeta(String testId, String testSetId, Date startedAt) {
         this.testId = testId;
         this.testSetId = testSetId;
         this.startedAt = startedAt;
     }
 
+    // --- Section Setup ---
     public void setListeningSection(ListeningSection section) {
         this.listeningSection = section;
         loadCurrentPart();
@@ -70,12 +71,8 @@ public class ListeningViewModel extends ViewModel {
         return currentPart;
     }
 
-    public LiveData<ListeningPart> getCurrentPassage() {
-        return currentPassage;
-    }
-
-    public ListeningPart getCurrentPartData() {
-        return currentPassage.getValue();
+    public LiveData<ListeningPart> getCurrentPartData() {
+        return currentPartData;
     }
 
     public void goToNextPart() {
@@ -95,20 +92,15 @@ public class ListeningViewModel extends ViewModel {
     private void loadCurrentPart() {
         if (listeningSection == null || currentPart.getValue() == null) return;
 
+        ListeningPart part = null;
         switch (currentPart.getValue()) {
-            case 1:
-                currentPassage.setValue(listeningSection.getPart1());
-                break;
-            case 2:
-                currentPassage.setValue(listeningSection.getPart2());
-                break;
-            case 3:
-                currentPassage.setValue(listeningSection.getPart3());
-                break;
-            case 4:
-                currentPassage.setValue(listeningSection.getPart4());
-                break;
+            case 1: part = listeningSection.getPart1(); break;
+            case 2: part = listeningSection.getPart2(); break;
+            case 3: part = listeningSection.getPart3(); break;
+            case 4: part = listeningSection.getPart4(); break;
         }
+
+        currentPartData.setValue(part);
     }
 
     // --- Answers ---
@@ -158,24 +150,7 @@ public class ListeningViewModel extends ViewModel {
             @NonNull OnSuccessListener<Void> onSuccess,
             @NonNull OnFailureListener onFailure
     ) {
-        int rawScore = 0;
-        List<ListeningQuestionGroup> allGroups = new ArrayList<>();
-        if (listeningSection != null) {
-            if (listeningSection.getPart1() != null) allGroups.addAll(listeningSection.getPart1().getListeningQuestionGroups());
-            if (listeningSection.getPart2() != null) allGroups.addAll(listeningSection.getPart2().getListeningQuestionGroups());
-            if (listeningSection.getPart3() != null) allGroups.addAll(listeningSection.getPart3().getListeningQuestionGroups());
-            if (listeningSection.getPart4() != null) allGroups.addAll(listeningSection.getPart4().getListeningQuestionGroups());
-        }
-
-        for (ListeningQuestionGroup group : allGroups) {
-            for (ListeningQuestion question : group.getQuestions()) {
-                String ans = userAnswers.get(question.getNumber());
-                if (ans != null && question.getCorrectAnswers().contains(ans.trim())) {
-                    rawScore++;
-                }
-            }
-        }
-
+        int rawScore = ListeningGrader.grade(listeningSection, userAnswers);
         float bandScore = ListeningGrader.convertRawScoreToBand(rawScore);
 
         Map<String, String> stringAnswers = new HashMap<>();
@@ -201,4 +176,3 @@ public class ListeningViewModel extends ViewModel {
         super.onCleared();
     }
 }
-
