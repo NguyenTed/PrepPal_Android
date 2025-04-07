@@ -1,6 +1,7 @@
 package com.group5.preppal.data.model.test.listening;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -8,9 +9,10 @@ import java.util.Set;
 
 public class ListeningGrader {
 
-    public static int grade(ListeningSection section, Map<Integer, String> userAnswers) {
-        if (section == null || userAnswers == null) return 0;
-
+    public static int grade(
+            ListeningSection section,
+            Map<Integer, String> userAnswers
+    ) {
         int score = 0;
 
         List<ListeningPart> parts = Arrays.asList(
@@ -25,34 +27,30 @@ public class ListeningGrader {
 
             for (ListeningQuestionGroup group : part.getListeningQuestionGroups()) {
                 List<ListeningQuestion> questions = group.getQuestions();
-                List<String> groupCorrectAnswers = group.getCorrectAnswers();
+                List<String> groupCorrectAnswers = group.getCorrectAnswers(); // optional (used in MCQ_MULTIPLE)
 
-                if ("MCQ_MULTIPLE".equalsIgnoreCase(group.getType())) {
-                    if (questions == null || questions.isEmpty()) continue;
+                for (int i = 0; i < questions.size(); i++) {
+                    ListeningQuestion question = questions.get(i);
+                    int number = question.getNumber();
 
-                    int qNum = questions.get(0).getNumber(); // all share this answer field
-                    String saved = userAnswers.get(qNum);
-                    if (saved == null || groupCorrectAnswers == null) continue;
+                    // Fetch user answer
+                    String userAnswer = userAnswers.get(number);
+                    if (userAnswer == null || userAnswer.trim().isEmpty()) continue;
 
-                    Set<String> selected = new HashSet<>(Arrays.asList(saved.split(",")));
-                    Set<String> correct = new HashSet<>(groupCorrectAnswers);
+                    List<String> correctAnswers;
 
-                    selected.retainAll(correct); // only count correct matches
-                    score += selected.size();
+                    if (group.getType().equalsIgnoreCase("MCQ_MULTIPLE")) {
+                        // Each question gets one correct answer from group-level
+                        correctAnswers = groupCorrectAnswers;
+                    } else {
+                        correctAnswers = question.getCorrectAnswers();
+                    }
 
-                } else {
-                    for (ListeningQuestion question : questions) {
-                        int number = question.getNumber();
-                        String answer = userAnswers.get(number);
-                        List<String> correctAnswers = question.getCorrectAnswers();
-
-                        if (answer == null || correctAnswers == null) continue;
-
-                        for (String correct : correctAnswers) {
-                            if (answer.trim().equalsIgnoreCase(correct.trim())) {
-                                score++;
-                                break;
-                            }
+                    // Compare: case-insensitive, trim
+                    for (String correct : correctAnswers) {
+                        if (userAnswer.trim().equalsIgnoreCase(correct.trim())) {
+                            score++;
+                            break;
                         }
                     }
                 }

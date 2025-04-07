@@ -1,6 +1,7 @@
 package com.group5.preppal.viewmodel;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -12,21 +13,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.group5.preppal.data.model.test.reading.ReadingAttempt;
 import com.group5.preppal.data.model.test.reading.ReadingGrader;
 import com.group5.preppal.data.model.test.reading.ReadingPassage;
-import com.group5.preppal.data.model.test.reading.ReadingQuestion;
-import com.group5.preppal.data.model.test.reading.ReadingQuestionGroup;
 import com.group5.preppal.data.model.test.reading.ReadingSection;
 import com.group5.preppal.data.repository.practise_test.ReadingAttemptRepository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -142,6 +135,7 @@ public class ReadingViewModel extends ViewModel {
             @NonNull OnSuccessListener<Void> onSuccess,
             @NonNull OnFailureListener onFailure
     ) {
+        Log.d("ReadingViewModel", "User Answers: " + userAnswers);
         int rawScore = ReadingGrader.grade(readingSection, userAnswers);
         float bandScore = ReadingGrader.convertRawScoreToBand(rawScore);
 

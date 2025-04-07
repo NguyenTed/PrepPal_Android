@@ -24,6 +24,7 @@ import com.group5.preppal.data.model.test.reading.ReadingQuestion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class ReadingQuestionAdapter extends RecyclerView.Adapter<ReadingQuestion
     private List<ReadingQuestion> questions = new ArrayList<>();
     private String groupType = "";
     private List<String> groupOptions = new ArrayList<>();
-    private final Map<Integer, String> userAnswers;
+    private final Map<Integer, String> userAnswers;;
     private boolean isTimeUp = false;
 
     public ReadingQuestionAdapter(Map<Integer, String> userAnswers) {
@@ -90,92 +91,27 @@ public class ReadingQuestionAdapter extends RecyclerView.Adapter<ReadingQuestion
             case "MCQ_SINGLE":
                 holder.optionsGroup.setVisibility(View.VISIBLE);
                 holder.optionsGroup.removeAllViews();
-                if (question.getOptions() != null) {
-                    for (String opt : question.getOptions()) {
-                        RadioButton radio = new RadioButton(holder.itemView.getContext());
-                        radio.setText(opt);
-                        radio.setChecked(opt.equals(savedAnswer));
-                        radio.setEnabled(!isTimeUp);
-                        radio.setOnCheckedChangeListener((btn, checked) -> {
-                            if (checked) userAnswers.put(qNum, opt);
-                        });
-                        holder.optionsGroup.addView(radio);
-                    }
-                }
-                break;
 
-            case "MATCHING":
-                holder.matchSpinner.setVisibility(View.VISIBLE);
+                RadioGroup radioGroup = holder.optionsGroup;
+                String selected = userAnswers.get(question.getNumber());
 
-                List<String> spinnerOptions = new ArrayList<>();
-                spinnerOptions.add("Select an answer"); // 👈 custom placeholder
-                spinnerOptions.addAll(groupOptions);    // append the real options
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                        holder.itemView.getContext(),
-                        android.R.layout.simple_spinner_item,
-                        spinnerOptions
-                ) {
-                    @Override
-                    public boolean isEnabled(int position) {
-                        return position != 0; // ❌ Disable "Select an answer"
-                    }
-
-                    @Override
-                    public View getDropDownView(int position, View convertView, ViewGroup parent) {
-                        View view = super.getDropDownView(position, convertView, parent);
-                        TextView tv = (TextView) view;
-                        if (position == 0) {
-                            tv.setTextColor(Color.GRAY); // visually dim
-                        } else {
-                            tv.setTextColor(Color.BLACK);
-                        }
-                        return view;
-                    }
-                };
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                holder.matchSpinner.setAdapter(adapter);
-
-                // restore selection
-                if (savedAnswer != null && spinnerOptions.contains(savedAnswer)) {
-                    holder.matchSpinner.setSelection(spinnerOptions.indexOf(savedAnswer));
-                } else {
-                    holder.matchSpinner.setSelection(0); // default to 'Select an answer'
-                }
-
-                holder.matchSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        if (position == 0) {
-                            userAnswers.remove(question.getNumber());
-                        } else {
-                            userAnswers.put(question.getNumber(), spinnerOptions.get(position));
-                        }
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {}
-                });
-                break;
-            case "TRUE_FALSE_NG":
-            case "YES_NO_NG":
-                holder.optionsGroup.setVisibility(View.VISIBLE);
-                holder.optionsGroup.removeAllViews();
-
-                List<String> boolOptions = groupType.equals("TRUE_FALSE_NG")
-                        ? Arrays.asList("True", "False", "Not Given")
-                        : Arrays.asList("Yes", "No", "Not Given");
-
-                for (String opt : boolOptions) {
+                for (String opt : question.getOptions()) {
                     RadioButton radio = new RadioButton(holder.itemView.getContext());
                     radio.setText(opt);
-                    radio.setChecked(opt.equals(savedAnswer));
-                    radio.setEnabled(!isTimeUp);
-                    radio.setOnCheckedChangeListener((btn, checked) -> {
-                        if (checked) userAnswers.put(qNum, opt);
-                    });
-                    holder.optionsGroup.addView(radio);
+                    radio.setId(View.generateViewId());
+                    radio.setChecked(opt.equalsIgnoreCase(selected));
+                    radioGroup.addView(radio);
                 }
+
+                // ✅ Set change listener AFTER adding all radios
+                radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+                    RadioButton selectedBtn = group.findViewById(checkedId);
+                    if (selectedBtn != null) {
+                        String value = selectedBtn.getText().toString();
+                        userAnswers.put(question.getNumber(), value);
+                        Log.d("MCQ_SINGLE_ANS", "Q" + question.getNumber() + " = " + value);
+                    }
+                });
                 break;
 
             case "MCQ_MULTIPLE":
@@ -252,6 +188,81 @@ public class ReadingQuestionAdapter extends RecyclerView.Adapter<ReadingQuestion
                     });
 
                     holder.optionsGroup.addView(cb);
+                }
+                break;
+
+            case "MATCHING":
+                holder.matchSpinner.setVisibility(View.VISIBLE);
+
+                List<String> spinnerOptions = new ArrayList<>();
+                spinnerOptions.add("Select an answer"); // 👈 custom placeholder
+                spinnerOptions.addAll(groupOptions);    // append the real options
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                        holder.itemView.getContext(),
+                        android.R.layout.simple_spinner_item,
+                        spinnerOptions
+                ) {
+                    @Override
+                    public boolean isEnabled(int position) {
+                        return position != 0; // ❌ Disable "Select an answer"
+                    }
+
+                    @Override
+                    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                        View view = super.getDropDownView(position, convertView, parent);
+                        TextView tv = (TextView) view;
+                        if (position == 0) {
+                            tv.setTextColor(Color.GRAY); // visually dim
+                        } else {
+                            tv.setTextColor(Color.BLACK);
+                        }
+                        return view;
+                    }
+                };
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                holder.matchSpinner.setAdapter(adapter);
+
+                // restore selection
+                if (savedAnswer != null && spinnerOptions.contains(savedAnswer)) {
+                    holder.matchSpinner.setSelection(spinnerOptions.indexOf(savedAnswer));
+                } else {
+                    holder.matchSpinner.setSelection(0); // default to 'Select an answer'
+                }
+
+                holder.matchSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        if (position == 0) {
+                            userAnswers.remove(question.getNumber());
+                        } else {
+                            userAnswers.put(question.getNumber(), spinnerOptions.get(position));
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {}
+                });
+                break;
+
+            case "TRUE_FALSE_NG":
+            case "YES_NO_NG":
+                holder.optionsGroup.setVisibility(View.VISIBLE);
+                holder.optionsGroup.removeAllViews();
+
+                List<String> boolOptions = groupType.equals("TRUE_FALSE_NG")
+                        ? Arrays.asList("True", "False", "Not Given")
+                        : Arrays.asList("Yes", "No", "Not Given");
+
+                for (String opt : boolOptions) {
+                    RadioButton radio = new RadioButton(holder.itemView.getContext());
+                    radio.setText(opt);
+                    radio.setChecked(opt.equals(savedAnswer));
+                    radio.setEnabled(!isTimeUp);
+                    radio.setOnCheckedChangeListener((btn, checked) -> {
+                        if (checked) userAnswers.put(qNum, opt);
+                    });
+                    holder.optionsGroup.addView(radio);
                 }
                 break;
         }

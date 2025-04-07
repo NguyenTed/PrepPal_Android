@@ -2,6 +2,7 @@ package com.group5.preppal.ui.test_set.listening;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -27,7 +28,6 @@ public class ListeningActivity extends AppCompatActivity {
 
     private ListeningViewModel viewModel;
     private MediaPlayer mediaPlayer;
-
     private TextView tvPartLabel, tvTimer;
     private RecyclerView groupRecyclerView;
     private Button btnPrevious, btnNextOrSubmit;
@@ -46,11 +46,11 @@ public class ListeningActivity extends AppCompatActivity {
         groupRecyclerView = findViewById(R.id.questionGroupRecyclerView);
         groupRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        viewModel = new ViewModelProvider(this).get(ListeningViewModel.class);
+
         adapter = new ListeningQuestionGroupAdapter();
         adapter.setUserAnswers(viewModel != null ? viewModel.getUserAnswers() : new HashMap<>());
         groupRecyclerView.setAdapter(adapter);
-
-        viewModel = new ViewModelProvider(this).get(ListeningViewModel.class);
 
         // Get data from intent
         String testId = getIntent().getStringExtra("testId");
@@ -73,7 +73,6 @@ public class ListeningActivity extends AppCompatActivity {
             if ("00:00".equals(time)) {
                 viewModel.setTimeUp(true);
                 adapter.setTimeUp(true);
-                adapter.disableAllInputs();
                 submitAnswers(); // auto submit
             }
         });
@@ -118,9 +117,16 @@ public class ListeningActivity extends AppCompatActivity {
     }
 
     private void submitAnswers() {
-        Date submittedAt = new Date();
+        Log.d("ListeningActivity", "User answers: " + viewModel.getUserAnswers());
+
+        String testId = getIntent().getStringExtra("testId");
+        String testSetId = getIntent().getStringExtra("testSetId");
+
         viewModel.submitListeningAttempt(
-                submittedAt,
+                testId,
+                testSetId,
+                new Date(),
+                new Date(),
                 unused -> {
                     Toast.makeText(this, "Listening submitted! 🎧", Toast.LENGTH_SHORT).show();
                     finish(); // or move to result screen

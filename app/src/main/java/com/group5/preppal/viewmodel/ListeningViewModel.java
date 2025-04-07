@@ -1,6 +1,7 @@
 package com.group5.preppal.viewmodel;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
@@ -146,10 +147,14 @@ public class ListeningViewModel extends ViewModel {
 
     // --- Submission ---
     public void submitListeningAttempt(
+            String testId,
+            String testSetId,
+            Date startedAt,
             @NonNull Date submittedAt,
             @NonNull OnSuccessListener<Void> onSuccess,
             @NonNull OnFailureListener onFailure
     ) {
+        Log.d("ListeningViewModel", "User Answers: " + userAnswers);
         int rawScore = ListeningGrader.grade(listeningSection, userAnswers);
         float bandScore = ListeningGrader.convertRawScoreToBand(rawScore);
 
