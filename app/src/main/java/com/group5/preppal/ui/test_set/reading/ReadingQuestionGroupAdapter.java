@@ -79,4 +79,3 @@ public class ReadingQuestionGroupAdapter extends RecyclerView.Adapter<ReadingQue
         }
     }
 }
-

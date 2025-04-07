@@ -12,13 +12,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.group5.preppal.R;
-import com.group5.preppal.data.model.test.reading.ReadingPassage;
 import com.group5.preppal.data.model.test.reading.ReadingSection;
 import com.group5.preppal.viewmodel.ReadingViewModel;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -26,7 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class ReadingActivity extends AppCompatActivity {
 
     private ReadingViewModel viewModel;
-    private TextView tvPartLabel;
+    private TextView tvPartLabel, tvTimer;
     private ViewPager2 readingViewPager;
     private Button btnPrevious, btnNextOrSubmit;
 
@@ -39,7 +36,7 @@ public class ReadingActivity extends AppCompatActivity {
         readingViewPager = findViewById(R.id.readingViewPager);
         btnPrevious = findViewById(R.id.btnPreviousPassage);
         btnNextOrSubmit = findViewById(R.id.btnNextOrSubmit);
-        TextView tvTimer = findViewById(R.id.tvReadingTimer); // Add this to layout
+        tvTimer = findViewById(R.id.tvReadingTimer); // Add this to layout
 
         viewModel = new ViewModelProvider(this).get(ReadingViewModel.class);
 

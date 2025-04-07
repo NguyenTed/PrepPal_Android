@@ -22,9 +22,8 @@ import java.util.Map;
 public class ListeningQuestionGroupAdapter extends RecyclerView.Adapter<ListeningQuestionGroupAdapter.GroupViewHolder> {
 
     private final List<ListeningQuestionGroup> groupList = new ArrayList<>();
-    private final List<ListeningQuestionAdapter> questionAdapters = new ArrayList<>();
     private Map<Integer, String> userAnswers = new HashMap<>();
-    private boolean isTimeUp;
+    private boolean isTimeUp = false;
 
     public void submitList(List<ListeningQuestionGroup> newList) {
         groupList.clear();
@@ -32,12 +31,12 @@ public class ListeningQuestionGroupAdapter extends RecyclerView.Adapter<Listenin
         notifyDataSetChanged();
     }
 
-    public void setTimeUp(boolean isTimeUp) {
-        this.isTimeUp = isTimeUp;
-    }
-
     public void setUserAnswers(Map<Integer, String> userAnswers) {
         this.userAnswers = userAnswers;
+    }
+
+    public void setTimeUp(boolean isTimeUp) {
+        this.isTimeUp = isTimeUp;
     }
 
     @NonNull
@@ -51,33 +50,22 @@ public class ListeningQuestionGroupAdapter extends RecyclerView.Adapter<Listenin
     @Override
     public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
         ListeningQuestionGroup group = groupList.get(position);
-
-        Log.d("ListeningQuestionGroupAdapter"," Group Type: " + group.getType());
-
         Glide.with(holder.itemView.getContext())
                 .load(group.getImageUrl())
                 .into(holder.groupImage);
 
-        ListeningQuestionAdapter questionAdapter = new ListeningQuestionAdapter();
-        questionAdapter.setTimeUp(isTimeUp);
+        Log.d("ListeningQuestionGroupAdapter"," Group Type: " + group.getType());
+
+        ListeningQuestionAdapter questionAdapter = new ListeningQuestionAdapter(userAnswers);
         holder.questionRecyclerView.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
         holder.questionRecyclerView.setAdapter(questionAdapter);
-        questionAdapter.setData(group.getQuestions(), group.getType(), group.getOptions(), userAnswers);
 
-        if (!questionAdapters.contains(questionAdapter)) {
-            questionAdapters.add(questionAdapter);
-        }
+        questionAdapter.setData(group.getQuestions(), group.getType(), group.getOptions(), isTimeUp);
     }
 
     @Override
     public int getItemCount() {
         return groupList.size();
-    }
-
-    public void disableAllInputs() {
-        for (ListeningQuestionAdapter adapter : questionAdapters) {
-            adapter.disableInputs();
-        }
     }
 
     static class GroupViewHolder extends RecyclerView.ViewHolder {

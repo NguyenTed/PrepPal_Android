@@ -9,50 +9,47 @@ import java.util.Set;
 
 public class ReadingGrader {
 
-    public static int grade(ReadingSection section, Map<Integer, String> userAnswers) {
-        if (section == null || userAnswers == null) return 0;
-
+    public static int grade(
+            ReadingSection section,
+            Map<Integer, String> userAnswers
+    ) {
         int score = 0;
 
-        List<ReadingPassage> passages = Arrays.asList(
+        List<ReadingPassage> parts = Arrays.asList(
                 section.getPassage1(),
                 section.getPassage2(),
                 section.getPassage3()
         );
 
-        for (ReadingPassage passage : passages) {
-            if (passage == null || passage.getReadingQuestionGroups() == null) continue;
+        for (ReadingPassage part : parts) {
+            if (part == null || part.getReadingQuestionGroups() == null) continue;
 
-            for (ReadingQuestionGroup group : passage.getReadingQuestionGroups()) {
+            for (ReadingQuestionGroup group : part.getReadingQuestionGroups()) {
                 List<ReadingQuestion> questions = group.getQuestions();
-                List<String> groupCorrectAnswers = group.getCorrectAnswers();
+                List<String> groupCorrectAnswers = group.getCorrectAnswers(); // optional (used in MCQ_MULTIPLE)
 
-                if ("MCQ_MULTIPLE".equalsIgnoreCase(group.getType())) {
-                    if (questions == null || questions.isEmpty()) continue;
+                for (int i = 0; i < questions.size(); i++) {
+                    ReadingQuestion question = questions.get(i);
+                    int number = question.getNumber();
 
-                    int qNum = questions.get(0).getNumber(); // all share this answer field
-                    String saved = userAnswers.get(qNum);
-                    if (saved == null || groupCorrectAnswers == null) continue;
+                    // Fetch user answer
+                    String userAnswer = userAnswers.get(number);
+                    if (userAnswer == null || userAnswer.trim().isEmpty()) continue;
 
-                    Set<String> selected = new HashSet<>(Arrays.asList(saved.split(",")));
-                    Set<String> correct = new HashSet<>(groupCorrectAnswers);
+                    List<String> correctAnswers;
 
-                    selected.retainAll(correct); // only count correct matches
-                    score += selected.size();
+                    if (group.getType().equalsIgnoreCase("MCQ_MULTIPLE")) {
+                        // Each question gets one correct answer from group-level
+                        correctAnswers = groupCorrectAnswers;
+                    } else {
+                        correctAnswers = question.getCorrectAnswers();
+                    }
 
-                } else {
-                    for (ReadingQuestion question : questions) {
-                        int number = question.getNumber();
-                        String answer = userAnswers.get(number);
-                        List<String> correctAnswers = question.getCorrectAnswers();
-
-                        if (answer == null || correctAnswers == null) continue;
-
-                        for (String correct : correctAnswers) {
-                            if (answer.trim().equalsIgnoreCase(correct.trim())) {
-                                score++;
-                                break;
-                            }
+                    // Compare: case-insensitive, trim
+                    for (String correct : correctAnswers) {
+                        if (userAnswer.trim().equalsIgnoreCase(correct.trim())) {
+                            score++;
+                            break;
                         }
                     }
                 }
