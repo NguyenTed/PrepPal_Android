@@ -1,7 +1,7 @@
 [versions]
 agp = "8.7.3"
 androidPdfViewer = "3.2.0-beta.1"
-androidPdfViewerVersion = "2.8.2"
+githubAndroidPdfViewer = "3.2.0-beta.1"
 hiltAndroid = "2.51.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -12,6 +12,7 @@ mupdfMini = "1.20.3"
 playServicesBase = "18.5.0"
 
 [libraries]
+android-pdf-viewer = { module = "com.github.barteksc:android-pdf-viewer", version.ref = "githubAndroidPdfViewer" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

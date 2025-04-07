@@ -9,20 +9,24 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.group5.preppal.data.model.test.listening.ListeningAttempt;
-import com.group5.preppal.data.model.test.listening.ListeningGrader;
-import com.group5.preppal.data.model.test.listening.ListeningPart;
-import com.group5.preppal.data.model.test.listening.ListeningQuestion;
-import com.group5.preppal.data.model.test.listening.ListeningQuestionGroup;
-import com.group5.preppal.data.model.test.listening.ListeningSection;
-import com.group5.preppal.data.repository.practise_test.ListeningAttemptRepository;
+import com.group5.preppal.data.model.test.reading.ReadingAttempt;
+import com.group5.preppal.data.model.test.reading.ReadingGrader;
+import com.group5.preppal.data.model.test.reading.ReadingPassage;
+import com.group5.preppal.data.model.test.reading.ReadingQuestion;
+import com.group5.preppal.data.model.test.reading.ReadingQuestionGroup;
+import com.group5.preppal.data.model.test.reading.ReadingSection;
+import com.group5.preppal.data.repository.practise_test.ReadingAttemptRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -30,80 +34,67 @@ import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
-public class ListeningViewModel extends ViewModel {
+public class ReadingViewModel extends ViewModel {
 
-    private final ListeningAttemptRepository attemptRepository;
+    private final ReadingAttemptRepository attemptRepository;
 
     private final MutableLiveData<Integer> currentPart = new MutableLiveData<>(1);
-    private final MutableLiveData<ListeningPart> currentPartData = new MutableLiveData<>();
-    private ListeningSection listeningSection;
+    private final MutableLiveData<ReadingPassage> currentPassage = new MutableLiveData<>();
+    private ReadingSection readingSection;
 
     private final Map<Integer, String> userAnswers = new HashMap<>();
     private boolean isTimeUp = false;
     private final MutableLiveData<String> timeLeft = new MutableLiveData<>();
     private CountDownTimer timer;
 
-    // Meta
-    private String testId;
-    private String testSetId;
-    private Date startedAt;
-
     @Inject
-    public ListeningViewModel(ListeningAttemptRepository attemptRepository) {
+    public ReadingViewModel(ReadingAttemptRepository attemptRepository) {
         this.attemptRepository = attemptRepository;
     }
 
-    // --- Meta ---
-    public void setMeta(String testId, String testSetId, Date startedAt) {
-        this.testId = testId;
-        this.testSetId = testSetId;
-        this.startedAt = startedAt;
-    }
-
-    // --- Section Setup ---
-    public void setListeningSection(ListeningSection section) {
-        this.listeningSection = section;
-        loadCurrentPart();
-    }
-
-    // --- Navigation ---
     public LiveData<Integer> getCurrentPart() {
         return currentPart;
     }
 
-    public LiveData<ListeningPart> getCurrentPartData() {
-        return currentPartData;
+    public LiveData<ReadingPassage> getCurrentPassage() {
+        return currentPassage;
+    }
+
+    public void setReadingSection(ReadingSection section) {
+        this.readingSection = section;
+        loadCurrentPassage();
     }
 
     public void goToNextPart() {
-        if (currentPart.getValue() != null && currentPart.getValue() < 4) {
+        if (currentPart.getValue() != null && currentPart.getValue() < 3) {
             currentPart.setValue(currentPart.getValue() + 1);
-            loadCurrentPart();
+            loadCurrentPassage();
         }
     }
 
     public void goToPreviousPart() {
         if (currentPart.getValue() != null && currentPart.getValue() > 1) {
             currentPart.setValue(currentPart.getValue() - 1);
-            loadCurrentPart();
+            loadCurrentPassage();
         }
     }
 
-    private void loadCurrentPart() {
-        if (listeningSection == null || currentPart.getValue() == null) return;
+    private void loadCurrentPassage() {
+        if (readingSection == null || currentPart.getValue() == null) return;
 
-        ListeningPart part = null;
         switch (currentPart.getValue()) {
-            case 1: part = listeningSection.getPart1(); break;
-            case 2: part = listeningSection.getPart2(); break;
-            case 3: part = listeningSection.getPart3(); break;
-            case 4: part = listeningSection.getPart4(); break;
+            case 1:
+                currentPassage.setValue(readingSection.getPassage1());
+                break;
+            case 2:
+                currentPassage.setValue(readingSection.getPassage2());
+                break;
+            case 3:
+                currentPassage.setValue(readingSection.getPassage3());
+                break;
         }
-
-        currentPartData.setValue(part);
     }
 
-    // --- Answers ---
     public Map<Integer, String> getUserAnswers() {
         return userAnswers;
     }
@@ -112,7 +103,14 @@ public class ListeningViewModel extends ViewModel {
         userAnswers.put(questionNumber, answer);
     }
 
-    // --- Timer ---
+    public boolean isTimeUp() {
+        return isTimeUp;
+    }
+
+    public void setTimeUp(boolean timeUp) {
+        this.isTimeUp = timeUp;
+    }
+
     public LiveData<String> getTimeLeft() {
         return timeLeft;
     }
@@ -136,29 +134,24 @@ public class ListeningViewModel extends ViewModel {
         timer.start();
     }
 
-    public boolean isTimeUp() {
-        return isTimeUp;
-    }
-
-    public void setTimeUp(boolean timeUp) {
-        this.isTimeUp = timeUp;
-    }
-
-    // --- Submission ---
-    public void submitListeningAttempt(
-            @NonNull Date submittedAt,
+    public void submitReadingAttempt(
+            String testId,
+            String testSetId,
+            Date startedAt,
+            Date submittedAt,
             @NonNull OnSuccessListener<Void> onSuccess,
             @NonNull OnFailureListener onFailure
     ) {
-        int rawScore = ListeningGrader.grade(listeningSection, userAnswers);
-        float bandScore = ListeningGrader.convertRawScoreToBand(rawScore);
+        int rawScore = ReadingGrader.grade(readingSection, userAnswers);
+        float bandScore = ReadingGrader.convertRawScoreToBand(rawScore);
 
+        // Firestore maps must have string keys
         Map<String, String> stringAnswers = new HashMap<>();
         for (Map.Entry<Integer, String> entry : userAnswers.entrySet()) {
             stringAnswers.put(String.valueOf(entry.getKey()), entry.getValue());
         }
 
-        ListeningAttempt attempt = new ListeningAttempt();
+        ReadingAttempt attempt = new ReadingAttempt();
         attempt.setTestId(testId);
         attempt.setTestSetId(testSetId);
         attempt.setAnswers(stringAnswers);
@@ -167,7 +160,7 @@ public class ListeningViewModel extends ViewModel {
         attempt.setStartedAt(startedAt);
         attempt.setSubmittedAt(submittedAt);
 
-        attemptRepository.submitListeningAttempt(attempt, onSuccess, onFailure);
+        attemptRepository.submitReadingAttempt(attempt, onSuccess, onFailure);
     }
 
     @Override
@@ -176,3 +169,4 @@ public class ListeningViewModel extends ViewModel {
         super.onCleared();
     }
 }
+

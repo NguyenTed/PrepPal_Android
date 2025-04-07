@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.test.Test;
 import com.group5.preppal.data.model.test.listening.ListeningSection;
+import com.group5.preppal.data.model.test.reading.ReadingSection;
 import com.group5.preppal.data.model.test.speaking.SpeakingSection;
 import com.group5.preppal.data.model.test.writing.WritingSection;
 import com.group5.preppal.data.model.test.writing.WritingTask;
 import com.group5.preppal.ui.test_set.listening.ListeningActivity;
+import com.group5.preppal.ui.test_set.reading.ReadingActivity;
 import com.group5.preppal.ui.test_set.speaking.SpeakingActivity;
 import com.group5.preppal.ui.test_set.writing.WritingActivity;
 import com.group5.preppal.viewmodel.TestListViewModel;
@@ -48,8 +50,26 @@ public class TestListActivity extends AppCompatActivity {
                 }
 
                 Intent intent = new Intent(TestListActivity.this, ListeningActivity.class);
+                intent.putExtra("testId", test.getId());
+                intent.putExtra("testSetId", test.getTestSetId());
                 intent.putExtra("testName", test.getName());
                 intent.putExtra("listeningSection", listening);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onReadingClick(Test test) {
+                ReadingSection reading = test.getReadingSection();
+                if (reading == null) {
+                    Log.e("TEST_DEBUG", "Reading section is NULL!");
+                    return;
+                }
+
+                Intent intent = new Intent(TestListActivity.this, ReadingActivity.class);
+                intent.putExtra("testId", test.getId());
+                intent.putExtra("testSetId", test.getTestSetId());
+                intent.putExtra("testName", test.getName());
+                intent.putExtra("readingSection", reading);
                 startActivity(intent);
             }
 

@@ -2,8 +2,10 @@ package com.group5.preppal.ui.test_set.listening;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -11,11 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.group5.preppal.R;
-import com.group5.preppal.data.model.test.listening.ListeningPart;
 import com.group5.preppal.data.model.test.listening.ListeningSection;
 import com.group5.preppal.viewmodel.ListeningViewModel;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -24,54 +27,85 @@ public class ListeningActivity extends AppCompatActivity {
 
     private ListeningViewModel viewModel;
     private MediaPlayer mediaPlayer;
-    private TextView partLabel;
-    private RecyclerView groupRecyclerView;
-    private QuestionGroupAdapter adapter;
 
-    private ListeningSection section;
+    private TextView tvPartLabel, tvTimer;
+    private RecyclerView groupRecyclerView;
+    private Button btnPrevious, btnNextOrSubmit;
+
+    private ListeningQuestionGroupAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listening);
 
-        partLabel = findViewById(R.id.partLabelTextView);
+        tvPartLabel = findViewById(R.id.partLabelTextView);
+        tvTimer = findViewById(R.id.tvListeningTimer);
+        btnPrevious = findViewById(R.id.btnPreviousPart);
+        btnNextOrSubmit = findViewById(R.id.btnNextPart);
         groupRecyclerView = findViewById(R.id.questionGroupRecyclerView);
         groupRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new QuestionGroupAdapter();
+
+        adapter = new ListeningQuestionGroupAdapter();
+        adapter.setUserAnswers(viewModel != null ? viewModel.getUserAnswers() : new HashMap<>());
         groupRecyclerView.setAdapter(adapter);
 
         viewModel = new ViewModelProvider(this).get(ListeningViewModel.class);
 
-        section = getIntent().getParcelableExtra("listeningSection");
-        if (section != null) {
-            switchToPart(section.getPart1(), 1);
-        }
+        // Get data from intent
+        String testId = getIntent().getStringExtra("testId");
+        String testSetId = getIntent().getStringExtra("testSetId");
+        Date startedAt = new Date();
+        viewModel.setMeta(testId, testSetId, startedAt);
 
-        viewModel.getCurrentPart().observe(this, part -> {
+        ListeningSection listeningSection = getIntent().getParcelableExtra("listeningSection");
+        if (listeningSection == null) {
+            Toast.makeText(this, "Listening section is missing", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        viewModel.setListeningSection(listeningSection);
+
+        // Start timer
+        viewModel.startTimer(60 * 60 * 1000); // 60 mins
+        viewModel.getTimeLeft().observe(this, time -> {
+            tvTimer.setText(time);
+            if ("00:00".equals(time)) {
+                viewModel.setTimeUp(true);
+                adapter.setTimeUp(true);
+                adapter.disableAllInputs();
+                submitAnswers(); // auto submit
+            }
+        });
+
+        // Observe part switching
+        viewModel.getCurrentPartData().observe(this, part -> {
             if (part != null) {
-                partLabel.setText("Part " + getCurrentPartNumber(part));
-                Log.d("LISTENING_DEBUG", "questionGroups size = " + part.getQuestionGroups().size());
-                adapter.submitList(part.getQuestionGroups());
+                int partNum = viewModel.getCurrentPart().getValue();
+                tvPartLabel.setText("Part " + partNum);
+                btnPrevious.setVisibility(partNum == 1 ? View.INVISIBLE : View.VISIBLE);
+                btnNextOrSubmit.setText(partNum == 4 ? "Submit" : "Next");
+                adapter.setTimeUp(viewModel.isTimeUp());
+                adapter.submitList(part.getListeningQuestionGroups());
                 playAudio(part.getAudioUrl());
             }
         });
 
-        findViewById(R.id.btnPart1).setOnClickListener(v -> switchToPart(section.getPart1(), 1));
-        findViewById(R.id.btnPart2).setOnClickListener(v -> switchToPart(section.getPart2(), 2));
-        findViewById(R.id.btnPart3).setOnClickListener(v -> switchToPart(section.getPart3(), 3));
-        findViewById(R.id.btnPart4).setOnClickListener(v -> switchToPart(section.getPart4(), 4));
-    }
-
-    private void switchToPart(ListeningPart part, int partNumber) {
-        viewModel.setPart(part);
+        // Navigation
+        btnPrevious.setOnClickListener(v -> viewModel.goToPreviousPart());
+        btnNextOrSubmit.setOnClickListener(v -> {
+            if (viewModel.getCurrentPart().getValue() == 4) {
+                submitAnswers();
+            } else {
+                viewModel.goToNextPart();
+            }
+        });
     }
 
     private void playAudio(String audioUrl) {
         if (mediaPlayer != null) {
             mediaPlayer.release();
         }
-
         mediaPlayer = new MediaPlayer();
         try {
             mediaPlayer.setDataSource(audioUrl);
@@ -79,23 +113,25 @@ public class ListeningActivity extends AppCompatActivity {
             mediaPlayer.start();
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(this, "Failed to play audio", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private int getCurrentPartNumber(ListeningPart part) {
-        if (part == section.getPart1()) return 1;
-        if (part == section.getPart2()) return 2;
-        if (part == section.getPart3()) return 3;
-        if (part == section.getPart4()) return 4;
-        return -1;
+    private void submitAnswers() {
+        Date submittedAt = new Date();
+        viewModel.submitListeningAttempt(
+                submittedAt,
+                unused -> {
+                    Toast.makeText(this, "Listening submitted! 🎧", Toast.LENGTH_SHORT).show();
+                    finish(); // or move to result screen
+                },
+                e -> Toast.makeText(this, "Submit failed", Toast.LENGTH_SHORT).show()
+        );
     }
 
     @Override
     protected void onDestroy() {
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-        }
+        if (mediaPlayer != null) mediaPlayer.release();
         super.onDestroy();
     }
 }
-

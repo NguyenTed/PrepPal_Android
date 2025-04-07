@@ -9,13 +9,13 @@ import java.util.List;
 
 public class ListeningPart implements Parcelable {
     private String audioUrl;
-    private List<QuestionGroup> questionGroups;
+    private List<ListeningQuestionGroup> listeningQuestionGroups;
 
     public ListeningPart() {}
 
     protected ListeningPart(Parcel in) {
         audioUrl = in.readString();
-        questionGroups = in.createTypedArrayList(QuestionGroup.CREATOR);
+        listeningQuestionGroups = in.createTypedArrayList(ListeningQuestionGroup.CREATOR);
     }
 
     @PropertyName("audio_url")
@@ -29,19 +29,19 @@ public class ListeningPart implements Parcelable {
     }
 
     @PropertyName("question_groups")
-    public List<QuestionGroup> getQuestionGroups() {
-        return questionGroups;
+    public List<ListeningQuestionGroup> getListeningQuestionGroups() {
+        return listeningQuestionGroups;
     }
 
     @PropertyName("question_groups")
-    public void setQuestionGroups(List<QuestionGroup> questionGroups) {
-        this.questionGroups = questionGroups;
+    public void setListeningQuestionGroups(List<ListeningQuestionGroup> listeningQuestionGroups) {
+        this.listeningQuestionGroups = listeningQuestionGroups;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(audioUrl);
-        dest.writeTypedList(questionGroups);
+        dest.writeTypedList(listeningQuestionGroups);
     }
 
     @Override
