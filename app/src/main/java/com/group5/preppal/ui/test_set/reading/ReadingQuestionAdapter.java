@@ -1,4 +1,4 @@
-package com.group5.preppal.ui.test_set.listening;
+package com.group5.preppal.ui.test_set.reading;
 
 import android.graphics.Color;
 import android.text.Editable;
@@ -20,7 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.group5.preppal.R;
-import com.group5.preppal.data.model.test.listening.ListeningQuestion;
+import com.group5.preppal.data.model.test.reading.ReadingQuestion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,19 +29,19 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-public class ListeningQuestionAdapter extends RecyclerView.Adapter<ListeningQuestionAdapter.QuestionViewHolder> {
+public class ReadingQuestionAdapter extends RecyclerView.Adapter<ReadingQuestionAdapter.QuestionViewHolder> {
 
-    private List<ListeningQuestion> questions = new ArrayList<>();
+    private List<ReadingQuestion> questions = new ArrayList<>();
     private String groupType = "";
     private List<String> groupOptions = new ArrayList<>();
-    private final Map<Integer, String> userAnswers;
+    private final Map<Integer, String> userAnswers;;
     private boolean isTimeUp = false;
 
-    public ListeningQuestionAdapter(Map<Integer, String> userAnswers) {
+    public ReadingQuestionAdapter(Map<Integer, String> userAnswers) {
         this.userAnswers = userAnswers;
     }
 
-    public void setData(List<ListeningQuestion> questions, String groupType, List<String> groupOptions, boolean isTimeUp) {
+    public void setData(List<ReadingQuestion> questions, String groupType, List<String> groupOptions, boolean isTimeUp) {
         this.questions = questions != null ? questions : new ArrayList<>();
         this.groupType = groupType != null ? groupType : "";
         this.groupOptions = groupOptions != null ? groupOptions : new ArrayList<>();
@@ -59,7 +59,7 @@ public class ListeningQuestionAdapter extends RecyclerView.Adapter<ListeningQues
 
     @Override
     public void onBindViewHolder(@NonNull QuestionViewHolder holder, int position) {
-        ListeningQuestion question = questions.get(position);
+        ReadingQuestion question = questions.get(position);
         int qNum = question.getNumber();
         String savedAnswer = userAnswers.get(qNum);
 
@@ -136,7 +136,7 @@ public class ListeningQuestionAdapter extends RecyclerView.Adapter<ListeningQues
 
                 LinkedHashSet<String> selectedAnswers = new LinkedHashSet<>();
                 // Pull previous selections from ANY question in group
-                for (ListeningQuestion q : questions) {
+                for (ReadingQuestion q : questions) {
                     String saved = userAnswers.get(q.getNumber());
                     if (saved != null) selectedAnswers.addAll(Arrays.asList(saved.split(",")));
                 }
@@ -175,7 +175,7 @@ public class ListeningQuestionAdapter extends RecyclerView.Adapter<ListeningQues
 
                         // Save to ALL questions in group
                         int i = 0;
-                        for (ListeningQuestion q : questions) {
+                        for (ReadingQuestion q : questions) {
                             if (i < selectedAnswers.size()) {
                                 String ans = (String) selectedAnswers.toArray()[i];
                                 userAnswers.put(q.getNumber(), ans);
@@ -244,6 +244,27 @@ public class ListeningQuestionAdapter extends RecyclerView.Adapter<ListeningQues
                     public void onNothingSelected(AdapterView<?> parent) {}
                 });
                 break;
+
+            case "TRUE_FALSE_NG":
+            case "YES_NO_NG":
+                holder.optionsGroup.setVisibility(View.VISIBLE);
+                holder.optionsGroup.removeAllViews();
+
+                List<String> boolOptions = groupType.equals("TRUE_FALSE_NG")
+                        ? Arrays.asList("True", "False", "Not Given")
+                        : Arrays.asList("Yes", "No", "Not Given");
+
+                for (String opt : boolOptions) {
+                    RadioButton radio = new RadioButton(holder.itemView.getContext());
+                    radio.setText(opt);
+                    radio.setChecked(opt.equals(savedAnswer));
+                    radio.setEnabled(!isTimeUp);
+                    radio.setOnCheckedChangeListener((btn, checked) -> {
+                        if (checked) userAnswers.put(qNum, opt);
+                    });
+                    holder.optionsGroup.addView(radio);
+                }
+                break;
         }
     }
 
@@ -267,3 +288,4 @@ public class ListeningQuestionAdapter extends RecyclerView.Adapter<ListeningQues
         }
     }
 }
+

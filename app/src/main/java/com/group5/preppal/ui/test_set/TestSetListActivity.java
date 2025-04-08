@@ -10,8 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.group5.preppal.R;
-import com.group5.preppal.data.model.test.Test;
-import com.group5.preppal.data.model.test.TestSet;
 import com.group5.preppal.viewmodel.TestSetViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;

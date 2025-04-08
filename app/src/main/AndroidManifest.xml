@@ -22,7 +22,7 @@
         tools:targetApi="31" >
 
         <!-- Shared Activities -->
-            <!-- Login Activity -->
+        <!-- Login Activity -->
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="true"
@@ -34,12 +34,12 @@
             </intent-filter>
         </activity>
 
-            <!-- Register Activity -->
+        <!-- Register Activity -->
         <activity android:name=".ui.auth.RegisterActivity" android:exported="true">
         </activity>
 
         <!-- Student's Activity -->
-            <!-- Main Activity (Home Screen) -->
+        <!-- Main Activity (Home Screen) -->
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
@@ -47,11 +47,11 @@
             android:configChanges="orientation|screenSize">
         </activity>
 
-            <!-- Student chooses band -->
+        <!-- Student chooses band -->
         <activity android:name=".ui.choose_band.ChooseBandActivity" android:exported="true">
         </activity>
 
-            <!-- List of courses -->
+        <!-- List of courses -->
         <activity android:name=".ui.course.CourseListActivity" android:exported="true">
         </activity>
 
@@ -125,7 +125,7 @@
         </activity>
         <activity android:name=".ui.grading.WritingAnswerListActivity"/>
         <activity android:name=".ui.grading.GradingWritingTestActivity"/>
-<!--     Teacher   -->
+        <!--     Teacher   -->
         <activity
             android:name=".ui.TeacherMainActivity"
             android:exported="true">
@@ -146,12 +146,9 @@
         <activity android:name=".ui.admin.AddNewTeacherActivity"/>
         <activity android:name=".ui.test_set.TestListActivity"/>
         <activity android:name=".ui.test_set.TestSetListActivity"/>
+        <activity android:name=".ui.test_set.listening.ListeningActivity"/>
+        <activity android:name=".ui.test_set.reading.ReadingActivity"/>
         <activity android:name=".ui.test_set.writing.WritingActivity"/>
         <activity android:name=".ui.test_set.speaking.SpeakingActivity"/>
-        <activity android:name=".ui.test_set.listening.ListeningActivity"/>
-
     </application>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-
 </manifest>

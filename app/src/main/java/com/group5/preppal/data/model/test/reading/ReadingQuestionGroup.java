@@ -1,4 +1,4 @@
-package com.group5.preppal.data.model.test.listening;
+package com.group5.preppal.data.model.test.reading;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,22 +7,21 @@ import com.google.firebase.firestore.PropertyName;
 
 import java.util.List;
 
-public class QuestionGroup implements Parcelable {
+public class ReadingQuestionGroup implements Parcelable {
     private String type;
     private String imageUrl;
-    private List<ListeningQuestion> questions;
+    private List<ReadingQuestion> questions;
     private List<String> options;         // Optional for MCQ/matching
     private List<String> correctAnswers;  // Only used for mcq_multiple
 
-    public QuestionGroup() {}
+    public ReadingQuestionGroup() {}
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(type);
-        dest.writeString(imageUrl);
-        dest.writeTypedList(questions);
-        dest.writeStringList(options);
-        dest.writeStringList(correctAnswers);
+    protected ReadingQuestionGroup(Parcel in) {
+        type = in.readString();
+        imageUrl = in.readString();
+        questions = in.createTypedArrayList(ReadingQuestion.CREATOR);
+        options = in.createStringArrayList();
+        correctAnswers = in.createStringArrayList();
     }
 
     public String getType() {
@@ -43,11 +42,11 @@ public class QuestionGroup implements Parcelable {
         this.imageUrl = imageUrl;
     }
 
-    public List<ListeningQuestion> getQuestions() {
+    public List<ReadingQuestion> getQuestions() {
         return questions;
     }
 
-    public void setQuestions(List<ListeningQuestion> questions) {
+    public void setQuestions(List<ReadingQuestion> questions) {
         this.questions = questions;
     }
 
@@ -69,12 +68,13 @@ public class QuestionGroup implements Parcelable {
         this.correctAnswers = correctAnswers;
     }
 
-    protected QuestionGroup(Parcel in) {
-        type = in.readString();
-        imageUrl = in.readString();
-        questions = in.createTypedArrayList(ListeningQuestion.CREATOR);
-        options = in.createStringArrayList();
-        correctAnswers = in.createStringArrayList();
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(type);
+        dest.writeString(imageUrl);
+        dest.writeTypedList(questions);
+        dest.writeStringList(options);
+        dest.writeStringList(correctAnswers);
     }
 
     @Override
@@ -82,15 +82,15 @@ public class QuestionGroup implements Parcelable {
         return 0;
     }
 
-    public static final Creator<QuestionGroup> CREATOR = new Creator<QuestionGroup>() {
+    public static final Creator<ReadingQuestionGroup> CREATOR = new Creator<ReadingQuestionGroup>() {
         @Override
-        public QuestionGroup createFromParcel(Parcel in) {
-            return new QuestionGroup(in);
+        public ReadingQuestionGroup createFromParcel(Parcel in) {
+            return new ReadingQuestionGroup(in);
         }
 
         @Override
-        public QuestionGroup[] newArray(int size) {
-            return new QuestionGroup[size];
+        public ReadingQuestionGroup[] newArray(int size) {
+            return new ReadingQuestionGroup[size];
         }
     };
 }
