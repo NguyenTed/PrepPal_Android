@@ -24,7 +24,12 @@ public class SpeakingTestViewModel extends ViewModel {
         return speakingTestRepository.getSpeakingTestById(speakingTestId);
     }
 
+    public LiveData<SpeakingTest> getSpeakingTestByCourseId(String courseId) {
+        return speakingTestRepository.getSpeakingTestByCourseId(courseId);
+    }
+
     public void saveBookedTime (String studentId, StudentBookedSpeaking studentBookedSpeaking) {
         speakingTestRepository.saveBookedTime(studentId, studentBookedSpeaking);
     }
+
 }

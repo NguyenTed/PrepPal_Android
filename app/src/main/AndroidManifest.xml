@@ -122,10 +122,6 @@
             android:exported="true"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
         </activity>
         <activity android:name=".ui.grading.WritingAnswerListActivity"/>
         <activity android:name=".ui.grading.GradingWritingTestActivity"/>
@@ -138,17 +134,11 @@
             android:name=".ui.profile.teacher.TeacherProfileActivity"
             android:exported="true">
         </activity>
-        <!--    Speaking    -->
-        <activity
-            android:name=".ui.video_call.VideoCallActivity"
-            android:exported="true">
-        </activity>
-        <activity
-            android:name=".ui.quiz.speaking.SpeakingBookingActivity"
-            android:exported="true">
-        </activity>
-        <activity
-            android:name=".ui.quiz.speaking.SpeakingWaitingActivity"
+<!--    Speaking    -->
+        <activity android:name=".ui.video_call.VideoCallActivity"/>
+        <activity android:name=".ui.quiz.speaking.SpeakingBookingActivity"/>
+        <activity android:name=".ui.quiz.speaking.SpeakingWaitingActivity"/>
+        <activity android:name=".ui.quiz.speaking.teacher_speaking.SpeakingCalendarActivity"
             android:exported="true">
         </activity>
 
