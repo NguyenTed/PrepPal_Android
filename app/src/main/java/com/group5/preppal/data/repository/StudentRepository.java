@@ -102,6 +102,10 @@ public class StudentRepository {
             if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
                 List<String> finishedLessons = (List<String>) task.getResult().get("finishedLessons");
 
+                if (finishedLessons == null) {
+                    finishedLessons = new ArrayList<>();
+                }
+
                 if (!finishedLessons.contains(lessonId)) {
                     finishedLessons.add(lessonId);
 

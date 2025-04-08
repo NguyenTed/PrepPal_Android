@@ -2,6 +2,7 @@ package com.group5.preppal.ui.quiz.speaking;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,9 +26,11 @@ import com.group5.preppal.ui.course.CourseDetailActivity;
 import com.group5.preppal.viewmodel.SpeakingTestViewModel;
 import com.group5.preppal.viewmodel.StudentViewModel;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -82,9 +85,13 @@ public class BookingSpeakingFragment extends Fragment {
             btnBook.setOnClickListener(v -> {
                 if (selectedHour != null && selectedDate != null) {
                     String[] parts = selectedHour.split(":");
-                    selectedDate.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]));
-                    selectedDate.set(Calendar.MINUTE, 0);
+                    int hour = Integer.parseInt(parts[0]);
+                    int minute = Integer.parseInt(parts[1]);
+                    selectedDate.set(Calendar.HOUR_OF_DAY, hour);
+                    selectedDate.set(Calendar.MINUTE, minute);
                     selectedDate.set(Calendar.SECOND, 0);
+                    selectedDate.set(Calendar.MILLISECOND, 0);
+
                     Date finalDate = selectedDate.getTime();
                     StudentBookedSpeaking studentBookedSpeaking = new StudentBookedSpeaking(finalDate, speakingTestId);
                     studentViewModel.saveBookedSpeaking(user.getUid(), studentBookedSpeaking);
@@ -102,6 +109,13 @@ public class BookingSpeakingFragment extends Fragment {
         setButtonDisable(btnBook);
         selectedHour = null;
         selectedDate = selectedCal;
+        boolean morningExpired = isSlotExpired(selectedCal, test.getAvailableMorningTime());
+        boolean afternoonExpired = isSlotExpired(selectedCal, test.getAvailableAfternoonTime());
+
+        morningSlot.setEnabled(!morningExpired);
+        afternoonSlot.setEnabled(!afternoonExpired);
+        morningSlot.setAlpha(morningExpired ? 0.5f : 1f);
+        afternoonSlot.setAlpha(afternoonExpired ? 0.5f : 1f);
 
         int selectedDay = selectedCal.get(Calendar.DAY_OF_MONTH);
         int selectedMonth = selectedCal.get(Calendar.MONTH);
@@ -116,7 +130,13 @@ public class BookingSpeakingFragment extends Fragment {
         if (bookedTimes != null) {
             for (BookedTime bookedTime : bookedTimes) {
                 Calendar bookedCal = Calendar.getInstance();
-                bookedCal.setTime(bookedTime.getDate());
+                Date date = bookedTime.getDate();
+                if (date != null) {
+                    bookedCal.setTime(date);
+                } else {
+                    Log.e("Booking", "Ngày bị null, không thể setTime");
+                }
+
 
                 boolean sameDay = bookedCal.get(Calendar.DAY_OF_MONTH) == selectedDay &&
                         bookedCal.get(Calendar.MONTH) == selectedMonth &&
@@ -124,8 +144,8 @@ public class BookingSpeakingFragment extends Fragment {
 
                 if (sameDay) {
                     int hour = bookedCal.get(Calendar.HOUR_OF_DAY);
-                    String hourFormatted = hour + ":00";
-
+                    int minute = bookedCal.get(Calendar.MINUTE);
+                    String hourFormatted = String.format("%02d:%02d", hour, minute);
                     if (hourFormatted.equals(morningTime)) morningBooked = true;
                     if (hourFormatted.equals(afternoonTime)) afternoonBooked = true;
                 }
@@ -157,6 +177,19 @@ public class BookingSpeakingFragment extends Fragment {
         });
     }
 
+    private boolean isSlotExpired(Calendar selectedDate, String timeStr) {
+        String[] parts = timeStr.split(":");
+        int hour = Integer.parseInt(parts[0]);
+        int minute = Integer.parseInt(parts[1]);
+
+        Calendar slotTime = (Calendar) selectedDate.clone();
+        slotTime.set(Calendar.HOUR_OF_DAY, hour);
+        slotTime.set(Calendar.MINUTE, minute);
+        slotTime.set(Calendar.SECOND, 0);
+        slotTime.set(Calendar.MILLISECOND, 0);
+
+        return Calendar.getInstance().after(slotTime);
+    }
 
 
     private void setButtonDisable(Button button) {
@@ -174,5 +207,10 @@ public class BookingSpeakingFragment extends Fragment {
         Intent intent = new Intent(requireContext(), CourseDetailActivity.class);
         intent.putExtra("courseId", getActivity().getIntent().getStringExtra("courseId"));
         startActivity(intent);
+    }
+
+    private String setFormatTime(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        return sdf.format(date);
     }
 }

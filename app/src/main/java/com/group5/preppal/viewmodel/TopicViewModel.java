@@ -2,8 +2,6 @@ package com.group5.preppal.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-
-import com.group5.preppal.data.model.Topic;
 import com.group5.preppal.data.model.TopicWithProgress;
 import com.group5.preppal.data.repository.TopicRepository;
 

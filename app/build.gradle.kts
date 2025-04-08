@@ -22,6 +22,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${project.findProperty("GOOGLE_CLIENT_ID")}\"")
+        buildConfigField("String", "CLOUDINARY_NAME", "\"${project.findProperty("CLOUDINARY_NAME")}\"")
+        buildConfigField("String", "CLOUDINARY_API_KEY", "\"${project.findProperty("CLOUDINARY_API_KEY")}\"")
+        buildConfigField("String", "CLOUDINARY_API_SECRET", "\"${project.findProperty("CLOUDINARY_API_SECRET")}\"")
 
         // ✅ Load GOOGLE_CLIENT_ID from local.properties
         val localProps = Properties()
@@ -70,8 +73,10 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("androidx.cardview:cardview:1.0.0")
     implementation("io.agora.rtc:full-sdk:4.5.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Use Gson for JSON parsing
+    implementation ("com.cloudinary:cloudinary-android:3.0.2")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3") // Logging
 }

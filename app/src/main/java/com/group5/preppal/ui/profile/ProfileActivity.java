@@ -23,6 +23,11 @@ import com.group5.preppal.R;
 import com.group5.preppal.data.model.User;
 import com.group5.preppal.ui.MainActivity;
 import com.group5.preppal.ui.auth.LoginActivity;
+import com.group5.preppal.ui.course.CourseListActivity;
+import com.group5.preppal.ui.dictionary.DictionaryActivity;
+import com.group5.preppal.ui.test_set.TestListActivity;
+import com.group5.preppal.ui.test_set.TestSetListActivity;
+import com.group5.preppal.ui.vocabulary.TopicActivity;
 import com.group5.preppal.viewmodel.AuthViewModel;
 
 import javax.inject.Inject;
@@ -74,8 +79,16 @@ public class ProfileActivity extends AppCompatActivity {
 
             if (itemId == R.id.nav_profile) {
                 return true;
-            } else if (itemId == R.id.nav_search) {
-                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+            } else if (itemId == R.id.nav_courses) {
+                startActivity(new Intent(ProfileActivity.this, CourseListActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.nav_vocab) {
+                startActivity(new Intent(ProfileActivity.this, TestSetListActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.nav_dictionary) {
+                startActivity(new Intent(ProfileActivity.this, DictionaryActivity.class));
                 overridePendingTransition(0, 0);
                 return true;
             } else if (itemId == R.id.nav_home) {

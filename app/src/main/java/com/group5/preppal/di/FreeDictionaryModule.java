@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module  // ✅ REQUIRED: Marks this as a Hilt Module
 @InstallIn(SingletonComponent.class)
-public class NetworkModule {
+public class FreeDictionaryModule {
     private static final String BASE_URL = "https://api.dictionaryapi.dev/api/v2/entries/";
 
     @Provides

@@ -102,6 +102,7 @@ public class UserRepository {
 
         return updateStatus;
     }
+
     public void addCourseToStudent(String uid, String courseId) {
         firestore.collection("students").document(uid)
                 .get()

@@ -6,17 +6,21 @@ public class Vocabulary {
     private String word;
     private String phonetic;
     private String audio;
-    private List<String> meanings;
-    private List<String> examples;
+    private String partOfSpeech;
+    private List<Meaning> meanings;
 
     public Vocabulary () {}
 
-    public Vocabulary(String word, String phonetic, String audio, List<String> meanings, List<String> examples) {
+    public Vocabulary(String word, String phonetic, String audio, String partOfSpeech, List<Meaning> meanings) {
         this.word = word;
         this.phonetic = phonetic;
         this.audio = audio;
+        this.partOfSpeech = partOfSpeech;
         this.meanings = meanings;
-        this.examples = examples;
+    }
+
+    public String getPartOfSpeech() {
+        return partOfSpeech;
     }
 
     public String getWord() {
@@ -31,11 +35,39 @@ public class Vocabulary {
         return audio;
     }
 
-    public List<String> getMeanings() {
+    public List<Vocabulary.Meaning> getMeanings() {
         return meanings;
     }
 
-    public List<String> getExamples() {
-        return examples;
+    public static class Meaning {
+        private String definition;
+        private List<String> examples;
+        private List<String> synonyms;
+        private List<String> antonyms;
+
+        public Meaning() {}
+
+        public Meaning(String definition, List<String> examples, List<String> synonyms, List<String> antonyms) {
+            this.definition = definition;
+            this.examples = examples;
+            this.synonyms = synonyms;
+            this.antonyms = antonyms;
+        }
+
+        public String getDefinition() {
+            return definition;
+        }
+
+        public List<String> getExamples() {
+            return examples;
+        }
+
+        public List<String> getSynonyms() {
+            return synonyms;
+        }
+
+        public List<String> getAntonyms() {
+            return antonyms;
+        }
     }
 }
