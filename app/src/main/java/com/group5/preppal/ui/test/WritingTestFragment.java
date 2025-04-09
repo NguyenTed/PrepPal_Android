@@ -5,8 +5,10 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -58,9 +60,7 @@ public class WritingTestFragment extends Fragment {
 
     private String taskId;
 
-    public WritingTestFragment() {
-        // Constructor rỗng bắt buộc
-    }
+    public WritingTestFragment() {}
 
     @Nullable
     @Override
@@ -81,6 +81,17 @@ public class WritingTestFragment extends Fragment {
         etAnswer = view.findViewById(R.id.etAnswer);
         btnSubmit = view.findViewById(R.id.btnSubmit);
         imgQuestion = view.findViewById(R.id.imgQuestion);
+
+        tvComment.setMovementMethod(new ScrollingMovementMethod());
+        tvComment.setVerticalScrollBarEnabled(true);
+        tvComment.setFocusable(true);
+        tvComment.setFocusableInTouchMode(true);
+        tvComment.setClickable(true);
+        tvComment.setOnTouchListener((v, event) -> {
+            handleEditTextScroll(v, event);
+            return false;
+        });
+
 
         taskId = getActivity().getIntent().getStringExtra("id");
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
@@ -167,24 +178,25 @@ public class WritingTestFragment extends Fragment {
                     }
                 }
             });
+        } else {
+            btnSubmit.setOnClickListener(v -> submitAnswer(false));
+            db.collection("writing_submissions")
+                    .whereEqualTo("taskId", taskId)
+                    .whereEqualTo("userId", user.getUid())
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            // Lấy document đầu tiên phù hợp
+                            String existingAnswer = queryDocumentSnapshots.getDocuments().get(0).getString("answer");
+                            if (existingAnswer != null) {
+                                etAnswer.setText(existingAnswer);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(requireContext(), "Lỗi khi tải câu trả lời trước đó", Toast.LENGTH_SHORT).show());
         }
 
-        btnSubmit.setOnClickListener(v -> submitAnswer(false));
-        db.collection("writing_submissions")
-                .whereEqualTo("taskId", taskId)
-                .whereEqualTo("userId", user.getUid())
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        // Lấy document đầu tiên phù hợp
-                        String existingAnswer = queryDocumentSnapshots.getDocuments().get(0).getString("answer");
-                        if (existingAnswer != null) {
-                            etAnswer.setText(existingAnswer);
-                        }
-                    }
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(requireContext(), "Lỗi khi tải câu trả lời trước đó", Toast.LENGTH_SHORT).show());
     }
 
     private void submitAnswer(boolean isQuiz) {
@@ -258,6 +270,16 @@ public class WritingTestFragment extends Fragment {
                     })
                     .addOnFailureListener(e ->
                             Toast.makeText(requireContext(), "Error checking existing submissions", Toast.LENGTH_SHORT).show());
+        }
+
+    }
+
+    private void handleEditTextScroll(View v, MotionEvent event) {
+        v.getParent().requestDisallowInterceptTouchEvent(true);
+
+        if (event.getAction() == MotionEvent.ACTION_UP ||
+                event.getAction() == MotionEvent.ACTION_CANCEL) {
+            v.getParent().requestDisallowInterceptTouchEvent(false);
         }
     }
 }
