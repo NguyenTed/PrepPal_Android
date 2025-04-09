@@ -5,8 +5,10 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -58,9 +60,7 @@ public class WritingTestFragment extends Fragment {
 
     private String taskId;
 
-    public WritingTestFragment() {
-        // Constructor rỗng bắt buộc
-    }
+    public WritingTestFragment() {}
 
     @Nullable
     @Override
@@ -81,6 +81,17 @@ public class WritingTestFragment extends Fragment {
         etAnswer = view.findViewById(R.id.etAnswer);
         btnSubmit = view.findViewById(R.id.btnSubmit);
         imgQuestion = view.findViewById(R.id.imgQuestion);
+
+        tvComment.setMovementMethod(new ScrollingMovementMethod());
+        tvComment.setVerticalScrollBarEnabled(true);
+        tvComment.setFocusable(true);
+        tvComment.setFocusableInTouchMode(true);
+        tvComment.setClickable(true);
+        tvComment.setOnTouchListener((v, event) -> {
+            handleEditTextScroll(v, event);
+            return false;
+        });
+
 
         taskId = getActivity().getIntent().getStringExtra("id");
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
@@ -167,24 +178,25 @@ public class WritingTestFragment extends Fragment {
                     }
                 }
             });
+        } else {
+            btnSubmit.setOnClickListener(v -> submitAnswer(false));
+            db.collection("writing_submissions")
+                    .whereEqualTo("taskId", taskId)
+                    .whereEqualTo("userId", user.getUid())
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            // Lấy document đầu tiên phù hợp
+                            String existingAnswer = queryDocumentSnapshots.getDocuments().get(0).getString("answer");
+                            if (existingAnswer != null) {
+                                etAnswer.setText(existingAnswer);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(requireContext(), "Lỗi khi tải câu trả lời trước đó", Toast.LENGTH_SHORT).show());
         }
 
-        btnSubmit.setOnClickListener(v -> submitAnswer(false));
-        db.collection("writing_submissions")
-                .whereEqualTo("taskId", taskId)
-                .whereEqualTo("userId", user.getUid())
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        // Lấy document đầu tiên phù hợp
-                        String existingAnswer = queryDocumentSnapshots.getDocuments().get(0).getString("answer");
-                        if (existingAnswer != null) {
-                            etAnswer.setText(existingAnswer);
-                        }
-                    }
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(requireContext(), "Lỗi khi tải câu trả lời trước đó", Toast.LENGTH_SHORT).show());
     }
 
     private void submitAnswer(boolean isQuiz) {
@@ -196,42 +208,78 @@ public class WritingTestFragment extends Fragment {
 
         String userId = user.getUid();
 
-        // Truy vấn Firestore để kiểm tra document đã tồn tại hay chưa
-        db.collection("writing_submissions")
-                .whereEqualTo("taskId", taskId)
-                .whereEqualTo("userId", userId)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        // Nếu có document, cập nhật lại dữ liệu
-                        String docId = queryDocumentSnapshots.getDocuments().get(0).getId();
-                        db.collection("writing_submissions")
-                                .document(docId)
-                                .update("answer", answer, "timestamp", System.currentTimeMillis())
-                                .addOnSuccessListener(aVoid ->{
-                                        Toast.makeText(requireContext(), "Answer updated successfully!", Toast.LENGTH_SHORT).show();
-                                    requireActivity().finish();})
-                                .addOnFailureListener(e ->
-                                        Toast.makeText(requireContext(), "Failed to update answer", Toast.LENGTH_SHORT).show());
-                    } else {
-                        // Nếu không có document, tạo mới
-                        Map<String, Object> submission = new HashMap<>();
-                        submission.put("userId", userId);
-                        submission.put("answer", answer);
-                        submission.put("taskId", taskId);
-                        submission.put("timestamp", System.currentTimeMillis());
+        // Tạo dữ liệu để gửi lên Firestore
+        Map<String, Object> submission = new HashMap<>();
+        submission.put("userId", userId);
+        submission.put("answer", answer);
+        submission.put("taskId", taskId);
+        submission.put("timestamp", System.currentTimeMillis());
+        if (isQuiz) {
+            submission.put("points", 0);
+        }
 
-                        db.collection("writing_submissions")
-                                .add(submission)
-                                .addOnSuccessListener(documentReference ->{
+        if (isQuiz) {
+            WritingQuizSubmission writingQuizSubmission = new WritingQuizSubmission(answer, 0.0F, taskId, user.getUid(), "pending", "");
+
+            writingTestViewModel.saveWritingQuizSubmission(writingQuizSubmission, taskId, user.getUid(), new WritingQuizSubmissionRepository.SubmissionCallback() {
+                @Override
+                public void onSuccess(String message) {
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                    if (getActivity() instanceof WritingQuizActivity) {
+                        Intent intent = new Intent(requireContext(), CourseDetailActivity.class);
+                        intent.putExtra("courseId", requireActivity().getIntent().getStringExtra("courseId"));
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    }
+                    requireActivity().finish();
+                }
+                @Override
+                public void onFailure(String errorMessage) {
+                    Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else {
+            // Lưu vào Firestore
+            db.collection("writing_submissions")
+                    .whereEqualTo("taskId", taskId)
+                    .whereEqualTo("userId", userId)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            // Nếu có document, cập nhật lại dữ liệu
+                            String docId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                            db.collection("writing_submissions")
+                                    .document(docId)
+                                    .update("answer", answer, "timestamp", System.currentTimeMillis())
+                                    .addOnSuccessListener(aVoid ->{
+                                        Toast.makeText(requireContext(), "Answer updated successfully!", Toast.LENGTH_SHORT).show();
+                                        requireActivity().finish();})
+                                    .addOnFailureListener(e ->
+                                            Toast.makeText(requireContext(), "Failed to update answer", Toast.LENGTH_SHORT).show());
+                        } else {
+                            // Nếu không có document, tạo mới
+                            db.collection("writing_submissions")
+                                    .add(submission)
+                                    .addOnSuccessListener(documentReference ->{
                                         Toast.makeText(requireContext(), "Answer submitted successfully!", Toast.LENGTH_SHORT).show();
                                         requireActivity().finish();})
-                                .addOnFailureListener(e ->
-                                        Toast.makeText(requireContext(), "Failed to submit answer", Toast.LENGTH_SHORT).show());
-                    }
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(requireContext(), "Error checking existing submissions", Toast.LENGTH_SHORT).show());
+                                    .addOnFailureListener(e ->
+                                            Toast.makeText(requireContext(), "Failed to submit answer", Toast.LENGTH_SHORT).show());
+                        }
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(requireContext(), "Error checking existing submissions", Toast.LENGTH_SHORT).show());
+        }
 
+    }
+
+    private void handleEditTextScroll(View v, MotionEvent event) {
+        v.getParent().requestDisallowInterceptTouchEvent(true);
+
+        if (event.getAction() == MotionEvent.ACTION_UP ||
+                event.getAction() == MotionEvent.ACTION_CANCEL) {
+            v.getParent().requestDisallowInterceptTouchEvent(false);
+        }
     }
 }
