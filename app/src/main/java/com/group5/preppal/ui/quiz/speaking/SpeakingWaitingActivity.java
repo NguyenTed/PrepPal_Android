@@ -5,8 +5,11 @@ import java.util.Date;
 import java.util.Locale;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +20,7 @@ import com.group5.preppal.R;
 import com.group5.preppal.data.model.Student;
 import com.group5.preppal.data.model.User;
 import com.group5.preppal.data.repository.AuthRepository;
+import com.group5.preppal.ui.course.CourseDetailActivity;
 import com.group5.preppal.ui.video_call.VideoCallActivity;
 import com.group5.preppal.viewmodel.SpeakingTestViewModel;
 import com.group5.preppal.viewmodel.StudentViewModel;
@@ -31,6 +35,7 @@ public class SpeakingWaitingActivity extends AppCompatActivity {
     private SpeakingTestViewModel speakingTestViewModel;
     private TextView tvTitle, tvType, tvBookingTime;
     private Button btnJoin, btnBookAgain;
+    private ImageButton backButton;
     @Inject
     AuthRepository authRepository;
     FirebaseUser user;
@@ -44,6 +49,7 @@ public class SpeakingWaitingActivity extends AppCompatActivity {
         tvBookingTime = findViewById(R.id.tvBookingTime);
         btnJoin = findViewById(R.id.btnJoin);
         btnBookAgain = findViewById(R.id.btnBookAgain);
+        backButton = findViewById(R.id.backButton);
 
         String speakingTestId = this.getIntent().getStringExtra("quizId");
         speakingTestViewModel = new ViewModelProvider(this).get(SpeakingTestViewModel.class);
@@ -53,6 +59,9 @@ public class SpeakingWaitingActivity extends AppCompatActivity {
         if (user != null) {
             setWaitingInfo(speakingTestId);
         }
+        backButton.setOnClickListener((view -> {
+            navigateBackToCourse();
+        }));
     }
 
     private void setTitle(String speakingTestId) {
@@ -69,11 +78,35 @@ public class SpeakingWaitingActivity extends AppCompatActivity {
             if (booked != null) {
                 Date bookedDate = booked.getBookedDate();
                 tvBookingTime.setText(formatBookedDate(bookedDate));
-                btnJoin.setOnClickListener(view -> {
-                    navigateToVideoCallActivity();
-                });
+
+                long now = System.currentTimeMillis();
+                long start = bookedDate.getTime();
+                long end = start + 30 * 60 * 1000L;
+
+                boolean canJoin = now >= start && now <= end;
+
+                if (!canJoin) {
+                    // Không nằm trong khung giờ → đổi màu nút + thông báo khi click
+                    btnJoin.setBackgroundResource(R.drawable.rounded_20dp_gray); // màu xám
+                    btnJoin.setOnClickListener(view -> {
+                        Toast.makeText(this, "Bạn chỉ có thể tham gia trong khung giờ đã đặt!", Toast.LENGTH_LONG).show();
+                    });
+                } else {
+                    // Trong khung giờ → cho phép vào phòng
+                    btnJoin.setOnClickListener(view -> {
+                        navigateToVideoCallActivity(bookedDate);
+                    });
+                }
                 btnBookAgain.setOnClickListener(view -> {
-                    navigateToSpeakingBookingActivity();
+                    long bookedTime = bookedDate.getTime();
+                    long diff = Math.abs(bookedTime - now);
+                    Log.d("Speaking Waiting", "diff: " + diff);
+                    // Nếu hiện tại < 24h so với giờ booking
+                    if (diff < 24 * 60 * 60 * 1000L && diff > 0) {
+                        Toast.makeText(this, "Bạn chỉ có thể đặt lại khi còn hơn 24h so với lịch hiện tại", Toast.LENGTH_LONG).show();
+                    } else {
+                        navigateToSpeakingBookingActivity();
+                    }
                 });
             } else {
                 tvBookingTime.setText("No booking found");
@@ -82,8 +115,11 @@ public class SpeakingWaitingActivity extends AppCompatActivity {
         });
     }
 
-    private void navigateToVideoCallActivity() {
+    private void navigateToVideoCallActivity(Date date) {
         Intent intent = new Intent(this, VideoCallActivity.class);
+        intent.putExtra("role", "Student");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        intent.putExtra("startTime", timeFormat.format(date));
         intent.putExtra("courseId", this.getIntent().getStringExtra("courseId"));
         intent.putExtra("quizId", this.getIntent().getStringExtra("quizId"));
         startActivity(intent);
@@ -93,6 +129,12 @@ public class SpeakingWaitingActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SpeakingBookingActivity.class);
         intent.putExtra("courseId", this.getIntent().getStringExtra("courseId"));
         intent.putExtra("quizId", this.getIntent().getStringExtra("quizId"));
+        startActivity(intent);
+    }
+
+    private void navigateBackToCourse() {
+        Intent intent = new Intent(this, CourseDetailActivity.class);
+        intent.putExtra("courseId", this.getIntent().getStringExtra("courseId"));
         startActivity(intent);
     }
 

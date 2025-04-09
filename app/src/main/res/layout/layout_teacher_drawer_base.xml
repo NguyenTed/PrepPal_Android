@@ -108,5 +108,27 @@
                 android:layout_marginStart="16dp"
                 android:textSize="16sp" />
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/navLogOut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp">
+
+            <ImageView
+                android:id="@+id/iconLogOut"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_log_out_white"/>
+
+            <TextView
+                android:id="@+id/tvLogOut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Log out"
+                android:textColor="#FFFFFF"
+                android:layout_marginStart="16dp"
+                android:textSize="16sp" />
+        </LinearLayout>
     </LinearLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

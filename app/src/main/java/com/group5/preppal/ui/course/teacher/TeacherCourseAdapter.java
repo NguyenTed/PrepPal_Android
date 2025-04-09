@@ -14,6 +14,7 @@ import com.group5.preppal.R;
 import com.group5.preppal.data.model.Course;
 import com.group5.preppal.ui.grading.GradingTestActivity;
 import com.group5.preppal.ui.grading.WritingAnswerListActivity;
+import com.group5.preppal.ui.quiz.speaking.teacher_speaking.SpeakingCalendarActivity;
 
 import java.util.List;
 
@@ -55,6 +56,12 @@ public class TeacherCourseAdapter  extends RecyclerView.Adapter<TeacherCourseAda
 
         holder.tvWriting.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), GradingTestActivity.class);
+            intent.putExtra("courseId", course.getCourseId()); // đảm bảo Course có phương thức getId()
+            view.getContext().startActivity(intent);
+        });
+
+        holder.tvSpeaking.setOnClickListener(view -> {
+            Intent intent = new Intent(view.getContext(), SpeakingCalendarActivity.class);
             intent.putExtra("courseId", course.getCourseId()); // đảm bảo Course có phương thức getId()
             view.getContext().startActivity(intent);
         });

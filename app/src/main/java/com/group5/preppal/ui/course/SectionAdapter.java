@@ -103,7 +103,12 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
     private void checkPreviousSectionCompleted(Map<String, Object> section, List<Map<String, Object>> sectionList, int position,  CompletionCallback callback) {
         if (section.containsKey("lesson")) {
             String lessonId = ((Map<String, Object>) section.get("lesson")).get("id").toString();
-            callback.onResult(finishedLessons.contains(lessonId));
+            if (finishedLessons != null && finishedLessons.contains(lessonId)) {
+                callback.onResult(true);
+            } else {
+                callback.onResult(false);
+            }
+
         } else if (section.containsKey("quiz")) {
             Map<String, Object> quiz = (Map<String, Object>) section.get("quiz");
             String type = quiz.get("type").toString();
@@ -172,9 +177,11 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
             holder.sectionType.setText(type);
             holder.txtTypeFinish.setText(type);
 
-            boolean isFinished = finishedLessons.contains(lessonId);
-            if (isFinished) holder.sectionTypeFinish.setVisibility(View.VISIBLE);
-            else holder.sectionType.setVisibility(View.VISIBLE);
+            if (finishedLessons != null) {
+                boolean isFinished = finishedLessons.contains(lessonId);
+                if (isFinished) holder.sectionTypeFinish.setVisibility(View.VISIBLE);
+                else holder.sectionType.setVisibility(View.VISIBLE);
+            }  else holder.sectionType.setVisibility(View.VISIBLE);
 
             holder.itemView.setAlpha(isUnlocked ? 1.0f : 0.4f);
             holder.itemView.setOnClickListener(view -> {
