@@ -11,12 +11,16 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -26,7 +30,9 @@ import com.group5.preppal.data.model.User;
 import com.group5.preppal.data.repository.AuthRepository;
 import com.group5.preppal.ui.admin.AdminMainActivity;
 import com.group5.preppal.ui.TeacherMainActivity;
+import com.group5.preppal.ui.test.WritingTopicsActivity;
 import com.group5.preppal.ui.MainActivity;
+import com.group5.preppal.ui.profile.ProfileActivity;
 import com.group5.preppal.viewmodel.AuthViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -35,6 +41,10 @@ import android.util.Log;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.group5.preppal.viewmodel.UserViewModel;
+
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity {
@@ -88,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+//        authRepository.signOut();
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
 
         userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
@@ -146,6 +157,16 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+    public static <T> void observeOnce(LiveData<T> liveData, LifecycleOwner owner, Observer<T> observer) {
+        liveData.observe(owner, new Observer<T>() {
+            @Override
+            public void onChanged(T t) {
+                liveData.removeObserver(this); // Xoá observer sau khi chạy 1 lần
+                observer.onChanged(t);
+            }
+        });
+    }
+
 
     // ✅ Uses IntentSenderRequest instead of deprecated startIntentSenderForResult()
     private void signInWithGoogle() {

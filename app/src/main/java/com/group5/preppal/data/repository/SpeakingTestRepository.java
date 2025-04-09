@@ -41,6 +41,31 @@ public class SpeakingTestRepository {
         return speakingTestLiveData;
     }
 
+    public LiveData<SpeakingTest> getSpeakingTestByCourseId(String courseId) {
+        MutableLiveData<SpeakingTest> speakingTestLiveData = new MutableLiveData<>();
+        testCollection
+                .whereEqualTo("courseId", courseId)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        DocumentSnapshot doc = queryDocumentSnapshots.getDocuments().get(0);
+                        SpeakingTest test = doc.toObject(SpeakingTest.class);
+                        if (test != null) {
+                            test.setId(doc.getId());
+                        }
+                        speakingTestLiveData.setValue(test);
+                    } else {
+                        speakingTestLiveData.setValue(null);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("Firestore", "Error getting SpeakingTest", e);
+                    speakingTestLiveData.setValue(null);
+                });
+        return speakingTestLiveData;
+    }
+
     public void saveBookedTime(String studentId, StudentBookedSpeaking studentBookedSpeaking) {
         testCollection.document(studentBookedSpeaking.getSpeakingTestId()).get().addOnCompleteListener(test -> {
             if (test.isSuccessful() && test.getResult() != null && test.getResult().exists()) {

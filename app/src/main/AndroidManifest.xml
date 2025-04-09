@@ -96,9 +96,8 @@
         </activity>
         <activity
             android:name=".ui.quiz.writing_quiz.WritingQuizActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
         <!--    Quiz Answer    -->
         <activity
             android:name=".ui.quiz.multiple_choice_quiz.MultipleChoiceAnswerActivity"
@@ -138,17 +137,11 @@
             android:name=".ui.profile.teacher.TeacherProfileActivity"
             android:exported="true">
         </activity>
-        <!--    Speaking    -->
-        <activity
-            android:name=".ui.video_call.VideoCallActivity"
-            android:exported="true">
-        </activity>
-        <activity
-            android:name=".ui.quiz.speaking.SpeakingBookingActivity"
-            android:exported="true">
-        </activity>
-        <activity
-            android:name=".ui.quiz.speaking.SpeakingWaitingActivity"
+<!--    Speaking    -->
+        <activity android:name=".ui.video_call.VideoCallActivity"/>
+        <activity android:name=".ui.quiz.speaking.SpeakingBookingActivity"/>
+        <activity android:name=".ui.quiz.speaking.SpeakingWaitingActivity"/>
+        <activity android:name=".ui.quiz.speaking.teacher_speaking.SpeakingCalendarActivity"
             android:exported="true">
         </activity>
 

@@ -1,12 +1,105 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/testSetListRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#F8F9FB"
     android:padding="16dp">
 
+    <!-- Tiêu đề có nút back -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back button"
+            app:tint="#000000" />
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Danh sách bộ đề"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1A1A1A"
+            android:gravity="center" />
+
+        <!-- Spacer để giữ title ở giữa -->
+        <View
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:visibility="invisible" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="12dp">
+
+        <TextView
+            android:id="@+id/tab1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Danh sách bộ đề"
+            android:textStyle="bold"
+            android:textColor="@color/blue"
+            android:background="@drawable/tab_selected"
+            android:padding="8dp" />
+
+        <TextView
+            android:id="@+id/tab2"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Bộ đề dự đoán"
+            android:textColor="#999999"
+            android:padding="8dp" />
+
+        <TextView
+            android:id="@+id/tab3"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Bộ đề HOT"
+            android:textColor="#999999"
+            android:padding="8dp" />
+    </LinearLayout>
+    <!-- Thanh tìm kiếm -->
+    <EditText
+        android:id="@+id/searchBox"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Bạn muốn tìm kiếm bộ đề nào?"
+        android:paddingStart="44dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/bg_search"
+        android:drawableLeft="@android:drawable/ic_menu_search"
+        android:drawablePadding="8dp"
+        android:textColor="#000000"
+        android:textColorHint="#999999"
+        android:layout_marginBottom="12dp"
+        android:singleLine="true" />
+
+    <!-- Danh sách bộ đề -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/testSetRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 </LinearLayout>

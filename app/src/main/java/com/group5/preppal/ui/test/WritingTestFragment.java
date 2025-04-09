@@ -1,6 +1,5 @@
 package com.group5.preppal.ui.test;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -9,6 +8,7 @@ import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -60,9 +60,7 @@ public class WritingTestFragment extends Fragment {
 
     private String taskId;
 
-    public WritingTestFragment() {
-        // Constructor rỗng bắt buộc
-    }
+    public WritingTestFragment() {}
 
     @Nullable
     @Override
@@ -70,7 +68,6 @@ public class WritingTestFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_writing_test, container, false);
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -80,29 +77,23 @@ public class WritingTestFragment extends Fragment {
 
         tvCommentInteract = view.findViewById(R.id.tvCommentInteract);
         tvComment = view.findViewById(R.id.tvComment);
-        tvComment.setMovementMethod(new ScrollingMovementMethod());
-        tvComment.setVerticalScrollBarEnabled(true);
-        tvComment.setScrollbarFadingEnabled(false);
-        tvComment.setOnTouchListener((v, event) -> {
-            v.getParent().requestDisallowInterceptTouchEvent(true);
-            return false;
-        });
-
         tvQuestion = view.findViewById(R.id.tvQuestion);
         etAnswer = view.findViewById(R.id.etAnswer);
-        etAnswer.setMovementMethod(new ScrollingMovementMethod());
-        etAnswer.setVerticalScrollBarEnabled(true);
-        etAnswer.setScrollbarFadingEnabled(false);
-        etAnswer.setOnTouchListener((v, event) -> {
-            v.getParent().requestDisallowInterceptTouchEvent(true);
-            return false;
-        });
         btnSubmit = view.findViewById(R.id.btnSubmit);
         imgQuestion = view.findViewById(R.id.imgQuestion);
 
+        tvComment.setMovementMethod(new ScrollingMovementMethod());
+        tvComment.setVerticalScrollBarEnabled(true);
+        tvComment.setFocusable(true);
+        tvComment.setFocusableInTouchMode(true);
+        tvComment.setClickable(true);
+        tvComment.setOnTouchListener((v, event) -> {
+            handleEditTextScroll(v, event);
+            return false;
+        });
+
+
         taskId = getActivity().getIntent().getStringExtra("id");
-
-
         taskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
 
         if (taskId != null) {
@@ -126,20 +117,25 @@ public class WritingTestFragment extends Fragment {
 
                 if (imgUrl != null && !imgUrl.isEmpty()) {
                     imgQuestion.setVisibility(View.VISIBLE);
+
+                    // Hiển thị GIF khi ảnh chính đang tải
+                    Glide.with(this)
+                            .asGif()
+                            .load(R.drawable.loading_gif) // Thay thế bằng GIF của bạn
+                            .into(imgQuestion);
+
                     Glide.with(this)
                             .load(imgUrl)
-                            .placeholder(R.drawable.loading)
-                            .error(new ColorDrawable(Color.TRANSPARENT))
                             .listener(new RequestListener<Drawable>() {
                                 @Override
                                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                    imgQuestion.setVisibility(View.GONE);
+                                    imgQuestion.setVisibility(View.GONE); // Ẩn ảnh nếu lỗi
                                     return false;
                                 }
 
                                 @Override
                                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                    imgQuestion.setVisibility(View.VISIBLE);
+                                    imgQuestion.setVisibility(View.VISIBLE); // Hiển thị ảnh chính
                                     return false;
                                 }
                             })
@@ -177,17 +173,30 @@ public class WritingTestFragment extends Fragment {
                         btnSubmitQuiz.setText("Submitted");
                         btnSubmitQuiz.setBackgroundResource(R.drawable.rounded_5dp_white_2dp_border_gray);
                         btnSubmitQuiz.setTextColor(Color.parseColor("#A3A5A4"));
-                        etAnswer.setFocusable(false);
-                        etAnswer.setFocusableInTouchMode(false);
-                        etAnswer.setCursorVisible(false);
-                        etAnswer.setLongClickable(false);
+                        etAnswer.setEnabled(false);
                         etAnswer.setTextColor(Color.parseColor("#000000"));
                     }
                 }
             });
+        } else {
+            btnSubmit.setOnClickListener(v -> submitAnswer(false));
+            db.collection("writing_submissions")
+                    .whereEqualTo("taskId", taskId)
+                    .whereEqualTo("userId", user.getUid())
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            // Lấy document đầu tiên phù hợp
+                            String existingAnswer = queryDocumentSnapshots.getDocuments().get(0).getString("answer");
+                            if (existingAnswer != null) {
+                                etAnswer.setText(existingAnswer);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(requireContext(), "Lỗi khi tải câu trả lời trước đó", Toast.LENGTH_SHORT).show());
         }
 
-        btnSubmit.setOnClickListener(v -> submitAnswer(false));
     }
 
     private void submitAnswer(boolean isQuiz) {
@@ -232,12 +241,45 @@ public class WritingTestFragment extends Fragment {
         }
         else {
             // Lưu vào Firestore
-            db.collection( "writing_submissions")
-                    .add(submission)
-                    .addOnSuccessListener(documentReference ->
-                            Toast.makeText(requireContext(), "Answer submitted successfully!", Toast.LENGTH_SHORT).show())
+            db.collection("writing_submissions")
+                    .whereEqualTo("taskId", taskId)
+                    .whereEqualTo("userId", userId)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            // Nếu có document, cập nhật lại dữ liệu
+                            String docId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                            db.collection("writing_submissions")
+                                    .document(docId)
+                                    .update("answer", answer, "timestamp", System.currentTimeMillis())
+                                    .addOnSuccessListener(aVoid ->{
+                                        Toast.makeText(requireContext(), "Answer updated successfully!", Toast.LENGTH_SHORT).show();
+                                        requireActivity().finish();})
+                                    .addOnFailureListener(e ->
+                                            Toast.makeText(requireContext(), "Failed to update answer", Toast.LENGTH_SHORT).show());
+                        } else {
+                            // Nếu không có document, tạo mới
+                            db.collection("writing_submissions")
+                                    .add(submission)
+                                    .addOnSuccessListener(documentReference ->{
+                                        Toast.makeText(requireContext(), "Answer submitted successfully!", Toast.LENGTH_SHORT).show();
+                                        requireActivity().finish();})
+                                    .addOnFailureListener(e ->
+                                            Toast.makeText(requireContext(), "Failed to submit answer", Toast.LENGTH_SHORT).show());
+                        }
+                    })
                     .addOnFailureListener(e ->
-                            Toast.makeText(requireContext(), "Failed to submit answer", Toast.LENGTH_SHORT).show());
+                            Toast.makeText(requireContext(), "Error checking existing submissions", Toast.LENGTH_SHORT).show());
+        }
+
+    }
+
+    private void handleEditTextScroll(View v, MotionEvent event) {
+        v.getParent().requestDisallowInterceptTouchEvent(true);
+
+        if (event.getAction() == MotionEvent.ACTION_UP ||
+                event.getAction() == MotionEvent.ACTION_CANCEL) {
+            v.getParent().requestDisallowInterceptTouchEvent(false);
         }
     }
 }
