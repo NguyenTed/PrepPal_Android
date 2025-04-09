@@ -241,13 +241,37 @@ public class WritingTestFragment extends Fragment {
         }
         else {
             // Lưu vào Firestore
-            db.collection( "writing_submissions")
-                    .add(submission)
-                    .addOnSuccessListener(documentReference ->
-                            Toast.makeText(requireContext(), "Answer submitted successfully!", Toast.LENGTH_SHORT).show())
+            db.collection("writing_submissions")
+                    .whereEqualTo("taskId", taskId)
+                    .whereEqualTo("userId", userId)
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            // Nếu có document, cập nhật lại dữ liệu
+                            String docId = queryDocumentSnapshots.getDocuments().get(0).getId();
+                            db.collection("writing_submissions")
+                                    .document(docId)
+                                    .update("answer", answer, "timestamp", System.currentTimeMillis())
+                                    .addOnSuccessListener(aVoid ->{
+                                        Toast.makeText(requireContext(), "Answer updated successfully!", Toast.LENGTH_SHORT).show();
+                                        requireActivity().finish();})
+                                    .addOnFailureListener(e ->
+                                            Toast.makeText(requireContext(), "Failed to update answer", Toast.LENGTH_SHORT).show());
+                        } else {
+                            // Nếu không có document, tạo mới
+                            db.collection("writing_submissions")
+                                    .add(submission)
+                                    .addOnSuccessListener(documentReference ->{
+                                        Toast.makeText(requireContext(), "Answer submitted successfully!", Toast.LENGTH_SHORT).show();
+                                        requireActivity().finish();})
+                                    .addOnFailureListener(e ->
+                                            Toast.makeText(requireContext(), "Failed to submit answer", Toast.LENGTH_SHORT).show());
+                        }
+                    })
                     .addOnFailureListener(e ->
-                            Toast.makeText(requireContext(), "Failed to submit answer", Toast.LENGTH_SHORT).show());
+                            Toast.makeText(requireContext(), "Error checking existing submissions", Toast.LENGTH_SHORT).show());
         }
+
     }
 
     private void handleEditTextScroll(View v, MotionEvent event) {

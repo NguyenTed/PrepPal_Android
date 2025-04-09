@@ -31,7 +31,7 @@ public class ListeningActivity extends AppCompatActivity {
     private TextView tvPartLabel, tvTimer;
     private RecyclerView groupRecyclerView;
     private Button btnPrevious, btnNextOrSubmit;
-
+    private View[] stepViews;
     private ListeningQuestionGroupAdapter adapter;
 
     @Override
@@ -39,23 +39,32 @@ public class ListeningActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listening);
 
+        // View bindings
         tvPartLabel = findViewById(R.id.partLabelTextView);
         tvTimer = findViewById(R.id.tvListeningTimer);
         btnPrevious = findViewById(R.id.btnPreviousPart);
         btnNextOrSubmit = findViewById(R.id.btnNextPart);
         groupRecyclerView = findViewById(R.id.questionGroupRecyclerView);
+        stepViews = new View[]{
+                findViewById(R.id.step1),
+                findViewById(R.id.step2),
+                findViewById(R.id.step3),
+                findViewById(R.id.step4)
+        };
+
         groupRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new ListeningQuestionGroupAdapter();
+        adapter.setUserAnswers(new HashMap<>());
+
+        groupRecyclerView.setAdapter(adapter);
 
         viewModel = new ViewModelProvider(this).get(ListeningViewModel.class);
-
-        adapter = new ListeningQuestionGroupAdapter();
-        adapter.setUserAnswers(viewModel != null ? viewModel.getUserAnswers() : new HashMap<>());
-        groupRecyclerView.setAdapter(adapter);
 
         // Get data from intent
         String testId = getIntent().getStringExtra("testId");
         String testSetId = getIntent().getStringExtra("testSetId");
         Date startedAt = new Date();
+
         viewModel.setMeta(testId, testSetId, startedAt);
 
         ListeningSection listeningSection = getIntent().getParcelableExtra("listeningSection");
@@ -64,10 +73,11 @@ public class ListeningActivity extends AppCompatActivity {
             finish();
             return;
         }
+
         viewModel.setListeningSection(listeningSection);
 
-        // Start timer
-        viewModel.startTimer(60 * 60 * 1000); // 60 mins
+        // Start countdown timer
+        viewModel.startTimer(60 * 60 * 1000); // 60 minutes
         viewModel.getTimeLeft().observe(this, time -> {
             tvTimer.setText(time);
             if ("00:00".equals(time)) {
@@ -77,20 +87,35 @@ public class ListeningActivity extends AppCompatActivity {
             }
         });
 
-        // Observe part switching
+        // Observe current part
         viewModel.getCurrentPartData().observe(this, part -> {
             if (part != null) {
-                int partNum = viewModel.getCurrentPart().getValue();
+                int partNum = viewModel.getCurrentPart().getValue(); // 1 to 4
                 tvPartLabel.setText("Part " + partNum);
+
+                // Update progress steps
+                for (int i = 0; i < stepViews.length; i++) {
+                    if (i < partNum) {
+                        stepViews[i].setBackgroundResource(R.drawable.progress_step_active);
+                    } else {
+                        stepViews[i].setBackgroundResource(R.drawable.progress_step_inactive);
+                    }
+                }
+
+                // Show/hide buttons
                 btnPrevious.setVisibility(partNum == 1 ? View.INVISIBLE : View.VISIBLE);
-                btnNextOrSubmit.setText(partNum == 4 ? "Submit" : "Next");
+                btnNextOrSubmit.setText(partNum == 4 ? "Submit" : "Next →");
+
+                // Update questions
                 adapter.setTimeUp(viewModel.isTimeUp());
                 adapter.submitList(part.getListeningQuestionGroups());
+
+                // Play audio
                 playAudio(part.getAudioUrl());
             }
         });
 
-        // Navigation
+        // Button navigation
         btnPrevious.setOnClickListener(v -> viewModel.goToPreviousPart());
         btnNextOrSubmit.setOnClickListener(v -> {
             if (viewModel.getCurrentPart().getValue() == 4) {

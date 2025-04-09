@@ -96,7 +96,8 @@ public class ListeningQuestionAdapter extends RecyclerView.Adapter<ListeningQues
                 String selected = userAnswers.get(question.getNumber());
 
                 for (String opt : question.getOptions()) {
-                    RadioButton radio = new RadioButton(holder.itemView.getContext());
+                    RadioButton radio = (RadioButton) LayoutInflater.from(holder.itemView.getContext())
+                            .inflate(R.layout.item_option_radio, holder.optionsGroup, false);
                     radio.setText(opt);
                     radio.setId(View.generateViewId());
                     radio.setChecked(opt.equalsIgnoreCase(selected));
@@ -142,7 +143,9 @@ public class ListeningQuestionAdapter extends RecyclerView.Adapter<ListeningQues
                 }
 
                 for (String opt : groupOptions) {
-                    CheckBox cb = new CheckBox(holder.itemView.getContext());
+                    CheckBox cb = (CheckBox) LayoutInflater.from(holder.itemView.getContext())
+                            .inflate(R.layout.item_option_checkbox, holder.optionsGroup, false);
+
                     cb.setText(opt);
                     cb.setChecked(selectedAnswers.contains(opt));
 

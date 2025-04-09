@@ -1,0 +1,22 @@
+<!-- res/layout/item_checkbox_option.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_option_border"
+    android:padding="12dp"
+    android:layout_marginVertical="6dp"
+    android:layout_marginHorizontal="4dp"
+    android:gravity="center_vertical">
+
+    <CheckBox
+        android:id="@+id/checkboxOption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="@color/primary"
+        android:text="A receiving support from local restaurants"
+        android:textSize="15sp"
+        android:textColor="#333333"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+</LinearLayout>
