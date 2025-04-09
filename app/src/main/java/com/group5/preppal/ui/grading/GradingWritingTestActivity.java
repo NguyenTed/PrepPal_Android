@@ -2,8 +2,11 @@ package com.group5.preppal.ui.grading;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.util.EventLog;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,8 +23,7 @@ import com.bumptech.glide.Glide;
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.WritingQuizSubmission;
 import com.group5.preppal.data.repository.WritingQuizSubmissionRepository;
-import com.group5.preppal.ui.course.CourseDetailActivity;
-import com.group5.preppal.ui.quiz.writing_quiz.WritingQuizActivity;
+import com.group5.preppal.service.GeminiService;
 import com.group5.preppal.viewmodel.WritingTestViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -34,7 +36,8 @@ public class GradingWritingTestActivity extends AppCompatActivity {
     private ImageButton backButton;
     private EditText etComment, etScore;
     private Spinner spinnerState;
-    private Button btnSave;
+    private Button btnSave, btnAIComment;
+    TextView tvClearComment;
 
     private WritingTestViewModel writingTestViewModel;
     @Override
@@ -52,6 +55,41 @@ public class GradingWritingTestActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.btnSave);
         backButton = findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> finish());
+        //Set up Clear comment
+        tvClearComment = findViewById(R.id.tvClearComment);
+        setUpTVClearComment();
+        //Set up button AI Comment
+        btnAIComment = findViewById(R.id.btnAIComment);
+        btnAIComment.setOnClickListener(v -> {
+            String studentAnswer = tvStudentAnswer.getText().toString();
+            etComment.setText("Generating feedback...");
+            etScore.setText("...");
+            btnAIComment.setEnabled(false);
+            new Thread(() -> {
+                String feedback = GeminiService.generateFeedback(studentAnswer);
+                String grade = GeminiService.generateGrade(studentAnswer);
+                runOnUiThread(() -> {
+                    etComment.setText(feedback);
+                    etScore.setText(grade);
+                    btnAIComment.setEnabled(true);
+
+                });
+            }).start();
+        });
+
+        etComment.setOnTouchListener((v, event) -> {
+            handleEditTextScroll(v, event);
+
+            return false; // Cho phép EditText xử lý scroll
+        });
+
+        tvStudentAnswer.setOnTouchListener((v, event) -> {
+            handleEditTextScroll(v, event);
+
+            return false; // Cho phép EditText xử lý scroll
+        });
+
+
 
         writingTestViewModel = new ViewModelProvider(this).get(WritingTestViewModel.class);
         String submissionId = getIntent().getStringExtra("submissionId");
@@ -118,5 +156,34 @@ public class GradingWritingTestActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         finish();
         return true;
+    }
+
+    private void handleEditTextScroll(View v, MotionEvent event) {
+        v.getParent().requestDisallowInterceptTouchEvent(true); // Ngăn ScrollView bắt sự kiện
+
+        // Khi ngón tay nhấc ra, cho ScrollView bắt lại
+        if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+            v.getParent().requestDisallowInterceptTouchEvent(false);
+        }
+    }
+
+    private void setUpTVClearComment() {
+        tvClearComment.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    tvClearComment.setPaintFlags(tvClearComment.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    tvClearComment.setPaintFlags(tvClearComment.getPaintFlags() & (~Paint.UNDERLINE_TEXT_FLAG));
+                    break;
+            }
+            return false;
+        });
+
+
+        tvClearComment.setOnClickListener(view -> {
+            etComment.setText("");
+        });
     }
 }

@@ -33,8 +33,10 @@ android {
             localProps.load(FileInputStream(localPropsFile))
         }
         val googleClientId = localProps.getProperty("GOOGLE_CLIENT_ID", "")
+        val geminiApiKey = localProps.getProperty("GEMINI_API_KEY")
 
         buildConfigField("String", "GOOGLE_CLIENT_ID", "\"$googleClientId\"")
+        buildConfigField ("String", "GEMINI_API_KEY", "\"${geminiApiKey}\"")
     }
 
     buildTypes {

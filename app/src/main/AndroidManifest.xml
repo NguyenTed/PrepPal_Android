@@ -96,9 +96,8 @@
         </activity>
         <activity
             android:name=".ui.quiz.writing_quiz.WritingQuizActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
         <!--    Quiz Answer    -->
         <activity
             android:name=".ui.quiz.multiple_choice_quiz.MultipleChoiceAnswerActivity"
