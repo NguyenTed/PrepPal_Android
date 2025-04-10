@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,12 +34,14 @@ public class ListeningActivity extends AppCompatActivity {
     private Button btnPrevious, btnNextOrSubmit;
     private View[] stepViews;
     private ListeningQuestionGroupAdapter adapter;
-
+    private ImageView btnBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listening);
+        btnBack = findViewById(R.id.btnBack);
 
+        btnBack.setOnClickListener(v -> finish());
         // View bindings
         tvPartLabel = findViewById(R.id.partLabelTextView);
         tvTimer = findViewById(R.id.tvListeningTimer);

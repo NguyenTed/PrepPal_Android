@@ -16,7 +16,7 @@
         android:layout_marginBottom="8dp">
 
         <ImageView
-            android:id="@+id/backButton"
+            android:id="@+id/btnBack"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_arrow_back"
@@ -40,46 +40,7 @@
             android:layout_height="24dp"
             android:visibility="invisible" />
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/tabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginBottom="12dp">
 
-        <TextView
-            android:id="@+id/tab1"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Danh sách bộ đề"
-            android:textStyle="bold"
-            android:textColor="@color/blue"
-            android:background="@drawable/tab_selected"
-            android:padding="8dp" />
-
-        <TextView
-            android:id="@+id/tab2"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Bộ đề dự đoán"
-            android:textColor="#999999"
-            android:padding="8dp" />
-
-        <TextView
-            android:id="@+id/tab3"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Bộ đề HOT"
-            android:textColor="#999999"
-            android:padding="8dp" />
-    </LinearLayout>
     <!-- Thanh tìm kiếm -->
     <EditText
         android:id="@+id/searchBox"
