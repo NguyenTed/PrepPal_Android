@@ -2,7 +2,6 @@ package com.group5.preppal.ui.test;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -29,6 +28,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.WritingQuizSubmission;
+import com.group5.preppal.data.model.enums.SubmissionState;
 import com.group5.preppal.data.repository.AuthRepository;
 import com.group5.preppal.data.repository.WritingQuizSubmissionRepository;
 import com.group5.preppal.ui.course.CourseDetailActivity;
@@ -158,9 +158,9 @@ public class WritingTestFragment extends Fragment {
         if (getActivity() instanceof  WritingQuizActivity) {
             btnSubmitQuiz = getActivity().findViewById(R.id.btnSubmitQuiz);
             btnSubmitQuiz.setOnClickListener(v -> submitAnswer(true));
-            writingTestViewModel.getWritingQuizSubmissionByTasKId(taskId, user.getUid()).observe(getViewLifecycleOwner(), submission -> {
+            writingTestViewModel.getWritingQuizSubmissionByTaskId(taskId).observe(getViewLifecycleOwner(), submission -> {
                 if (submission != null) {
-                    if (submission.getComment() != "") {
+                    if (!Objects.equals(submission.getState(), SubmissionState.PENDING.getDisplayName()) && !Objects.equals(submission.getComment(), "")) {
                         tvComment.setVisibility(View.VISIBLE);
                         tvComment.setText(submission.getComment());
                         tvCommentInteract.setText("Teacher comment: ");

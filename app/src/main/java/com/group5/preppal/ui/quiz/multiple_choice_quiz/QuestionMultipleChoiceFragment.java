@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,6 +21,7 @@ import com.group5.preppal.R;
 import com.group5.preppal.data.model.MultipleChoiceAnsweredQuestion;
 import com.group5.preppal.data.model.MultipleChoiceQuestion;
 import com.group5.preppal.data.repository.AuthRepository;
+import com.group5.preppal.data.repository.MultipleChoiceQuizResultRepository;
 import com.group5.preppal.ui.course.CourseDetailActivity;
 import com.group5.preppal.viewmodel.MultipleChoiceQuizViewModel;
 
@@ -117,10 +119,18 @@ public class QuestionMultipleChoiceFragment extends Fragment {
                     ));
                 }
             }
-            quizViewModel.saveQuizResult(user.getUid(), quizId, score, passPoint, answeredQuestions);
-            Intent intent = new Intent(requireContext(), CourseDetailActivity.class);
-            intent.putExtra("courseId", courseId);
-            startActivity(intent);
+            quizViewModel.saveQuizResult(user.getUid(), quizId, score, passPoint, answeredQuestions, new MultipleChoiceQuizResultRepository.SaveResultCallback() {
+                @Override
+                public void onSuccess() {
+                    navigateToCourse();
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+//                    Toast.makeText(requireContext(), "Submit " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    navigateToCourse();
+                }
+            });
         });
 
 
@@ -209,5 +219,11 @@ public class QuestionMultipleChoiceFragment extends Fragment {
                 radioButton.setChecked(false);
             }
         }
+    }
+
+    private void navigateToCourse() {
+        Intent intent = new Intent(requireContext(), CourseDetailActivity.class);
+        intent.putExtra("courseId", courseId);
+        startActivity(intent);
     }
 }
