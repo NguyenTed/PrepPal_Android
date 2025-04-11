@@ -26,10 +26,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.group5.preppal.BuildConfig;
 import com.group5.preppal.R;
+import com.group5.preppal.data.model.Student;
 import com.group5.preppal.data.model.User;
 import com.group5.preppal.data.repository.AuthRepository;
 import com.group5.preppal.ui.admin.AdminMainActivity;
 import com.group5.preppal.ui.TeacherMainActivity;
+import com.group5.preppal.ui.choose_band.ChooseBandActivity;
 import com.group5.preppal.ui.test.WritingTopicsActivity;
 import com.group5.preppal.ui.MainActivity;
 import com.group5.preppal.ui.profile.ProfileActivity;
@@ -40,6 +42,7 @@ import javax.inject.Inject;
 import android.util.Log;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
+import com.group5.preppal.viewmodel.StudentViewModel;
 import com.group5.preppal.viewmodel.UserViewModel;
 
 import javax.inject.Inject;
@@ -130,6 +133,10 @@ public class LoginActivity extends AppCompatActivity {
                         String userRole = user.getRole();
                         Log.d("LoginActivity", "Role: " + user.getRole());
                         if (userRole.equals("student")) {
+                            StudentViewModel student = new ViewModelProvider(this).get(StudentViewModel.class);
+                            student.getStudentById(user.getUid()).observe(this, student1 -> {
+                                handleCheckBand(student1, firebaseUser);
+                            });
                             goToMainActivity(firebaseUser);
                         } else if (userRole.equals("teacher")) {
                             goToTeacherMainActivity();
@@ -180,6 +187,14 @@ public class LoginActivity extends AppCompatActivity {
         // ✅ Force open Google Account Picker
         Intent signInIntent = googleSignInClient.getSignInIntent();
         googleSignInLauncher.launch(signInIntent);
+    }
+
+    private void handleCheckBand(Student student, FirebaseUser firebaseUser) {
+        float band = student.getCurrentBand();
+        if (band < 4.0) {
+            Intent intent = new Intent(this, ChooseBandActivity.class);
+            startActivity(intent);
+        } else goToMainActivity(firebaseUser);
     }
 
     private void goToMainActivity(FirebaseUser user) {

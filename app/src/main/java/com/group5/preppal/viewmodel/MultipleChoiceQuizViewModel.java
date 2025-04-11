@@ -26,15 +26,17 @@ public class MultipleChoiceQuizViewModel extends ViewModel {
     @Inject
     public MultipleChoiceQuizViewModel(MultipleChoiceQuizRepository quizRepository, MultipleChoiceQuizResultRepository quizResultRepository) {
         this.quizRepository = quizRepository;
+
         this.quizResultRepository = quizResultRepository;
+        quizResultRepository.init();
     }
 
     public LiveData<MultipleChoiceQuiz> getQuizById(String quizId) {
         return quizRepository.getQuizById(quizId);
     }
 
-    public LiveData<MultipleChoiceQuizResult> getQuizResultById(String quizResultId) {
-        return quizResultRepository.getQuizResultById(quizResultId);
+    public LiveData<MultipleChoiceQuizResult> getQuizResult(String quizId) {
+        return quizResultRepository.getQuizResult(quizId);
     }
 
     public void saveAnswer(int questionIndex, int selectedOptionIndex) {
@@ -45,20 +47,12 @@ public class MultipleChoiceQuizViewModel extends ViewModel {
         return selectedAnswers.get(questionIndex);
     }
 
-    public void saveQuizResult(String studentId, String quizId, float score, float passPoint, List<MultipleChoiceAnsweredQuestion> answeredQuestions) {
+    public void saveQuizResult(String studentId, String quizId, float score, float passPoint,
+                               List<MultipleChoiceAnsweredQuestion> answeredQuestions,
+                               MultipleChoiceQuizResultRepository.SaveResultCallback callback) {
         boolean pass = score >= passPoint;
         MultipleChoiceQuizResult quizResult = new MultipleChoiceQuizResult(studentId, quizId, score, pass, answeredQuestions);
 
-        quizResultRepository.saveQuizResult(quizResult, new MultipleChoiceQuizResultRepository.SaveResultCallback() {
-            @Override
-            public void onSuccess() {
-                // Kết quả được lưu thành công
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                // Xử lý lỗi
-            }
-        });
+        quizResultRepository.saveQuizResult(quizResult, callback);
     }
 }

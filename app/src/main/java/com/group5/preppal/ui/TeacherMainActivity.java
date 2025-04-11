@@ -80,7 +80,6 @@ public class TeacherMainActivity extends AppCompatActivity {
         });
 
         navLogOut.setOnClickListener(v -> {
-
             handleLogOut();
         });
     }

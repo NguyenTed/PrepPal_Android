@@ -2,6 +2,7 @@ package com.group5.preppal.ui.quiz.multiple_choice_quiz;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -43,9 +44,10 @@ public class MultipleChoiceActivity extends AppCompatActivity {
 
 
         quizViewModel = new ViewModelProvider(this).get(MultipleChoiceQuizViewModel.class);
-
+//        Log.d("quizId", "quizId: " + quizId);
         quizViewModel.getQuizById(quizId).observe(this, quiz -> {
             if (quiz != null) {
+//                Log.d("Question length: ", "Question length: " + quiz.getQuestions().size());
                 loadFirstQuestion(quiz.getQuestions(), quizId, quiz.getPassPoint());
             }
 
