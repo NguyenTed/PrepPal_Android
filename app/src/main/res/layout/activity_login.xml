@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -20,7 +21,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Email"
+        android:text="@string/email"
         android:textSize="15sp"
         android:textColor="@android:color/black"
         android:layout_marginTop="10dp"
@@ -30,7 +31,7 @@
         android:id="@+id/emailEditText"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:hint="Enter email"
+        android:hint="@string/enter_email"
         android:background="@drawable/edittext_background"
         android:padding="10dp"
         android:textSize="14sp"/>
@@ -39,18 +40,18 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Password"
+        android:text="@string/password"
         android:textSize="15sp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="10dp"
         android:textColor="@android:color/black"
-        />
+        tools:ignore="HardcodedText" />
 
     <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:hint="Enter password"
+        android:hint="@string/enter_password"
         android:background="@drawable/edittext_background"
         android:padding="10dp"
         android:textSize="14sp"
@@ -61,7 +62,7 @@
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="Log In"
+        android:text="@string/log_in"
         android:textSize="16sp"
         android:textColor="@android:color/white"
         android:backgroundTint="@color/blue"
@@ -74,7 +75,7 @@
         android:id="@+id/googleSignInButton"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="Continue with Google"
+        android:text="@string/continue_with_google"
         android:textSize="16sp"
         android:textColor="@android:color/black"
         android:backgroundTint="@color/white"
@@ -94,7 +95,7 @@
             android:layout_height="wrap_content"
             android:minWidth="48dp"
             android:minHeight="48dp"
-            android:text="Don't have an account? Sign up"
+            android:text="@string/don_t_have_an_account_sign_up"
             android:textSize="14sp"
             android:textColor="@color/blue"
             android:onClick="registerWithPhone"/>
