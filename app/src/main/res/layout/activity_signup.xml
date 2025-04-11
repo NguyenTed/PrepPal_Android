@@ -91,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:text="Email"
+            android:text="@string/email"
             android:textSize="14sp"
             android:textColor="@color/black"/>
         <EditText
@@ -108,7 +108,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:text="Password"
+            android:text="@string/password"
             android:textSize="14sp"
             android:textColor="@color/black"/>
         <EditText
@@ -116,7 +116,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/input_background"
-            android:hint="Enter password"
+            android:hint="@string/enter_password"
             android:padding="10dp"
             android:textSize="16sp"
             android:inputType="textPassword"
@@ -126,7 +126,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:text="Confirm password"
+            android:text="@string/confirm_password"
             android:textSize="14sp"
             android:textColor="@color/black"/>
         <EditText
@@ -134,7 +134,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/input_background"
-            android:hint="Retype password"
+            android:hint="@string/retype_password"
             android:padding="10dp"
             android:textSize="16sp"
             android:inputType="textPassword"
@@ -145,7 +145,7 @@
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Register"
+            android:text="@string/register"
             android:textSize="16sp"
             android:textColor="@color/white"
             android:backgroundTint="@color/blue"
@@ -158,7 +158,7 @@
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:padding="2dp"
-            android:text="Already have an account? Sign in"
+            android:text="@string/already_have_an_account_sign_in"
             android:textSize="14sp"
             android:textColor="@color/blue" />
     </LinearLayout>

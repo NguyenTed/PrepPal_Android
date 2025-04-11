@@ -20,13 +20,13 @@
             android:id="@+id/etWord"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Enter a word..."
             android:background="@drawable/edit_text_rounded"
-            android:padding="12dp"
-            android:textSize="16sp"
-            android:imeOptions="actionSearch"
             android:drawableStart="@drawable/ic_magnify"
-            android:drawablePadding="10dp"/>
+            android:drawablePadding="10dp"
+            android:hint="@string/enter_a_word"
+            android:imeOptions="actionSearch"
+            android:padding="12dp"
+            android:textSize="16sp" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -40,7 +40,7 @@
         android:textStyle="bold"
         android:textColor="@android:color/black"
         android:paddingTop="16dp"
-        android:text="word"
+        android:text="@string/word"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/tilWord"
         app:layout_constraintStart_toStartOf="parent"/>

@@ -75,7 +75,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Band:"
+                        android:text="@string/band"
                         android:textSize="16sp"
                         android:textColor="#ff0D0D0D"
                         />
@@ -117,7 +117,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Account information"
+                    android:text="@string/account_information"
                     android:textSize="18sp"
                     android:textColor="@color/black"/>
             </LinearLayout>
@@ -154,7 +154,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Courses"
+                    android:text="@string/courses"
                     android:textSize="18sp"
                     android:textColor="@color/black"/>
             </LinearLayout>
@@ -192,7 +192,7 @@
                 android:id="@+id/logOutTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Log out"
+                android:text="@string/log_out"
                 android:textSize="18sp"
                 android:textColor="@color/black"/>
 

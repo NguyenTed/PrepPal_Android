@@ -1,0 +1,76 @@
+<resources>
+    <string name="app_name" translatable="false">PrepPal</string>
+    <string name="account" translatable="false">Tài khoản</string>
+    <string name="back_button" translatable="false">Nút quay lại</string>
+    <string-array name="submission_states">
+        <item>Chờ duyệt</item>
+        <item>Đạt</item>
+        <item>Không đạt</item>
+    </string-array>
+    <string name="navigation_drawer_open">Mở menu điều hướng</string>
+    <string name="navigation_drawer_close">Đóng menu điều hướng</string>
+    <string name="question_1_3">Câu hỏi 1/3</string>
+    <string name="full_name">Họ và tên</string>
+    <string name="option_3">Lựa chọn 3</string>
+    <string name="add_new_teacher">Thêm giáo viên mới</string>
+    <string name="email">Email</string>
+    <string name="date_of_birth">Ngày sinh</string>
+    <string name="phone_number">Số điện thoại</string>
+    <string name="password">Mật khẩu</string>
+    <string name="select_date_of_birth">Chọn ngày sinh</string>
+    <string name="gender">Giới tính</string>
+    <string name="add_teacher">Thêm giáo viên</string>
+    <string name="assignment">Bài tập</string>
+    <string name="ielts_skills_builder">Luyện kỹ năng IELTS</string>
+    <string name="entry_level_5_0_5_5_target_level_6_0">Trình độ đầu vào: 5.0 - 5.5 / Mục tiêu: 6.0+</string>
+    <string name="introduction">Giới thiệu</string>
+    <string name="in_this_course_you_will_learn_all_type_of_writing_skills_includes_charts_map_process_in_speaking_you_will_able_to_learn_about_environment_people">
+        Trong khóa học này, bạn sẽ học tất cả các kỹ năng viết như biểu đồ, bản đồ, quy trình. Trong phần nói, bạn sẽ được học về môi trường, con người.
+    </string>
+    <string name="welcome">Chào mừng</string>
+    <string name="lesson_1_writing_task_1_dynamic_charts">Bài 1: Writing Task 1 - Biểu đồ động</string>
+    <string name="enter_email">Nhập email</string>
+    <string name="enter_password">Nhập mật khẩu</string>
+    <string name="log_in">Đăng nhập</string>
+    <string name="continue_with_google">Tiếp tục với Google</string>
+    <string name="don_t_have_an_account_sign_up">Chưa có tài khoản? Đăng ký</string>
+    <string name="course">Khóa học</string>
+    <string name="explore">Khám phá</string>
+    <string name="my_courses">Khóa học của tôi</string>
+    <string name="view_more">Xem thêm</string>
+    <string name="hello_current_user_s_name">Xin chào Tên người dùng</string>
+    <string name="register_account">Đăng ký tài khoản</string>
+    <string name="enter_your_name">Nhập tên của bạn</string>
+    <string name="dd_mm_yyyy">dd/mm/yyyy</string>
+    <string name="confirm_password">Xác nhận mật khẩu</string>
+    <string name="retype_password">Nhập lại mật khẩu</string>
+    <string name="register">Đăng ký</string>
+    <string name="already_have_an_account_sign_in">Đã có tài khoản? Đăng nhập</string>
+    <string name="previous">Trước</string>
+    <string name="submit">Nộp bài</string>
+    <string name="next">Tiếp theo</string>
+    <string name="my_band_level">Trình độ hiện tại</string>
+    <string name="my_band_goal">Mục tiêu trình độ</string>
+    <string name="save">Lưu</string>
+    <string name="band">Band:</string>
+    <string name="account_information">Thông tin tài khoản</string>
+    <string name="courses">Các khóa học</string>
+    <string name="log_out">Đăng xuất</string>
+    <string name="entry_level">Trình độ đầu vào:</string>
+    <string name="target_level">Trình độ mục tiêu:</string>
+    <string name="payment">Thanh toán</string>
+    <string name="complete">Hoàn thành</string>
+    <string name="try_again">Thử lại!</string>
+    <string name="word">từ</string>
+    <string name="enter_a_word">Nhập một từ...</string>
+    <string name="mark_as_learned">Đánh dấu là đã học</string>
+    <string name="grading_test">Bài kiểm tra chấm điểm</string>
+    <string name="writing_topic">Chủ đề viết</string>
+    <string name="writing_test_description">Mô tả bài viết</string>
+    <string name="student_s_answer">Bài làm của học sinh</string>
+    <string name="teacher_comment">Nhận xét của giáo viên:</string>
+    <string name="clear_comment">Xóa nhận xét</string>
+    <string name="enter_comments_for_the_student">Nhập nhận xét cho học sinh</string>
+    <string name="grade_by_ai">Chấm điểm bằng AI</string>
+    <string name="there_is_no_test_available">Không có bài kiểm tra nào hiện có.</string>
+</resources>
