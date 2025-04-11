@@ -53,12 +53,10 @@ public class ListeningActivity extends AppCompatActivity {
         };
 
         groupRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new ListeningQuestionGroupAdapter();
-        adapter.setUserAnswers(new HashMap<>());
-
-        groupRecyclerView.setAdapter(adapter);
-
         viewModel = new ViewModelProvider(this).get(ListeningViewModel.class);
+        adapter = new ListeningQuestionGroupAdapter();
+        adapter.setUserAnswers(viewModel.getUserAnswers());
+        groupRecyclerView.setAdapter(adapter);
 
         // Get data from intent
         String testId = getIntent().getStringExtra("testId");
