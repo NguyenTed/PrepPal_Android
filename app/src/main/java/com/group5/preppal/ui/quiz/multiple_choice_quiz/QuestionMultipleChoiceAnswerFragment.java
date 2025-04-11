@@ -1,6 +1,7 @@
 package com.group5.preppal.ui.quiz.multiple_choice_quiz;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,6 @@ public class QuestionMultipleChoiceAnswerFragment extends Fragment {
     private static final String ARG_QUESTIONS = "questions";
     private static final String ARG_QUIZ_ID = "quizId";
     private static final String ARG_PASS_POINT = "passPoint";
-    private String quizResultId;
     private MultipleChoiceQuizResult multipleChoiceQuizResult;
 
     @Inject
@@ -79,15 +79,14 @@ public class QuestionMultipleChoiceAnswerFragment extends Fragment {
 
         quizViewModel = new ViewModelProvider(requireActivity()).get(MultipleChoiceQuizViewModel.class);
         user = authRepository.getCurrentUser();
-
         if (user != null) {
-            String quizResultId = user.getUid() + "_" + quizId;
-            quizViewModel.getQuizResultById(quizResultId).observe(this, new Observer<MultipleChoiceQuizResult>() {
+            quizViewModel.getQuizResult(quizId).observe(this, new Observer<MultipleChoiceQuizResult>() {
                 @Override
                 public void onChanged(MultipleChoiceQuizResult result) {
                     if (result != null) {
                         multipleChoiceQuizResult = result;
-                        loadQuestion(); // Gọi lại hàm này sau khi có dữ liệu
+                        Log.d("Multiple Choice quiz result", "Multiple Choice Quiz result size: " + result.getAnsweredQuestions().size());
+                        loadQuestion();
                     }
                 }
             });
@@ -133,7 +132,7 @@ public class QuestionMultipleChoiceAnswerFragment extends Fragment {
 
         answerGroup.removeAllViews();
 
-
+//        Log.d("Option size", "Option size: " + currentMultipleChoiceQuestion.getOptions().size());
         for (int i = 0; i < currentMultipleChoiceQuestion.getOptions().size(); i++) {
             View optionView = LayoutInflater.from(getContext()).inflate(R.layout.item_answer_option, answerGroup, false);
             LinearLayout layout = optionView.findViewById(R.id.answerOptionLayout);

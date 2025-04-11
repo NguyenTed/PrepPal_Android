@@ -18,8 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.group5.preppal.R;
+import com.group5.preppal.data.model.enums.CourseSectionType;
+import com.group5.preppal.data.model.enums.SubmissionState;
 import com.group5.preppal.ui.lesson.LessonPDFDetailActivity;
 import com.group5.preppal.ui.lesson.LessonVideoActivity;
 import com.group5.preppal.ui.quiz.multiple_choice_quiz.MultipleChoiceActivity;
@@ -27,12 +28,13 @@ import com.group5.preppal.ui.quiz.multiple_choice_quiz.MultipleChoiceAnswerActiv
 import com.group5.preppal.ui.quiz.speaking.SpeakingBookingActivity;
 import com.group5.preppal.ui.quiz.speaking.SpeakingWaitingActivity;
 import com.group5.preppal.ui.quiz.writing_quiz.WritingQuizActivity;
-import com.group5.preppal.ui.video_call.VideoCallActivity;
+import com.group5.preppal.viewmodel.MultipleChoiceQuizViewModel;
 import com.group5.preppal.viewmodel.StudentViewModel;
 import com.group5.preppal.viewmodel.WritingTestViewModel;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionViewHolder> {
     private final List<Map<String, Object>> sectionList;
@@ -42,7 +44,6 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
     private FirebaseUser user;
     private final List<String> finishedLessons;
     private StudentViewModel studentViewModel;
-
 
     public SectionAdapter(List<Map<String, Object>> sectionList, Context context, String courseId, FirebaseAuth firebaseAuth, ViewModelStoreOwner viewModelStoreOwner,List<String> finishedLessons, StudentViewModel studentViewModel) {
         this.sectionList = sectionList;
@@ -93,6 +94,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
             txtPoint = itemView.findViewById(R.id.txtPoint);
             txtState = itemView.findViewById(R.id.txtState);
             sectionTypeFinish = itemView.findViewById(R.id.sectionTypeFinish);
+
         }
     }
 
@@ -102,64 +104,10 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
 
     private void checkPreviousSectionCompleted(Map<String, Object> section, List<Map<String, Object>> sectionList, int position,  CompletionCallback callback) {
         if (section.containsKey("lesson")) {
-            String lessonId = ((Map<String, Object>) section.get("lesson")).get("id").toString();
-            if (finishedLessons != null && finishedLessons.contains(lessonId)) {
-                callback.onResult(true);
-            } else {
-                callback.onResult(false);
-            }
+            callbackLessonState(section, callback);
 
         } else if (section.containsKey("quiz")) {
-            Map<String, Object> quiz = (Map<String, Object>) section.get("quiz");
-            String type = quiz.get("type").toString();
-            String quizId = quiz.get("id").toString();
-
-            if (type.contains("Writing") || type.contains("Speaking")) {
-                if (position == 0) callback.onResult(true);
-                else checkPreviousSectionCompleted(sectionList.get(position - 1), sectionList, position, callback);
-            } else if (type.contains("Multiple Choice Quiz")){
-                String studentId = user.getUid();
-
-                FirebaseFirestore.getInstance()
-                        .collection("multiple_choice_quiz_result")
-                        .document(studentId + "_" + quizId)
-                        .get()
-                        .addOnSuccessListener(resultDoc -> {
-                            if (resultDoc.exists()) {
-                                float score = Float.parseFloat(resultDoc.get("score").toString());
-
-                                // Lấy passPoint từ multiple_choice_quizs collection
-                                FirebaseFirestore.getInstance()
-                                        .collection("multiple_choice_quizs")
-                                        .document(quizId)
-                                        .get()
-                                        .addOnSuccessListener(quizDoc -> {
-                                            if (quizDoc.exists()) {
-                                                float passPoint = Float.parseFloat(quizDoc.get("passPoint").toString());
-
-                                                if (score >= passPoint) {
-                                                    callback.onResult(true);
-                                                } else {
-                                                    callback.onResult(false);
-                                                }
-                                            } else {
-                                                callback.onResult(false);
-                                            }
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            Log.e("SectionAdapter", "Failed to get passPoint", e);
-                                            callback.onResult(false);
-                                        });
-
-                            } else {
-                                callback.onResult(false);
-                            }
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.e("SectionAdapter", "Failed to check quiz result", e);
-                            callback.onResult(false);
-                        });
-            }
+            callbackQuizState(section, callback, position);
 
         } else {
             callback.onResult(false);
@@ -208,59 +156,60 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
             holder.itemView.setAlpha(isUnlocked ? 1.0f : 0.4f);
 
             if (type.contains("Multiple Choice")) {
+                MultipleChoiceQuizViewModel multipleChoiceQuizViewModel = new ViewModelProvider(viewModelStoreOwner).get(MultipleChoiceQuizViewModel.class);
                 float passPoint = Float.parseFloat(quiz.get("passPoint").toString());
 
-                FirebaseFirestore.getInstance()
-                        .collection("multiple_choice_quiz_result")
-                        .document(user.getUid() + "_" + quizId)
-                        .get()
-                        .addOnSuccessListener(doc -> {
-                            boolean quizComplete = false;
-                            if (doc.exists()) {
-                                quizComplete = true;
-                                Float score = Float.parseFloat(doc.get("score").toString());
-                                holder.txtPoint.setText("Score: " + score + "/" + maxPoint);
-                                holder.txtPoint.setVisibility(View.VISIBLE);
-                                if (score >= passPoint) holder.sectionTypeFinish.setVisibility(View.VISIBLE);
-                                else holder.sectionType.setVisibility(View.VISIBLE);
-                            }
-                            else holder.sectionType.setVisibility(View.VISIBLE);
-                            boolean finalQuizCompleted = quizComplete;
-                            holder.itemView.setOnClickListener(view -> {
-                                if (!isUnlocked ) {
-                                    Toast.makeText(context, "Vui lòng hoàn thành các phần trước!", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                                Intent intent;
-                                if (finalQuizCompleted) {
-                                    intent = new Intent(context, MultipleChoiceAnswerActivity.class);
-                                } else {
-                                    intent = new Intent(context, MultipleChoiceActivity.class);
-                                }
-                                intent.putExtra("quizId", quizId);
-                                intent.putExtra("courseId", courseId);
-                                context.startActivity(intent);
-                            });
-                        });
-
+                multipleChoiceQuizViewModel.getQuizResult(quizId).observe((LifecycleOwner) viewModelStoreOwner, quizResult -> {
+                    boolean quizComplete = false;
+                    if (quizResult != null) {
+                        quizComplete = true;
+                        float score = quizResult.getScore();
+                        holder.txtPoint.setText("Score: " + score + "/" + maxPoint);
+                        holder.txtPoint.setVisibility(View.VISIBLE);
+                        if (score >= passPoint) holder.sectionTypeFinish.setVisibility(View.VISIBLE);
+                        else holder.sectionType.setVisibility(View.VISIBLE);
+                    }
+                    else holder.sectionType.setVisibility(View.VISIBLE);
+                    boolean finalQuizCompleted = quizComplete;
+                    holder.itemView.setOnClickListener(view -> {
+                        if (!isUnlocked ) {
+                            Toast.makeText(context, "Vui lòng hoàn thành các phần trước!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        Intent intent;
+                        if (finalQuizCompleted) {
+                            intent = new Intent(context, MultipleChoiceAnswerActivity.class);
+                        } else {
+                            intent = new Intent(context, MultipleChoiceActivity.class);
+                        }
+                        intent.putExtra("quizId", quizId);
+                        intent.putExtra("courseId", courseId);
+                        context.startActivity(intent);
+                    });
+                });
             }
             else if (type.contains("Writing")) {
-                String userId = user.getUid();
-
                 WritingTestViewModel writingTestViewModel = new ViewModelProvider(viewModelStoreOwner).get(WritingTestViewModel.class);
 
-                writingTestViewModel.getWritingQuizSubmissionByTasKId(quizId, userId).observeForever(writingQuizSubmission -> {
+                writingTestViewModel.getWritingQuizSubmissionByTaskId(quizId).observe((LifecycleOwner) viewModelStoreOwner,  writingQuizSubmission -> {
                     if (writingQuizSubmission != null) {
-                        String submissionState = writingQuizSubmission.getState();
-                        if (submissionState != null && !submissionState.equals("pass")) {
-                            holder.txtState.setText(submissionState);
+                        String state = writingQuizSubmission.getState();
+                        Log.d("State", "Writing State: " + state);
+                        if (state != null && !state.equals(SubmissionState.PASSED.getDisplayName())) {
+                            holder.txtState.setText(state);
                             holder.txtState.setVisibility(View.VISIBLE);
                             holder.sectionType.setVisibility(View.VISIBLE);
                         } else {
                             holder.sectionTypeFinish.setVisibility(View.VISIBLE);
                         }
-                        holder.txtPoint.setText("Score: " + writingQuizSubmission.getPoints() + "/" + maxPoint);
-                        holder.txtPoint.setVisibility(View.VISIBLE);
+                        if (!Objects.equals(state, SubmissionState.PENDING.getDisplayName())) {
+                            holder.txtPoint.setText("Score: " + writingQuizSubmission.getPoints() + "/" + maxPoint);
+                            holder.txtPoint.setVisibility(View.VISIBLE);
+                        } else {
+                            float score = 0.0F;
+                            holder.txtPoint.setText("Score: " + score + "/" + maxPoint);
+                            holder.txtPoint.setVisibility(View.VISIBLE);
+                        }
                     } else {
                         holder.sectionType.setVisibility(View.VISIBLE);
                     }
@@ -294,6 +243,48 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
         }
     }
 
+    private void callbackLessonState(Map<String, Object> section, CompletionCallback callback) {
+        String lessonId = ((Map<String, Object>) section.get("lesson")).get("id").toString();
+        if (finishedLessons != null && finishedLessons.contains(lessonId)) {
+            callback.onResult(true);
+        } else {
+            callback.onResult(false);
+        }
+    }
+
+    private void callbackQuizState(Map<String, Object> section, CompletionCallback callback, int position) {
+        Map<String, Object> quiz = (Map<String, Object>) section.get("quiz");
+        String type = quiz.get("type").toString();
+        String quizId = quiz.get("id").toString();
+
+        if (type.contains(CourseSectionType.WRITING.getDisplayName()) || type.contains(CourseSectionType.SPEAKING.getDisplayName())) {
+            if (position == 0) callback.onResult(true);
+            else checkPreviousSectionCompleted(sectionList.get(position - 1), sectionList, position, callback);
+        } else if (type.contains(CourseSectionType.MULTIPLE_CHOICE.getDisplayName())){
+            MultipleChoiceQuizViewModel multipleChoiceQuizViewModel = new ViewModelProvider(viewModelStoreOwner).get(MultipleChoiceQuizViewModel.class);
+
+            multipleChoiceQuizViewModel.getQuizResult(quizId).observe((LifecycleOwner) viewModelStoreOwner, quizResult -> {
+                if (quizResult != null) {
+                    float score = quizResult.getScore();
+                    multipleChoiceQuizViewModel.getQuizById(quizId).observe((LifecycleOwner) viewModelStoreOwner, multipleChoiceQuiz -> {
+                        if (quiz != null) {
+                            float passPoint = multipleChoiceQuiz.getPassPoint();
+                            if (score >= passPoint) {
+                                callback.onResult(true);
+                            } else {
+                                callback.onResult(false);
+                            }
+                        } else {
+                            callback.onResult(false);
+                        }
+                    });
+                } else {
+                    callback.onResult(false);
+                }
+            });
+        }
+    }
+
     private void handleSpeakingNavigate(String speakingTestId) {
         studentViewModel.fetchStudentBookedSpeakingById(speakingTestId, user.getUid()).observe((LifecycleOwner) viewModelStoreOwner, booked -> {
             Intent intent;
@@ -308,4 +299,5 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
             context.startActivity(intent);
         });
     }
+
 }
