@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseUser;
 import com.group5.preppal.data.model.User;
@@ -59,17 +61,11 @@ public class AuthViewModel extends ViewModel {
 
     public void signInWithGoogle(AuthCredential credential) {
         authRepository.signInWithGoogle(credential)
-                .addOnSuccessListener(authResult -> {
-                    FirebaseUser user = authResult.getUser();
-                    if (user != null) {
-                        Log.d("AuthViewModel", "Google sign-in successful: " + user.getEmail());
-                        userLiveData.setValue(user);
-                    }
+                .addOnSuccessListener(aVoid -> {
+                    FirebaseUser currentUser = authRepository.getCurrentUser();
+                    userLiveData.setValue(currentUser);
                 })
-                .addOnFailureListener(e -> {
-                    Log.e("AuthViewModel", "Google sign-in failed", e);
-                    errorLiveData.setValue(e.getMessage());
-                });
+                .addOnFailureListener(error -> errorLiveData.setValue(error.getMessage()));
     }
 
 

@@ -63,50 +63,52 @@ public class AuthRepository {
                 });
     }
 
-    public Task<AuthResult> signInWithGoogle(AuthCredential credential) {
+    public Task<Void> signInWithGoogle(AuthCredential credential) {
         return firebaseAuth.signInWithCredential(credential)
-                .addOnSuccessListener(authResult -> {
-                    FirebaseUser user = authResult.getUser();
-                    if (user != null) {
-                        checkAndSaveFirebaseUser(user); // ✅ Save user data to Firestore
+                .continueWithTask(task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = task.getResult().getUser();
+                        if (user != null) {
+                            return checkAndSaveFirebaseUser(user);
+                        }
                     }
-                })
-                .addOnFailureListener(e -> Log.e("AuthRepository", "Google sign-in failed", e));
+                    throw task.getException();
+                });
     }
 
     /** ✅ Check if user exists in Firestore, save if new (Google Sign-In) */
-    private void checkAndSaveFirebaseUser(FirebaseUser firebaseUser) {
+    private Task<Void> checkAndSaveFirebaseUser(FirebaseUser firebaseUser) {
         if (firebaseUser == null) {
-            Log.e("Firestore", "FirebaseUser is null, cannot save.");
-            return;
+            return Tasks.forException(new Exception("FirebaseUser is null, cannot save."));
         }
 
-        // ✅ Retrieve Firestore user document asynchronously
-        firestore.collection("students").document(firebaseUser.getUid())
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (!documentSnapshot.exists()) {
-                        Log.d("Firestore", "User does not exist, saving new user...");
+        DocumentReference userRef = firestore.collection("students").document(firebaseUser.getUid());
 
-                        Student student = new Student(
-                                firebaseUser.getUid(),
-                                firebaseUser.getEmail(),
-                                firebaseUser.getDisplayName() != null ? firebaseUser.getDisplayName() : "Unknown",
-                                null,
-                                User.Gender.OTHER
-                        );
+        return userRef.get().continueWithTask(task -> {
+            if (!task.isSuccessful()) {
+                throw task.getException();
+            }
 
-                        firestore.collection("students").document(student.getUid())
-                                .set(student)
-                                .addOnSuccessListener(aVoid -> Log.d("Firestore", "User saved successfully: " + student.getUid()))
-                                .addOnFailureListener(e -> Log.e("Firestore", "Error saving user", e));
-                    } else {
-                        Log.d("Firestore", "User already exists in Firestore: " + firebaseUser.getUid());
-                    }
-                })
-                .addOnFailureListener(e -> Log.e("Firestore", "Error fetching user document", e));
+            if (!task.getResult().exists()) {
+                Log.d("Firestore", "User does not exist, saving new user...");
+
+                Student student = new Student(
+                        firebaseUser.getUid(),
+                        firebaseUser.getEmail(),
+                        firebaseUser.getDisplayName() != null ? firebaseUser.getDisplayName() : "Unknown",
+                        null,
+                        User.Gender.OTHER
+                );
+
+                return userRef.set(student)
+                        .addOnSuccessListener(aVoid -> Log.d("Firestore", "User saved successfully: " + student.getUid()))
+                        .addOnFailureListener(e -> Log.e("Firestore", "Error saving user", e));
+            } else {
+                Log.d("Firestore", "User already exists: " + firebaseUser.getUid());
+                return Tasks.forResult(null);
+            }
+        });
     }
-
 
     /** ✅ Check if user exists in Firestore, save if new (Email Sign-Up) */
     private Task<Void> checkAndSaveNativeUser(FirebaseUser user, String name, Date dateOfBirth, User.Gender gender) {
