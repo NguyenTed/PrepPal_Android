@@ -21,7 +21,6 @@ public class UserViewModel extends ViewModel {
         this.userRepository = userRepository;
     }
 
-    // ✅ Đừng cache lại, mà gọi mỗi lần cần
     public LiveData<User> getCurrentUser() {
         return userRepository.getCurrentUser();
     }

@@ -26,6 +26,8 @@ import com.group5.preppal.data.repository.WritingQuizSubmissionRepository;
 import com.group5.preppal.service.GeminiService;
 import com.group5.preppal.viewmodel.WritingTestViewModel;
 
+import java.util.Objects;
+
 import dagger.hilt.android.AndroidEntryPoint;
 
 
@@ -97,7 +99,7 @@ public class GradingWritingTestActivity extends AppCompatActivity {
             if (submission != null) {
                 writingTestViewModel.getTaskById(submission.getTaskId()).observe(this, task -> {
                     if (task != null) {
-                        if (task.getImgUrl() != "") {
+                        if (!Objects.equals(task.getImgUrl(), "")) {
                             Glide.with(this)
                                     .load(task.getImgUrl())
                                     .placeholder(R.drawable.loading)
@@ -142,6 +144,8 @@ public class GradingWritingTestActivity extends AppCompatActivity {
                         });
                     }
                 });
+            } else {
+                Log.e("DEBUG", "Submission is null for ID: " + submissionId);
             }
         });
 

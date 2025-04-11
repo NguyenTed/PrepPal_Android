@@ -30,6 +30,7 @@ public class WritingTestViewModel extends ViewModel {
         this.repository = repository;
         fetchWritingTests();
         this.writingQuizSubmissionRepository = writingQuizSubmissionRepository;
+        writingQuizSubmissionRepository.init();
     }
 
     public LiveData<List<WritingQuizSubmission>> getAllWritingQuizSubmission() {
@@ -48,8 +49,8 @@ public class WritingTestViewModel extends ViewModel {
         return writingQuizSubmissionRepository.getQuizSubmissionById(submissionId);
     }
 
-    public LiveData<WritingQuizSubmission> getWritingQuizSubmissionByTasKId(String taskId, String userId) {
-        return writingQuizSubmissionRepository.getQuizSubmissionByTaskId(taskId,userId);
+    public LiveData<WritingQuizSubmission> getWritingQuizSubmissionByTaskId(String taskId) {
+        return writingQuizSubmissionRepository.getQuizSubmissionByTaskId(taskId);
     }
 
     public void saveWritingQuizSubmission(WritingQuizSubmission submission, String taskId, String userId, WritingQuizSubmissionRepository.SubmissionCallback callback) {

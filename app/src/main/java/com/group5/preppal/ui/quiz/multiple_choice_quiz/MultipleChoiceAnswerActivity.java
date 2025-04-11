@@ -2,6 +2,7 @@ package com.group5.preppal.ui.quiz.multiple_choice_quiz;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,7 +41,6 @@ public class MultipleChoiceAnswerActivity extends AppCompatActivity {
         backBtn.setOnClickListener(view -> {
             Intent intent = new Intent(this, CourseDetailActivity.class);
             intent.putExtra("courseId", getIntent().getStringExtra("courseId"));
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
 

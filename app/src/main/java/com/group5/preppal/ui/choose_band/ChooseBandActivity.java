@@ -1,9 +1,11 @@
 package com.group5.preppal.ui.choose_band;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -13,6 +15,10 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.group5.preppal.R;
+import com.group5.preppal.ui.MainActivity;
+import com.group5.preppal.ui.TeacherMainActivity;
+import com.group5.preppal.ui.auth.LoginActivity;
+import com.group5.preppal.viewmodel.AuthViewModel;
 import com.group5.preppal.viewmodel.UserViewModel;
 
 import javax.inject.Inject;
@@ -26,6 +32,7 @@ public class ChooseBandActivity extends AppCompatActivity {
     private Button btnGoal5_0, btnGoal6_0, btnGoal6_5;
     private LinearLayout containerBandGoal;
     private Button saveBtn;
+    private ImageButton backBtn;
 
     private double selectedBandLevel = 4.0;
     private double selectedGoalBand = 6.5;
@@ -41,7 +48,7 @@ public class ChooseBandActivity extends AppCompatActivity {
 
 
         saveBtn = findViewById(R.id.btn_save);
-
+        backBtn = findViewById(R.id.backButton);
         // Ánh xạ ID từ XML
         btnBand4_0 = findViewById(R.id.btn_band_4_0);
         btnBand5_0 = findViewById(R.id.btn_band_5_0);
@@ -63,6 +70,7 @@ public class ChooseBandActivity extends AppCompatActivity {
         btnGoal6_5.setOnClickListener(view -> selectBandGoal(6.5));
 
         saveBtn.setOnClickListener(v -> saveBandToFirebase());
+        backBtn.setOnClickListener(v -> navigateToLogin());
 
         // Mặc định chọn band level 6.0-6.5 và band goal 6.5-7.0+
         selectBandLevel(4.0);
@@ -142,11 +150,23 @@ public class ChooseBandActivity extends AppCompatActivity {
 
     private void saveBandToFirebase() {
         userViewModel.updateUserBand(selectedBandLevel, selectedGoalBand).observe(this, success -> {
-//            if (success) {
-//                Toast.makeText(this, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
-//            } else {
-//                Toast.makeText(this, "Lỗi khi cập nhật!", Toast.LENGTH_SHORT).show();
-//            }
+            if (success) {
+                navigateToHome();
+            } else {
+                Toast.makeText(this, "Lỗi khi cập nhật!", Toast.LENGTH_SHORT).show();
+            }
         });
+    }
+
+    private void navigateToHome() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+    private void navigateToLogin() {
+        AuthViewModel authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        authViewModel.signOut();
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
