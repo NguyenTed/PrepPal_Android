@@ -96,7 +96,8 @@ public class ReadingQuestionAdapter extends RecyclerView.Adapter<ReadingQuestion
                 String selected = userAnswers.get(question.getNumber());
 
                 for (String opt : question.getOptions()) {
-                    RadioButton radio = new RadioButton(holder.itemView.getContext());
+                    RadioButton radio = (RadioButton) LayoutInflater.from(holder.itemView.getContext())
+                            .inflate(R.layout.item_option_radio, holder.optionsGroup, false);
                     radio.setText(opt);
                     radio.setId(View.generateViewId());
                     radio.setChecked(opt.equalsIgnoreCase(selected));
@@ -142,7 +143,8 @@ public class ReadingQuestionAdapter extends RecyclerView.Adapter<ReadingQuestion
                 }
 
                 for (String opt : groupOptions) {
-                    CheckBox cb = new CheckBox(holder.itemView.getContext());
+                    CheckBox cb = (CheckBox) LayoutInflater.from(holder.itemView.getContext())
+                            .inflate(R.layout.item_option_checkbox, holder.optionsGroup, false);
                     cb.setText(opt);
                     cb.setChecked(selectedAnswers.contains(opt));
 
@@ -255,15 +257,26 @@ public class ReadingQuestionAdapter extends RecyclerView.Adapter<ReadingQuestion
                         : Arrays.asList("Yes", "No", "Not Given");
 
                 for (String opt : boolOptions) {
-                    RadioButton radio = new RadioButton(holder.itemView.getContext());
+                    RadioButton radio = (RadioButton) LayoutInflater.from(holder.itemView.getContext())
+                            .inflate(R.layout.item_option_radio, holder.optionsGroup, false);
                     radio.setText(opt);
-                    radio.setChecked(opt.equals(savedAnswer));
                     radio.setEnabled(!isTimeUp);
-                    radio.setOnCheckedChangeListener((btn, checked) -> {
-                        if (checked) userAnswers.put(qNum, opt);
-                    });
+                    radio.setId(View.generateViewId()); // Rất quan trọng để tránh id bị trùng!
+                    if (opt.equals(savedAnswer)) {
+                        radio.setChecked(true);
+                    }
                     holder.optionsGroup.addView(radio);
                 }
+
+                // Set listener cho cả nhóm
+                holder.optionsGroup.setOnCheckedChangeListener((group, checkedId) -> {
+                    if (checkedId != -1) {
+                        RadioButton isselected = group.findViewById(checkedId);
+                        if (isselected != null) {
+                            userAnswers.put(qNum, isselected.getText().toString());
+                        }
+                    }
+                });
                 break;
         }
     }

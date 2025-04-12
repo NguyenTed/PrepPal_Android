@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import androidx.annotation.Nullable;
@@ -12,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.User;
+import com.group5.preppal.utils.LanguageUtils;
 import com.group5.preppal.viewmodel.AddNewTeacherViewModel;
 
 import java.text.SimpleDateFormat;
@@ -75,11 +77,20 @@ public class AddNewTeacherActivity extends AppCompatActivity {
     }
 
     private void setupGenderSpinner() {
-        String[] genders = {"MALE", "FEMALE", "OTHER"};
+        String language = LanguageUtils.getSavedLanguage(this);
+        String[] genders;
+        Log.d("LANGUAGE_CHECK", "Current language: " + language);
+        if (language.equals("en")) {
+            genders = new String[]{"MALE", "FEMALE", "OTHER"};
+        } else {
+            genders = new String[]{"Nam", "Nữ", "Khác"};
+        }
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, genders);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinner.setAdapter(adapter);
     }
+
 
     private void setupDobPicker() {
         dobText.setOnClickListener(v -> {
@@ -97,5 +108,7 @@ public class AddNewTeacherActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         dobText.setText(sdf.format(dobCalendar.getTime()));
     }
+
+
 }
 

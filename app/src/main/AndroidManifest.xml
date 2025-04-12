@@ -79,7 +79,7 @@
         <activity android:name=".ui.test.WritingTestActivity"/>
         <activity android:name=".ui.profile.AccountInformationActivity"/>
         <activity android:name=".ui.profile.CourseInfoActivity"/>
-
+        <activity android:name=".ui.profile.LanguageActivity" />
         <!-- Lessons -->
         <activity android:name=".ui.lesson.LessonPDFDetailActivity"
             android:exported="true">

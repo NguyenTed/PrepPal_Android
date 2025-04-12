@@ -3,9 +3,14 @@ package com.group5.preppal.ui.video_call;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceView;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.Manifest;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.agora.rtc2.ChannelMediaOptions;
 import io.agora.rtc2.IRtcEngineEventHandler;
 import io.agora.rtc2.RtcEngine;
@@ -56,6 +62,8 @@ public class VideoCallActivity extends AppCompatActivity {
             rtcEngine = null;
             finish();
         });
+        CircleImageView avatar = findViewById(R.id.profile_placeholder);
+        startAvatarBlinkingAnimation(avatar);
     }
 
     private void initializeAgoraEngine() {
@@ -63,7 +71,29 @@ public class VideoCallActivity extends AppCompatActivity {
             rtcEngine = RtcEngine.create(getBaseContext(), APP_ID, new IRtcEngineEventHandler() {
                 @Override
                 public void onUserJoined(int uid, int elapsed) {
-                    runOnUiThread(() -> setupRemoteVideo(uid));
+                    runOnUiThread(() -> {
+                        setupRemoteVideo(uid);
+                        // Ẩn avatar khi có người tham gia
+                        CircleImageView avatar = findViewById(R.id.profile_placeholder);
+                        avatar.clearAnimation(); // Ngừng hiệu ứng
+                        avatar.setVisibility(ImageView.GONE); // Ẩn avatar
+                    });
+                }
+                @Override
+                public void onUserOffline(int uid, int reason) {
+                    runOnUiThread(() -> {
+                        // Xoá remoteView khỏi giao diện
+                        FrameLayout remoteContainer = findViewById(R.id.remote_video_view_container);
+                        if (remoteView != null) {
+                            remoteContainer.removeView(remoteView);
+                            remoteView = null;
+                        }
+
+                        // Hiện lại avatar với hiệu ứng
+                        CircleImageView avatar = findViewById(R.id.profile_placeholder);
+                        avatar.setVisibility(ImageView.VISIBLE);
+                        startAvatarBlinkingAnimation(avatar);
+                    });
                 }
             });
         } catch (Exception e) {
@@ -160,5 +190,27 @@ public class VideoCallActivity extends AppCompatActivity {
         if (checkTimeRunnable != null) {
             timeHandler.removeCallbacks(checkTimeRunnable);
         }
+    }
+    private void startAvatarBlinkingAnimation(ImageView avatar) {
+        AlphaAnimation alphaAnim = new AlphaAnimation(1.0f, 0.6f);
+        alphaAnim.setDuration(500);
+        alphaAnim.setRepeatMode(Animation.REVERSE);
+        alphaAnim.setRepeatCount(Animation.INFINITE);
+
+        ScaleAnimation scaleAnim = new ScaleAnimation(
+                1.0f, 1.1f,
+                1.0f, 1.1f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f
+        );
+        scaleAnim.setDuration(500);
+        scaleAnim.setRepeatMode(Animation.REVERSE);
+        scaleAnim.setRepeatCount(Animation.INFINITE);
+
+        AnimationSet animationSet = new AnimationSet(true);
+        animationSet.addAnimation(alphaAnim);
+        animationSet.addAnimation(scaleAnim);
+
+        avatar.startAnimation(animationSet);
     }
 }

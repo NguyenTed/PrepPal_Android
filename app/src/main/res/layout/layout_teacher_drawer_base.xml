@@ -80,7 +80,7 @@
                 android:id="@+id/tvHome"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Home"
+                android:text="@string/home"
                 android:textColor="#FFFFFF"
                 android:layout_marginStart="16dp"
                 android:textSize="16sp" />
@@ -103,7 +103,7 @@
                 android:id="@+id/tvProfile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Profile"
+                android:text="@string/profile"
                 android:textColor="#FFFFFF"
                 android:layout_marginStart="16dp"
                 android:textSize="16sp" />
@@ -125,7 +125,7 @@
                 android:id="@+id/tvLogOut"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Log out"
+                android:text="@string/log_out"
                 android:textColor="#FFFFFF"
                 android:layout_marginStart="16dp"
                 android:textSize="16sp" />

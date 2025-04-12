@@ -3,6 +3,7 @@ package com.group5.preppal.ui.test_set;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -31,7 +32,7 @@ public class TestListActivity extends AppCompatActivity {
 
     private TestListViewModel viewModel;
     private TestListAdapter adapter;
-
+private ImageView btnBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +40,9 @@ public class TestListActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.testRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        btnBack = findViewById(R.id.btnBack);
 
+        btnBack.setOnClickListener(v -> finish());
         adapter = new TestListAdapter(new TestListAdapter.OnTestClickListener() {
             @Override
             public void onListeningClick(Test test) {

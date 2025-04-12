@@ -2,7 +2,6 @@ package com.group5.preppal.ui.course_payment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +17,13 @@ import com.group5.preppal.R;
 import com.group5.preppal.data.model.Course;
 import com.group5.preppal.data.repository.AuthRepository;
 import com.group5.preppal.data.repository.UserRepository;
-import com.group5.preppal.ui.MainActivity;
+import com.group5.preppal.ui.course.CourseDetailActivity;
+import com.group5.preppal.utils.ShowToast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CoursePaymentAdapter extends RecyclerView.Adapter<CoursePaymentAdapter.CourseViewHolder> {
+class CoursePaymentAdapter extends RecyclerView.Adapter<CoursePaymentAdapter.CourseViewHolder> {
     private List<Course> courseList = new ArrayList<>();
     private final AuthRepository authRepository;
     private final UserRepository userRepository;
@@ -88,12 +88,12 @@ public class CoursePaymentAdapter extends RecyclerView.Adapter<CoursePaymentAdap
 
             payBtn.setOnClickListener(v -> {
                 String courseId = course.getCourseId();
-                Toast.makeText(context, "Buy course successfully", Toast.LENGTH_SHORT).show();
-
                 FirebaseUser user = authRepository.getCurrentUser();
                 if (user != null) {
+                    ShowToast.showRegisterCourseSuccessToast(context, "Registered successfully!\nLet's start your journey");
                     userRepository.addCourseToStudent(user.getUid(), courseId);
-                    Intent intent = new Intent(context, MainActivity.class);
+                    Intent intent = new Intent(context, CourseDetailActivity.class);
+                    intent.putExtra("courseId", courseId);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 } else {
