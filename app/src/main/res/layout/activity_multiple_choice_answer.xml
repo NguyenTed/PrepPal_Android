@@ -95,7 +95,7 @@
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:fontFamily="sans-serif-black"
-                    android:text="Try again!"/>
+                    android:text="@string/try_again"/>
 
             </LinearLayout>
         <View
@@ -117,7 +117,7 @@
                 android:textColor="#2F60C2"
                 android:textSize="18sp"
                 android:fontFamily="sans-serif-black"
-                android:text="Next"/>
+                android:text="@string/next"/>
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"

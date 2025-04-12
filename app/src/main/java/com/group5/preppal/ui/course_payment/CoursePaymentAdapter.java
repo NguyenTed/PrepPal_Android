@@ -2,7 +2,6 @@ package com.group5.preppal.ui.course_payment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +17,8 @@ import com.group5.preppal.R;
 import com.group5.preppal.data.model.Course;
 import com.group5.preppal.data.repository.AuthRepository;
 import com.group5.preppal.data.repository.UserRepository;
-import com.group5.preppal.ui.MainActivity;
 import com.group5.preppal.ui.course.CourseDetailActivity;
-import com.group5.preppal.ultils.ShowToast;
+import com.group5.preppal.utils.ShowToast;
 
 import java.util.ArrayList;
 import java.util.List;

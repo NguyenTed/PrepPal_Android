@@ -70,7 +70,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Ánh xạ View
         setupClickListener(R.id.accountInformationRoute, AccountInformationActivity.class);
         setupClickListener(R.id.courseRoute, CourseInfoActivity.class);
-
+        setupClickListener(R.id.languageRoute, LanguageActivity.class);
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setSelectedItemId(R.id.nav_profile);
 

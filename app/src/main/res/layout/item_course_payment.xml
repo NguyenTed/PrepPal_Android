@@ -52,7 +52,7 @@
             android:layout_weight="1"
             android:textSize="16sp"
             android:textColor="@color/black"
-            android:text="Entry Level: "/>
+            android:text="@string/entry_level"/>
         <TextView
             android:id="@+id/targetLevel"
             android:layout_width="0dp"
@@ -60,7 +60,7 @@
             android:layout_weight="1"
             android:textSize="16sp"
             android:textColor="@color/black"
-            android:text="Target Level: "/>
+            android:text="@string/target_level"/>
     </LinearLayout>
 
     <LinearLayout
@@ -81,5 +81,5 @@
         android:textAllCaps="false"
         android:textSize="16sp"
         android:textFontWeight="500"
-        android:text="Register"/>
+        android:text="@string/register"/>
 </LinearLayout>

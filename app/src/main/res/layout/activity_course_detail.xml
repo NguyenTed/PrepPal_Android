@@ -32,7 +32,7 @@
                 android:id="@+id/courseLevel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Entry Level: 5.0 - 5.5 / Target Level: 6.0+"
+                android:text="@string/entry_level_5_0_5_5_target_level_6_0"
                 android:textSize="12sp"
                 android:gravity="center"
                 android:fontFamily="sans-serif-black"
@@ -41,7 +41,7 @@
                 android:id="@+id/courseName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="IELTS Skills Builder"
+                android:text="@string/ielts_skills_builder"
                 android:textSize="18sp"
                 android:gravity="center"
                 android:textStyle="bold"
@@ -58,14 +58,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
-            android:text="Introduction"
+            android:text="@string/introduction"
             android:textColor="@color/black"
             android:fontFamily="sans-serif-black" />
         <TextView
             android:id="@+id/txtIntroduction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="In this course, you will learn all type of writing skills includes Charts, Map, Process. In speaking, you will able to learn about environment, people."/>
+            android:text="@string/in_this_course_you_will_learn_all_type_of_writing_skills_includes_charts_map_process_in_speaking_you_will_able_to_learn_about_environment_people"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:layout_marginHorizontal="10dp"
-                android:text="Welcome"
+                android:text="@string/welcome"
                 android:textSize="12sp"
                 android:textFontWeight="500"
                 android:fontFamily="sans-serif-black"/>

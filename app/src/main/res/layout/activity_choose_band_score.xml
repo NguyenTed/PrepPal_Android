@@ -48,7 +48,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_marginRight="5dp"
-                android:text="My band level"/>
+                android:text="@string/my_band_level"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -123,7 +123,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_marginRight="5dp"
-                android:text="My band goal"/>
+                android:text="@string/my_band_goal"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -189,7 +189,7 @@
         android:layout_below="@id/container_choose_level"
         android:layout_marginTop="20dp"
         android:layout_marginHorizontal="10dp"
-        android:text="Save"
+        android:text="@string/save"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="@android:color/white"

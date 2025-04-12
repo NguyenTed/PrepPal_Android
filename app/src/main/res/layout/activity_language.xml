@@ -1,0 +1,57 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#FFFFFF"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Tiêu đề và nút quay lại -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:src="@drawable/ic_arrow_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            app:tint="@color/black"/>
+
+        <TextView
+            android:text="@string/language"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
+    </RelativeLayout>
+
+    <!-- Mô tả -->
+    <TextView
+        android:text="@string/you_can_change_the_language_as_per_your_usage_requirement"
+        android:textSize="14sp"
+        android:layout_marginBottom="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- Danh sách ngôn ngữ -->
+    <LinearLayout
+        android:id="@+id/languageList"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- Nút Cập nhật -->
+    <Button
+        android:id="@+id/btnUpdateLanguage"
+        android:text="@string/update"
+        android:layout_marginTop="32dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#007BFF"
+        android:textColor="#FFFFFF" />
+</LinearLayout>

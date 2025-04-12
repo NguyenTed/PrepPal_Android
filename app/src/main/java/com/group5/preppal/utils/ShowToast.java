@@ -1,4 +1,4 @@
-package com.group5.preppal.ultils;
+package com.group5.preppal.utils;
 
 import android.content.Context;
 import android.view.Gravity;
