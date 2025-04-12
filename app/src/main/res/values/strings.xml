@@ -78,6 +78,21 @@
     <string name="which_test_set_are_you_looking_for">Which test set are you looking for?</string>
     <string name="list_of_tests">List of tests</string>
     <string name="find_the_test">Find the test...</string>
+    <string name="booking_schedule">Booking Schedule</string>
+    <string name="sun">Sun</string>
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="join">JOIN</string>
+    <string name="this_is_profile_page">This is Profile Page</string>
+    <string name="end_call">End Call</string>
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
+    <string name="waiting_for_call_speaker">Waiting for call speaker...</string>
+    <string name="programme_ielts">Programme IELTS</string>
     <string-array name="genders">
         <item>MALE</item>
         <item>FEMALE</item>

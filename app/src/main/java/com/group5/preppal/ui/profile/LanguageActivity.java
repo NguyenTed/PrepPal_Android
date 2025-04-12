@@ -86,8 +86,7 @@ public class LanguageActivity extends AppCompatActivity {
 
         findViewById(R.id.btnUpdateLanguage).setOnClickListener(v -> {
             LanguageUtils.saveLanguage(this, selectedLanguage);
-            Intent intent = getIntent();
-            finish();
+            Intent intent = new Intent(this, ProfileActivity.class);
             startActivity(intent);
         });
 

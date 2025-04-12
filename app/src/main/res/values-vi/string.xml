@@ -85,4 +85,17 @@
         <item>Nữ</item>
         <item>Khác</item>
     </string-array>
+    <string name="booking_schedule">Lịch Đặt</string>
+    <string name="sun">CN</string>
+    <string name="mon">T2</string>
+    <string name="tue">T3</string>
+    <string name="wed">T4</string>
+    <string name="thu">T5</string>
+    <string name="fri">T6</string>
+    <string name="sat">T7</string>
+    <string name="join">THAM GIA</string>
+    <string name="this_is_profile_page">Đây là trang hồ sơ</string>
+    <string name="end_call">Kết thúc cuộc gọi</string>
+    <string name="home">Trang chủ</string>
+    <string name="profile">Hồ sơ</string>
 </resources>
