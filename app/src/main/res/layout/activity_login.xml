@@ -1,104 +1,116 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
-    android:padding="20dp"
     android:background="@android:color/white">
 
-    <!-- Logo -->
-
-    <!-- Username -->
+    <!-- Icon ngôn ngữ ở góc phải trên cùng -->
     <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="10dp"
-        android:contentDescription="Logo"
-        android:src="@drawable/logo_prep" />
+        android:id="@+id/languageIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_language"
+        android:contentDescription="language_icon" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/email"
-        android:textSize="15sp"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="8dp"/>
-
-    <EditText
-        android:id="@+id/emailEditText"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="@string/enter_email"
-        android:background="@drawable/edittext_background"
-        android:padding="10dp"
-        android:textSize="14sp"/>
-
-    <!-- Mật khẩu -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/password"
-        android:textSize="15sp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="10dp"
-        android:textColor="@android:color/black"
-        tools:ignore="HardcodedText" />
-
-    <EditText
-        android:id="@+id/passwordEditText"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="@string/enter_password"
-        android:background="@drawable/edittext_background"
-        android:padding="10dp"
-        android:textSize="14sp"
-        android:inputType="textPassword"/>
-
-    <!-- Nút đăng ký -->
-    <Button
-        android:id="@+id/loginButton"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/log_in"
-        android:textSize="16sp"
-        android:textColor="@android:color/white"
-        android:backgroundTint="@color/blue"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="8dp"
-        android:radius="20dp"/>
-
-
-    <Button
-        android:id="@+id/googleSignInButton"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/continue_with_google"
-        android:textSize="16sp"
-        android:textColor="@android:color/black"
-        android:backgroundTint="@color/white"
-        android:drawableLeft="@drawable/ic_google"
-        android:gravity="center"/>
-
+    <!-- Phần còn lại của layout (bọc trong LinearLayout) -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="15dp"
-        android:gravity="center_horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="20dp">
 
+        <!-- Logo -->
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            android:contentDescription="Logo"
+            android:src="@drawable/logo_prep" />
+
+        <!-- Email -->
         <TextView
-            android:id="@+id/signUpTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minWidth="48dp"
-            android:minHeight="48dp"
-            android:text="@string/don_t_have_an_account_sign_up"
-            android:textSize="14sp"
-            android:textColor="@color/blue"
-            android:onClick="registerWithPhone"/>
-    </LinearLayout>
+            android:text="Email"
+            android:textSize="15sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="8dp"/>
 
-</LinearLayout>
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="@string/enter_email"
+            android:background="@drawable/edittext_background"
+            android:padding="10dp"
+            android:textSize="14sp"/>
+
+        <!-- Password -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/password"
+            android:textSize="15sp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/black" />
+
+        <EditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="@string/enter_password"
+            android:background="@drawable/edittext_background"
+            android:padding="10dp"
+            android:textSize="14sp"
+            android:inputType="textPassword"/>
+
+        <!-- Nút đăng nhập -->
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/log_in"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/blue"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Google Sign-In -->
+        <Button
+            android:id="@+id/googleSignInButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/continue_with_google"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:backgroundTint="@color/white"
+            android:drawableLeft="@drawable/ic_google"
+            android:gravity="center"/>
+
+        <!-- Sign up text -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/signUpTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                android:text="@string/don_t_have_an_account_sign_up"
+                android:textSize="14sp"
+                android:textColor="@color/blue"
+                android:onClick="registerWithPhone"/>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
