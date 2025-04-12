@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
@@ -17,19 +18,24 @@ import com.group5.preppal.data.model.User;
 import com.group5.preppal.ui.course.CourseListActivity;
 import com.group5.preppal.ui.course_payment.CoursePaymentActivity;
 import com.group5.preppal.ui.dictionary.DictionaryActivity;
+import com.group5.preppal.ui.profile.CourseInfoActivity;
 import com.group5.preppal.ui.profile.ProfileActivity;
 import com.group5.preppal.ui.test_set.TestListActivity;
 import com.group5.preppal.ui.test_set.TestSetListActivity;
 import com.group5.preppal.ui.vocabulary.TopicActivity;
+import com.group5.preppal.viewmodel.StudentViewModel;
 import com.group5.preppal.viewmodel.UserViewModel;
+
+import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
     private UserViewModel viewModel;
-    private TextView txtGreetingUser;
-    private LinearLayout myCourseBtn, viewMoreBtn;
+    private TextView txtGreetingUser, txtContact, txtInteractCourseButton;
+    private LinearLayout myCourseBtn, viewMoreBtn, btnInteractCourse;
+    private StudentViewModel studentViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,18 +44,41 @@ public class MainActivity extends AppCompatActivity {
         Log.d("SDK_VERSION", "Current SDK: " + sdkVersion);
 
         viewModel = new ViewModelProvider(this).get(UserViewModel.class);
-
+        studentViewModel = new ViewModelProvider(this).get(StudentViewModel.class);
         LiveData<User> currentUserLiveData = viewModel.getCurrentUser();
         setContentView(R.layout.activity_main);
 
         txtGreetingUser = findViewById(R.id.txtGreetingUser);
         myCourseBtn = findViewById(R.id.myCourseBtn);
         viewMoreBtn = findViewById(R.id.viewMoreBtn);
+        btnInteractCourse = findViewById(R.id.btnInteractCourse);
+        txtContact = findViewById(R.id.txtContact);
+        txtInteractCourseButton = findViewById(R.id.txtInteractCourseButton);
 
         currentUserLiveData.observe(this, user -> {
             if (user != null) {
                 String greeting = "Hello, " + user.getName();
                 txtGreetingUser.setText(greeting);
+                studentViewModel.getStudentById(user.getUid()).observe(this, student -> {
+                    if (student != null) {
+                        List<String> courses = student.getCourses();
+                        if (courses == null || courses.isEmpty()) {
+                            btnInteractCourse.setOnClickListener(view -> {
+                                Intent intent = new Intent(this, CoursePaymentActivity.class);
+                                startActivity(intent);
+                            });
+                        } else {
+                            String courseText = "You currently have " + courses.size() +
+                                    (courses.size() == 1 ? " course" : " courses") + ". Let's check out.";
+                            txtContact.setText(courseText);
+                            txtInteractCourseButton.setText("Learn course");
+                            btnInteractCourse.setOnClickListener(view -> {
+                                Intent intent = new Intent(this, CourseListActivity.class);
+                                startActivity(intent);
+                            });
+                        }
+                    }
+                });
             } else {
                 txtGreetingUser.setText("Hello!");
             }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,18 +27,25 @@ public class ReadingActivity extends AppCompatActivity {
     private TextView tvPartLabel, tvTimer;
     private ViewPager2 readingViewPager;
     private Button btnPrevious, btnNextOrSubmit;
-
+    private View[] stepViews;
+    private ImageView btnBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reading);
-
+        stepViews = new View[]{
+                findViewById(R.id.step1),
+                findViewById(R.id.step2),
+                findViewById(R.id.step3),
+        };
         tvPartLabel = findViewById(R.id.tvReadingPartLabel);
         readingViewPager = findViewById(R.id.readingViewPager);
         btnPrevious = findViewById(R.id.btnPreviousPassage);
         btnNextOrSubmit = findViewById(R.id.btnNextOrSubmit);
         tvTimer = findViewById(R.id.tvReadingTimer); // Add this to layout
+        btnBack = findViewById(R.id.btnBack);
 
+        btnBack.setOnClickListener(v -> finish());
         viewModel = new ViewModelProvider(this).get(ReadingViewModel.class);
 
         viewModel.getTimeLeft().observe(this, time -> {
@@ -75,14 +83,27 @@ public class ReadingActivity extends AppCompatActivity {
         });
 
         // Observe current part number
-        viewModel.getCurrentPart().observe(this, partNum -> {
-            tvPartLabel.setText("Passage " + partNum);
-            btnPrevious.setVisibility(partNum == 1 ? View.INVISIBLE : View.VISIBLE);
-            btnNextOrSubmit.setText(partNum == 3 ? "Submit" : "Next");
+        viewModel.getCurrentPart().observe(this, part -> {
+            if (part != null) {
+                int partNum = viewModel.getCurrentPart().getValue(); // 1 to 4
+                tvPartLabel.setText("Passage " + partNum);
+
+                // Update progress steps
+                for (int i = 0; i < stepViews.length; i++) {
+                    if (i < partNum) {
+                        stepViews[i].setBackgroundResource(R.drawable.progress_step_active);
+                    } else {
+                        stepViews[i].setBackgroundResource(R.drawable.progress_step_inactive);
+                    }
+                }
+
+                // Show/hide buttons
+                btnPrevious.setVisibility(partNum == 1 ? View.INVISIBLE : View.VISIBLE);
+                btnNextOrSubmit.setText(partNum == 3 ? "Submit" : "Next →");
+
+            }
         });
-
         btnPrevious.setOnClickListener(v -> viewModel.goToPreviousPart());
-
         btnNextOrSubmit.setOnClickListener(v -> {
             if (viewModel.getCurrentPart().getValue() == 3) {
                 submitAnswers();

@@ -1,4 +1,4 @@
-import java.io.FileInputStream
+ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
@@ -81,6 +81,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Use Gson for JSON parsing
     implementation("com.cloudinary:cloudinary-android:3.0.2")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3") // Logging
-    implementation ("io.agora.rtc:full-sdk:4.2.2")
+    implementation ("io.agora.rtc:full-sdk:4.5.0")
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+
 
 }

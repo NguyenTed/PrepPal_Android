@@ -2,6 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
@@ -75,7 +76,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Band:"
+                        android:text="@string/band"
                         android:textSize="16sp"
                         android:textColor="#ff0D0D0D"
                         />
@@ -117,7 +118,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Account information"
+                    android:text="@string/account_information"
                     android:textSize="18sp"
                     android:textColor="@color/black"/>
             </LinearLayout>
@@ -154,7 +155,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Courses"
+                    android:text="@string/courses"
                     android:textSize="18sp"
                     android:textColor="@color/black"/>
             </LinearLayout>
@@ -164,7 +165,47 @@
                 android:layout_height="35dp"
                 android:background="@null"
                 android:src="@drawable/ic_right_black"
-                android:scaleType="fitCenter"/>
+                android:scaleType="fitCenter"
+                tools:ignore="DuplicateIds" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/languageRoute"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="10dp"
+            android:layout_marginTop="20dp"
+            >
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical">
+                <ImageView
+                    android:layout_marginRight="10dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_language"
+                    android:scaleType="centerCrop"
+                    android:clipToOutline="true"
+                    app:tint="#070202"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/language"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"/>
+            </LinearLayout>
+            <ImageButton
+                android:id="@+id/rightCourseArrowButton"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:background="@null"
+                android:src="@drawable/ic_right_black"
+                android:scaleType="fitCenter"
+                tools:ignore="DuplicateIds" />
 
         </LinearLayout>
         <LinearLayout
@@ -192,7 +233,7 @@
                 android:id="@+id/logOutTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Log out"
+                android:text="@string/log_out"
                 android:textSize="18sp"
                 android:textColor="@color/black"/>
 

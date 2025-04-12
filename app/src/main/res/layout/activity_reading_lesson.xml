@@ -64,7 +64,7 @@
             android:gravity="center"
             android:fontFamily="sans-serif-black"
             android:background="@drawable/rounded_5dp_white_2dp_border_blue"
-            android:text="Complete"/>
+            android:text="@string/complete"/>
     </LinearLayout>
 
 </LinearLayout>
