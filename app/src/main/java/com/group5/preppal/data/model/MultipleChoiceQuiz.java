@@ -7,16 +7,18 @@ public class MultipleChoiceQuiz {
     private String name;
     private float maxPoints;
     private float passPoint;
-    private List<MultipleChoiceQuestion> multipleChoiceQuestions;
+    private List<String> questionIds;
+    private int questionNumber;
+    private List<MultipleChoiceQuestion> questions;
 
     public MultipleChoiceQuiz() {}
 
-    public MultipleChoiceQuiz(String id, String name, float maxPoints, float passPoint, List<MultipleChoiceQuestion> multipleChoiceQuestions) {
+    public MultipleChoiceQuiz(String id, String name, float maxPoints, float passPoint, List<String> questionsId) {
         this.id = id;
         this.name = name;
         this.maxPoints = maxPoints;
         this.passPoint = passPoint;
-        this.multipleChoiceQuestions = multipleChoiceQuestions;
+        this.questionIds = questionIds;
     }
 
     public String getId() {
@@ -51,11 +53,27 @@ public class MultipleChoiceQuiz {
         this.passPoint = passPoint;
     }
 
-    public List<MultipleChoiceQuestion> getQuestions() {
-        return multipleChoiceQuestions;
+    public List<String> getQuestionIds() {
+        return questionIds;
     }
 
-    public void setQuestions(List<MultipleChoiceQuestion> multipleChoiceQuestions) {
-        this.multipleChoiceQuestions = multipleChoiceQuestions;
+    public void setQuestionIds(List<String> questionIds) {
+        this.questionIds = questionIds;
+    }
+
+    public List<MultipleChoiceQuestion> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<MultipleChoiceQuestion> questions) {
+        this.questions = questions;
+    }
+
+    public int getQuestionNumber() {
+        return questionNumber;
+    }
+
+    public void setQuestionNumber(int questionNumber) {
+        this.questionNumber = questionNumber;
     }
 }

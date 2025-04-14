@@ -76,7 +76,6 @@ public class MultipleChoiceQuizResultRepository {
                     }
                     DocumentSnapshot documentSnapshot = querySnapshot.getDocuments().get(0);
                     MultipleChoiceQuizResult quizResult = documentSnapshot.toObject(MultipleChoiceQuizResult.class);
-                    quizResult.setQuizId(documentSnapshot.getId());
                     quizResultLiveData.setValue(quizResult);
                 });
 

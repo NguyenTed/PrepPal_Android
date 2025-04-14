@@ -1,8 +1,9 @@
 package com.group5.preppal.data.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class MultipleChoiceQuizResult {
+public class MultipleChoiceQuizResult  implements Serializable {
     private String studentId;
     private String quizId;
     private float score;

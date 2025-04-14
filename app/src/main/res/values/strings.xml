@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name" translatable="false">PrepPal</string>
-    <string name="account" translatable="false">Account</string>
-    <string name="back_button" translatable="false">Back button</string>
+    <string name="app_name">PrepPal</string>
+    <string name="account">Account</string>
+    <string name="back_button">Back button</string>
     <string-array name="submission_states">
         <item>Pending</item>
         <item>Pass</item>
@@ -61,7 +61,7 @@
     <string name="word">word</string>
     <string name="enter_a_word">Enter a word...</string>
     <string name="mark_as_learned">Mark as learned</string>
-    <string name="grading_test">Grading Test</string>
+    <string name="grading_test">Writing Quizzes</string>
     <string name="writing_topic">Writing Topic</string>
     <string name="writing_test_description">Writing test description</string>
     <string name="student_s_answer">Student\'s answer</string>
@@ -90,7 +90,7 @@
     <string name="end_call">End Call</string>
     <string name="home">Home</string>
     <string name="profile">Profile</string>
-    <string name="waiting_for_call_speaker">Waiting for call speaker...</string>
+    <string name="waiting_for_call_speaker">Waiting for call co-speaker…</string>
     <string name="programme_ielts">Programme IELTS</string>
     <string-array name="genders">
         <item>MALE</item>

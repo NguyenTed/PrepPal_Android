@@ -1,6 +1,8 @@
 package com.group5.preppal.data.model;
 
-public class MultipleChoiceAnsweredQuestion {
+import java.io.Serializable;
+
+public class MultipleChoiceAnsweredQuestion implements Serializable  {
     private String questionId;
     private String selectedAnswer;
     private boolean isCorrect;

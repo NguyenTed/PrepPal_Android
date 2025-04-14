@@ -58,13 +58,12 @@
     <string name="log_out">Đăng xuất</string>
     <string name="entry_level">Trình độ đầu vào:</string>
     <string name="target_level">Trình độ mục tiêu:</string>
-    <string name="payment">Thanh toán</string>
     <string name="complete">Hoàn thành</string>
     <string name="try_again">Thử lại!</string>
     <string name="word">từ</string>
     <string name="enter_a_word">Nhập một từ...</string>
     <string name="mark_as_learned">Đánh dấu là đã học</string>
-    <string name="grading_test">Bài kiểm tra chấm điểm</string>
+    <string name="grading_test">Bài kiểm tra Writing</string>
     <string name="writing_topic">Chủ đề viết</string>
     <string name="writing_test_description">Mô tả bài viết</string>
     <string name="student_s_answer">Bài làm của học sinh</string>
@@ -98,4 +97,6 @@
     <string name="end_call">Kết thúc cuộc gọi</string>
     <string name="home">Trang chủ</string>
     <string name="profile">Hồ sơ</string>
+    <string name="waiting_for_call_speaker">Đang đợi người vào phòng…</string>
+    <string name="programme_ielts">Chương trình IELTSS</string>
 </resources>

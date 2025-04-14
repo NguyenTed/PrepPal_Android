@@ -35,6 +35,10 @@ public class MultipleChoiceQuizViewModel extends ViewModel {
         return quizRepository.getQuizById(quizId);
     }
 
+    public LiveData<MultipleChoiceQuiz> getAnsweredQuizByResult(MultipleChoiceQuizResult quizResult) {
+        return quizRepository.getAnsweredQuizByResult(quizResult);
+    }
+
     public LiveData<MultipleChoiceQuizResult> getQuizResult(String quizId) {
         return quizResultRepository.getQuizResult(quizId);
     }
