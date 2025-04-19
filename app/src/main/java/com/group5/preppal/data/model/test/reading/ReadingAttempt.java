@@ -1,9 +1,11 @@
 package com.group5.preppal.data.model.test.reading;
 
+import com.group5.preppal.data.model.test.SkillAttempt;
+
 import java.util.Date;
 import java.util.Map;
 
-public class ReadingAttempt {
+public class ReadingAttempt implements SkillAttempt {
     private String testId;
     private String testSetId;
     private Map<String, String> answers;// questionNumber -> userAnswer
@@ -27,12 +29,14 @@ public class ReadingAttempt {
     public int getRawScore() { return rawScore; }
     public void setRawScore(int rawScore) { this.rawScore = rawScore; }
 
+    @Override
     public float getBandScore() { return bandScore; }
     public void setBandScore(float bandScore) { this.bandScore = bandScore; }
 
     public Date getStartedAt() { return startedAt; }
     public void setStartedAt(Date startedAt) { this.startedAt = startedAt; }
 
+    @Override
     public Date getSubmittedAt() { return submittedAt; }
     public void setSubmittedAt(Date submittedAt) { this.submittedAt = submittedAt; }
 }

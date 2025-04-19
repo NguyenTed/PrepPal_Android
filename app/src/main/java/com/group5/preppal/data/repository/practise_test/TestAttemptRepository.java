@@ -10,13 +10,18 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.group5.preppal.data.model.test.TestAttempt;
+import com.group5.preppal.data.model.test.listening.ListeningAttempt;
 import com.group5.preppal.data.model.test.reading.ReadingAttempt;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -27,104 +32,95 @@ public class TestAttemptRepository {
     private final FirebaseFirestore db;
     private final FirebaseAuth auth;
 
+    private final String STUDENT_COLLECTION_PATH = "students";
+    private final String TEST_ATTEMPT_COLLECTION_PATH = "test_attempts";
+
     @Inject
     public TestAttemptRepository(FirebaseFirestore db, FirebaseAuth auth) {
         this.db = db;
         this.auth = auth;
     }
 
-    // Save a new test attempt
-    public void saveTestAttempt(
-            @NonNull TestAttempt attempt,
-            @Nullable String attemptId, // null = auto-generated
-            @NonNull OnSuccessListener<Void> onSuccess,
-            @NonNull OnFailureListener onFailure
-    ) {
+    public void updateSkillBandScore(String testAttemptId, String skill, float bandScore,
+                                     OnSuccessListener<Void> onSuccess,
+                                     OnFailureListener onFailure) {
         String userId = auth.getCurrentUser().getUid();
-        DocumentReference docRef;
 
-        if (attemptId == null) {
-            docRef = db.collection("students").document(userId)
-                    .collection("test_attempts").document();
-        } else {
-            docRef = db.collection("students").document(userId)
-                    .collection("test_attempts").document(attemptId);
+        // Map skill names to Firestore field names
+        Map<String, String> skillFieldMap = new HashMap<>();
+        skillFieldMap.put("listening", "listening_band_score");
+        skillFieldMap.put("reading", "reading_band_score");
+        skillFieldMap.put("writing", "writing_band_score");
+        skillFieldMap.put("speaking", "speaking_band_score");
+
+        String fieldName = skillFieldMap.get(skill.toLowerCase());
+
+        if (fieldName == null) {
+            onFailure.onFailure(new IllegalArgumentException("Unknown skill: " + skill));
+            return;
         }
 
-        docRef.set(attempt)
-                .addOnSuccessListener(unused -> onSuccess.onSuccess(null))
-                .addOnFailureListener(onFailure);
+        DocumentReference docRef = db.collection(STUDENT_COLLECTION_PATH)
+                .document(userId)
+                .collection(TEST_ATTEMPT_COLLECTION_PATH)
+                .document(testAttemptId);
+
+        docRef.get().addOnSuccessListener(snapshot -> {
+            Map<String, Object> data = new HashMap<>();
+            data.put(fieldName, bandScore);
+
+            if (snapshot.exists()) {
+                // Document exists → safe to update
+                docRef.update(data)
+                        .addOnSuccessListener(onSuccess)
+                        .addOnFailureListener(onFailure);
+            } else {
+                // Document does not exist → create it with the field
+                docRef.set(data, SetOptions.merge())
+                        .addOnSuccessListener(onSuccess)
+                        .addOnFailureListener(onFailure);
+            }
+        }).addOnFailureListener(onFailure);
     }
 
-    // Load all test attempts by current user
-    public void getTestAttempts(
-            @NonNull OnSuccessListener<List<TestAttempt>> onSuccess,
-            @NonNull OnFailureListener onFailure
-    ) {
+    public void getAllTestAttemptsForCurrentUser(Consumer<Map<String, TestAttempt>> onSuccess,
+                                                 Consumer<Exception> onFailure) {
         String userId = auth.getCurrentUser().getUid();
 
         db.collection("students")
                 .document(userId)
                 .collection("test_attempts")
                 .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    List<TestAttempt> attempts = new ArrayList<>();
-                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                .addOnSuccessListener(snapshot -> {
+                    Map<String, TestAttempt> map = new HashMap<>();
+                    for (DocumentSnapshot doc : snapshot.getDocuments()) {
                         TestAttempt attempt = doc.toObject(TestAttempt.class);
                         if (attempt != null) {
-                            attempts.add(attempt);
+                            attempt.setTestId(doc.getId()); // document ID = testId
+                            map.put(doc.getId(), attempt);
                         }
                     }
-                    onSuccess.onSuccess(attempts);
+                    onSuccess.accept(map);
                 })
-                .addOnFailureListener(onFailure);
+                .addOnFailureListener(onFailure::accept);
     }
 
-    // Optional: Get a specific attempt
-    public void getTestAttemptById(
-            @NonNull String attemptId,
-            @NonNull OnSuccessListener<TestAttempt> onSuccess,
-            @NonNull OnFailureListener onFailure
-    ) {
-        String userId = auth.getCurrentUser().getUid();
-
+    public void getListeningAttempts(String userId, String testId,
+                                     Consumer<List<ListeningAttempt>> onSuccess,
+                                     Consumer<Exception> onFailure) {
         db.collection("students")
                 .document(userId)
-                .collection("test_attempts")
-                .document(attemptId)
+                .collection("listening_attempts")
+                .orderBy("submittedAt", Query.Direction.DESCENDING)
                 .get()
-                .addOnSuccessListener(doc -> {
-                    TestAttempt attempt = doc.toObject(TestAttempt.class);
-                    if (attempt != null) {
-                        onSuccess.onSuccess(attempt);
-                    } else {
-                        onFailure.onFailure(new Exception("Attempt not found"));
+                .addOnSuccessListener(snapshot -> {
+                    List<ListeningAttempt> list = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : snapshot) {
+                        ListeningAttempt attempt = doc.toObject(ListeningAttempt.class);
+                        list.add(attempt);
                     }
+                    onSuccess.accept(list);
                 })
-                .addOnFailureListener(onFailure);
-    }
-
-    public void submitReadingAttempt(
-            String userId,
-            String testSetId,
-            String testId,
-            ReadingAttempt readingAttempt,
-            OnSuccessListener<Void> onSuccess,
-            OnFailureListener onFailure
-    ) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("test_id", testId);
-        data.put("test_set_id", testSetId);
-        data.put("started_at", FieldValue.serverTimestamp());
-        data.put("submitted_at", FieldValue.serverTimestamp());
-        data.put("reading_attempt", readingAttempt);
-
-        FirebaseFirestore.getInstance()
-                .collection("users")
-                .document(userId)
-                .collection("test_attempts")
-                .add(data)
-                .addOnSuccessListener(doc -> onSuccess.onSuccess(null))
-                .addOnFailureListener(onFailure);
+                .addOnFailureListener(onFailure::accept);
     }
 }

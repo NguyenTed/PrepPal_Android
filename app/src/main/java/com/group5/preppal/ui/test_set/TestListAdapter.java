@@ -11,20 +11,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.test.Test;
+import com.group5.preppal.data.model.test.TestAttempt;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class TestListAdapter extends RecyclerView.Adapter<TestListAdapter.TestViewHolder> {
 
     private final List<Test> testList = new ArrayList<>();
     private final OnTestClickListener listener;
+    private Map<String, TestAttempt> testAttemptsMap = new HashMap<>();
 
     public interface OnTestClickListener {
-        void onListeningClick(Test test);
-        void onReadingClick(Test test);
-        void onWritingClick(Test test);
-        void onSpeakingClick(Test test);
+        void onTestClick(Test test);
     }
 
     public TestListAdapter(OnTestClickListener listener) {
@@ -35,6 +37,10 @@ public class TestListAdapter extends RecyclerView.Adapter<TestListAdapter.TestVi
         testList.clear();
         testList.addAll(newTests);
         notifyDataSetChanged();
+    }
+
+    public void setTestAttemptsMap(Map<String, TestAttempt> map) {
+        this.testAttemptsMap = map != null ? map : new HashMap<>();
     }
 
     @NonNull
@@ -49,10 +55,23 @@ public class TestListAdapter extends RecyclerView.Adapter<TestListAdapter.TestVi
     public void onBindViewHolder(@NonNull TestViewHolder holder, int position) {
         Test test = testList.get(position);
         holder.testTitle.setText(test.getName());
-        holder.btnListening.setOnClickListener(v -> listener.onListeningClick(test));
-        holder.btnReading.setOnClickListener(v -> listener.onReadingClick(test));
-        holder.btnWriting.setOnClickListener(v -> listener.onWritingClick(test));
-        holder.btnSpeaking.setOnClickListener(v -> listener.onSpeakingClick(test));
+
+        TestAttempt attempt = testAttemptsMap.get(test.getId());
+
+        // Display scores with fallback if not present
+        String lScore = (attempt != null && attempt.getListeningBandScore() != null)
+                ? String.format(Locale.US, "%.1f", attempt.getListeningBandScore())
+                : "-";
+
+        String rScore = (attempt != null && attempt.getReadingBandScore() != null)
+                ? String.format(Locale.US, "%.1f", attempt.getReadingBandScore())
+                : "-";
+
+        String bandText = "L: " + lScore + " | R: " + rScore;
+        holder.bandScores.setText(bandText);
+
+        // Open detail activity on item click
+        holder.itemView.setOnClickListener(v -> listener.onTestClick(test));
     }
 
     @Override
@@ -61,16 +80,12 @@ public class TestListAdapter extends RecyclerView.Adapter<TestListAdapter.TestVi
     }
 
     static class TestViewHolder extends RecyclerView.ViewHolder {
-        TextView testTitle;
-        Button btnListening, btnReading, btnWriting, btnSpeaking;
+        TextView testTitle, bandScores;
 
         public TestViewHolder(@NonNull View itemView) {
             super(itemView);
             testTitle = itemView.findViewById(R.id.testTitleTextView);
-            btnListening = itemView.findViewById(R.id.btnListening);
-            btnReading = itemView.findViewById(R.id.btnReading);
-            btnWriting = itemView.findViewById(R.id.btnWriting);
-            btnSpeaking = itemView.findViewById(R.id.btnSpeaking);
+            bandScores = itemView.findViewById(R.id.bandScoresTextView);
         }
     }
 }

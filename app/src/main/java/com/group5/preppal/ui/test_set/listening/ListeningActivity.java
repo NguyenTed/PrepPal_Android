@@ -58,7 +58,7 @@ public class ListeningActivity extends AppCompatActivity {
         groupRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         viewModel = new ViewModelProvider(this).get(ListeningViewModel.class);
         adapter = new ListeningQuestionGroupAdapter();
-        adapter.setUserAnswers(new HashMap<>());
+        adapter.setUserAnswers(viewModel != null ? viewModel.getUserAnswers() : new HashMap<>());
 
         groupRecyclerView.setAdapter(adapter);
 
