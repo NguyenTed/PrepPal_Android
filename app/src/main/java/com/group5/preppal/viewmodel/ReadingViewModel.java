@@ -15,6 +15,7 @@ import com.group5.preppal.data.model.test.reading.ReadingGrader;
 import com.group5.preppal.data.model.test.reading.ReadingPassage;
 import com.group5.preppal.data.model.test.reading.ReadingSection;
 import com.group5.preppal.data.repository.practise_test.ReadingAttemptRepository;
+import com.group5.preppal.data.repository.practise_test.TestAttemptRepository;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 public class ReadingViewModel extends ViewModel {
 
     private final ReadingAttemptRepository attemptRepository;
+    private final TestAttemptRepository testAttemptRepository;
 
     private final MutableLiveData<Integer> currentPart = new MutableLiveData<>(1);
     private final MutableLiveData<ReadingPassage> currentPassage = new MutableLiveData<>();
@@ -41,8 +43,9 @@ public class ReadingViewModel extends ViewModel {
     private CountDownTimer timer;
 
     @Inject
-    public ReadingViewModel(ReadingAttemptRepository attemptRepository) {
+    public ReadingViewModel(ReadingAttemptRepository attemptRepository, TestAttemptRepository testAttemptRepository) {
         this.attemptRepository = attemptRepository;
+        this.testAttemptRepository = testAttemptRepository;
     }
 
     public LiveData<Integer> getCurrentPart() {
@@ -155,6 +158,8 @@ public class ReadingViewModel extends ViewModel {
         attempt.setSubmittedAt(submittedAt);
 
         attemptRepository.submitReadingAttempt(attempt, onSuccess, onFailure);
+        testAttemptRepository.updateSkillBandScore(testId, "reading", bandScore, unused -> Log.d("Firestore", "Listening band score updated"),
+                e -> Log.e("Firestore", "Failed to update band score", e));
     }
 
     @Override

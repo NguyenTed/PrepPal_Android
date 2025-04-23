@@ -32,89 +32,50 @@ public class TestListActivity extends AppCompatActivity {
 
     private TestListViewModel viewModel;
     private TestListAdapter adapter;
-private ImageView btnBack;
+    private ImageView btnBack;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_list);
 
+        // Initialize RecyclerView
         RecyclerView recyclerView = findViewById(R.id.testRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         btnBack = findViewById(R.id.btnBack);
-
         btnBack.setOnClickListener(v -> finish());
-        adapter = new TestListAdapter(new TestListAdapter.OnTestClickListener() {
-            @Override
-            public void onListeningClick(Test test) {
-                ListeningSection listening = test.getListeningSection();
-                if (listening == null) {
-                    Log.e("TEST_DEBUG", "Listening section is NULL!");
-                    return;
-                }
 
-                Intent intent = new Intent(TestListActivity.this, ListeningActivity.class);
-                intent.putExtra("testId", test.getId());
-                intent.putExtra("testSetId", test.getTestSetId());
-                intent.putExtra("testName", test.getName());
-                intent.putExtra("listeningSection", listening);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onReadingClick(Test test) {
-                ReadingSection reading = test.getReadingSection();
-                if (reading == null) {
-                    Log.e("TEST_DEBUG", "Reading section is NULL!");
-                    return;
-                }
-
-                Intent intent = new Intent(TestListActivity.this, ReadingActivity.class);
-                intent.putExtra("testId", test.getId());
-                intent.putExtra("testSetId", test.getTestSetId());
-                intent.putExtra("testName", test.getName());
-                intent.putExtra("readingSection", reading);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onWritingClick(Test test) {
-                Log.d("TEST_DEBUG", "Test: " + test.getName());
-                WritingSection writing = test.getWritingSection();
-                if (writing == null) {
-                    Log.e("TEST_DEBUG", "Writing section is NULL!");
-                    return;
-                }
-
-                WritingTask task1 = writing.getTask1();
-                WritingTask task2 = writing.getTask2();
-                Log.d("TEST_DEBUG", "Task1 = " + (task1 != null ? task1.getTask() : "null"));
-
-                Intent intent = new Intent(TestListActivity.this, WritingActivity.class);
-                intent.putExtra("testName", test.getName());
-                intent.putExtra("task1", task1);
-                intent.putExtra("task2", task2);
-                startActivity(intent);
-            }
-
-
-            @Override
-            public void onSpeakingClick(Test test) {
-                SpeakingSection speaking = test.getSpeakingSection();
-                Intent intent = new Intent(TestListActivity.this, SpeakingActivity.class);
-                intent.putExtra("testName", test.getName());
-                intent.putStringArrayListExtra("part1", new ArrayList<>(speaking.getPart1()));
-                intent.putStringArrayListExtra("part3", new ArrayList<>(speaking.getPart3()));
-                intent.putExtra("part2", speaking.getPart2()); // must be Parcelable
-                startActivity(intent);
-            }
+        // Adapter setup: each item opens TestDetailActivity
+        adapter = new TestListAdapter(test -> {
+            Intent intent = new Intent(TestListActivity.this, TestDetailActivity.class);
+            intent.putExtra("testId", test.getId());
+            intent.putExtra("testSetId", test.getTestSetId());
+            intent.putExtra("testName", test.getName());
+            intent.putExtra("listeningSection", test.getListeningSection());
+            intent.putExtra("readingSection", test.getReadingSection());
+            intent.putExtra("writingSection", test.getWritingSection());
+            intent.putExtra("speakingSection", test.getSpeakingSection());
+            startActivity(intent);
         });
 
         recyclerView.setAdapter(adapter);
 
+        // ViewModel
         viewModel = new ViewModelProvider(this).get(TestListViewModel.class);
+
+        // Observe tests and attempts
         viewModel.getTests().observe(this, adapter::submitList);
 
+        viewModel.getTestAttempts().observe(this, map -> {
+            adapter.setTestAttemptsMap(map); // make sure adapter has this method
+            adapter.notifyDataSetChanged();
+        });
+
+        // Load tests
         String testSetId = getIntent().getStringExtra("testSetId");
         viewModel.fetchTests(testSetId);
+        viewModel.fetchTestAttempts();
     }
 }
+

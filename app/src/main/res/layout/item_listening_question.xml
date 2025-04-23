@@ -8,7 +8,7 @@
     android:layout_marginHorizontal="12dp"
     android:elevation="2dp">
 
-    <!-- Câu hỏi số -->
+
     <TextView
         android:id="@+id/tvQuestionNumber"
         android:layout_width="wrap_content"
@@ -19,7 +19,16 @@
         android:textStyle="bold"
         android:layout_marginBottom="8dp" />
 
-    <!-- Câu trả lời dạng điền (text) -->
+    <TextView
+        android:id="@+id/tvUnansweredWarning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You haven't answered this question"
+        android:textColor="#D32F2F"
+        android:textSize="14sp"
+        android:visibility="gone"
+        android:layout_marginBottom="4dp" />
+
     <EditText
         android:id="@+id/etAnswer"
         android:layout_width="match_parent"
@@ -32,7 +41,7 @@
         android:layout_marginTop="8dp"
         android:visibility="gone" />
 
-    <!-- Câu hỏi lựa chọn 1 đáp án (radio) -->
+
     <RadioGroup
         android:id="@+id/radioGroupOptions"
         android:layout_width="match_parent"
@@ -41,7 +50,7 @@
         android:visibility="gone"
         android:layout_marginTop="8dp" />
 
-    <!-- Câu hỏi nhiều lựa chọn (checkbox) -->
+
     <LinearLayout
         android:id="@+id/layoutCheckboxOptions"
         android:layout_width="match_parent"
@@ -50,7 +59,7 @@
         android:visibility="gone"
         android:layout_marginTop="8dp" />
 
-    <!-- Câu hỏi matching (spinner) -->
+
     <Spinner
         android:id="@+id/spinnerMatch"
         android:layout_width="match_parent"

@@ -1,14 +1,21 @@
 package com.group5.preppal.data.repository.practise_test;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.group5.preppal.data.model.test.reading.ReadingAttempt;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -42,11 +49,10 @@ public class ReadingAttemptRepository {
                 .addOnFailureListener(onFailure);
     }
 
-    // Optional: Fetch latest attempt by testId
-    public void getLatestAttemptByTestId(
-            String testId,
-            @NonNull OnSuccessListener<ReadingAttempt> onSuccess,
-            @NonNull OnFailureListener onFailure
+    public void getReadingAttempts(
+            @NonNull String testId,
+            @NonNull Consumer<List<ReadingAttempt>> onSuccess,
+            @NonNull Consumer<Exception> onFailure
     ) {
         String userId = auth.getCurrentUser().getUid();
 
@@ -55,17 +61,16 @@ public class ReadingAttemptRepository {
                 .collection("reading_attempts")
                 .whereEqualTo("testId", testId)
                 .orderBy("submittedAt", Query.Direction.DESCENDING)
-                .limit(1)
                 .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    if (!querySnapshot.isEmpty()) {
-                        ReadingAttempt attempt = querySnapshot.getDocuments().get(0).toObject(ReadingAttempt.class);
-                        onSuccess.onSuccess(attempt);
-                    } else {
-                        onSuccess.onSuccess(null);
+                .addOnSuccessListener(snapshot -> {
+                    List<ReadingAttempt> list = new ArrayList<>();
+                    for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                        ReadingAttempt attempt = doc.toObject(ReadingAttempt.class);
+                        list.add(attempt);
                     }
+                    onSuccess.accept(list);
                 })
-                .addOnFailureListener(onFailure);
+                .addOnFailureListener(onFailure::accept);
     }
 }
 
