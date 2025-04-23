@@ -24,6 +24,7 @@ public class ReadingQuestionGroupAdapter extends RecyclerView.Adapter<ReadingQue
     private final List<ReadingQuestionGroup> groupList = new ArrayList<>();
     private Map<Integer, String> userAnswers = new HashMap<>();
     private boolean isTimeUp = false;
+    private boolean isReviewMode = false;
 
     public void submitList(List<ReadingQuestionGroup> newList) {
         groupList.clear();
@@ -37,6 +38,10 @@ public class ReadingQuestionGroupAdapter extends RecyclerView.Adapter<ReadingQue
 
     public void setTimeUp(boolean isTimeUp) {
         this.isTimeUp = isTimeUp;
+    }
+
+    public void setReviewMode(boolean reviewMode) {
+        this.isReviewMode = reviewMode;
     }
 
     @NonNull
@@ -54,13 +59,10 @@ public class ReadingQuestionGroupAdapter extends RecyclerView.Adapter<ReadingQue
                 .load(group.getImageUrl())
                 .into(holder.groupImage);
 
-        Log.d("ReadingGroupAdapter", "Binding group of type: " + group.getType());
-
-        ReadingQuestionAdapter adapter = new ReadingQuestionAdapter(userAnswers);
+        ReadingQuestionAdapter questionAdapter = new ReadingQuestionAdapter(userAnswers, isReviewMode);
         holder.questionRecyclerView.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
-        holder.questionRecyclerView.setAdapter(adapter);
-
-        adapter.setData(group.getQuestions(), group.getType(), group.getOptions(), isTimeUp);
+        holder.questionRecyclerView.setAdapter(questionAdapter);
+        questionAdapter.setData(group.getQuestions(), group.getType(), group.getOptions(), group.getCorrectAnswers(), true);
     }
 
     @Override

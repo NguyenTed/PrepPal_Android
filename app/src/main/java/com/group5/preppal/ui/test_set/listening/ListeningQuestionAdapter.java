@@ -405,9 +405,7 @@ public class ListeningQuestionAdapter extends RecyclerView.Adapter<ListeningQues
 
 
     @Override
-    public int getItemCount() {
-        return questions.size();
-    }
+    public int getItemCount() { return questions.size(); }
 
     static class QuestionViewHolder extends RecyclerView.ViewHolder {
         TextView questionNumber;

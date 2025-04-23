@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ListeningAttempt implements Parcelable, SkillAttempt {
-
     private String testId;
     private String testSetId;
     private Map<String, String> answers;

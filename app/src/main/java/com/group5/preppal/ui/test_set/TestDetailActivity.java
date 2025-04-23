@@ -23,6 +23,7 @@ import com.group5.preppal.data.model.test.writing.WritingSection;
 import com.group5.preppal.ui.test_set.listening.ListeningActivity;
 import com.group5.preppal.ui.test_set.listening.ListeningReviewActivity;
 import com.group5.preppal.ui.test_set.reading.ReadingActivity;
+import com.group5.preppal.ui.test_set.reading.ReadingReviewActivity;
 import com.group5.preppal.ui.test_set.speaking.SpeakingActivity;
 import com.group5.preppal.ui.test_set.writing.WritingActivity;
 import com.group5.preppal.viewmodel.TestDetailViewModel;
@@ -61,7 +62,10 @@ public class TestDetailActivity extends AppCompatActivity {
 
         @Override
         public void onReadingAttemptClick(ReadingAttempt attempt, ReadingSection section) {
-            // TODO: Launch ReadingReviewActivity
+            Intent intent = new Intent(TestDetailActivity.this, ReadingReviewActivity.class);
+            intent.putExtra("readingSection", section);
+            intent.putExtra("attempt", attempt);
+            startActivity(intent);
         }
     };
 

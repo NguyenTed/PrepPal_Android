@@ -152,6 +152,7 @@
         <activity android:name=".ui.test_set.listening.ListeningActivity"/>
         <activity android:name=".ui.test_set.listening.ListeningReviewActivity"/>
         <activity android:name=".ui.test_set.reading.ReadingActivity"/>
+        <activity android:name=".ui.test_set.reading.ReadingReviewActivity"/>
         <activity android:name=".ui.test_set.writing.WritingActivity"/>
         <activity android:name=".ui.test_set.speaking.SpeakingActivity"/>
     </application>

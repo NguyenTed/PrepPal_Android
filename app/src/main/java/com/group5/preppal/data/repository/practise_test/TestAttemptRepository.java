@@ -104,23 +104,4 @@ public class TestAttemptRepository {
                 })
                 .addOnFailureListener(onFailure::accept);
     }
-
-    public void getListeningAttempts(String userId, String testId,
-                                     Consumer<List<ListeningAttempt>> onSuccess,
-                                     Consumer<Exception> onFailure) {
-        db.collection("students")
-                .document(userId)
-                .collection("listening_attempts")
-                .orderBy("submittedAt", Query.Direction.DESCENDING)
-                .get()
-                .addOnSuccessListener(snapshot -> {
-                    List<ListeningAttempt> list = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : snapshot) {
-                        ListeningAttempt attempt = doc.toObject(ListeningAttempt.class);
-                        list.add(attempt);
-                    }
-                    onSuccess.accept(list);
-                })
-                .addOnFailureListener(onFailure::accept);
-    }
 }
