@@ -37,12 +37,8 @@ public class QuestionMultipleChoiceAnswerFragment extends Fragment {
     private static final String ARG_QUESTIONS = "questions";
     private static final String ARG_QUIZ_ID = "quizId";
     private static final String ARG_PASS_POINT = "passPoint";
+    private static final String ARG_QUIZ_RESULT = "quizResult";
     private MultipleChoiceQuizResult multipleChoiceQuizResult;
-
-    @Inject
-    AuthRepository authRepository;
-
-    FirebaseUser user;
 
     private MultipleChoiceQuizViewModel quizViewModel;
 
@@ -56,11 +52,12 @@ public class QuestionMultipleChoiceAnswerFragment extends Fragment {
     private LinearLayout btnNext, btnPrevious;
 
 
-    public static QuestionMultipleChoiceAnswerFragment newInstance(int questionIndex, List<MultipleChoiceQuestion> multipleChoiceQuestions, String quizId, float passPoint) {
+    public static QuestionMultipleChoiceAnswerFragment newInstance(int questionIndex, List<MultipleChoiceQuestion> multipleChoiceQuestions, String quizId, float passPoint, MultipleChoiceQuizResult multipleChoiceQuizResult) {
         QuestionMultipleChoiceAnswerFragment fragment = new QuestionMultipleChoiceAnswerFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_QUESTION_INDEX, questionIndex);
         args.putSerializable(ARG_QUESTIONS, (java.io.Serializable) multipleChoiceQuestions);
+        args.putSerializable(ARG_QUIZ_RESULT, (java.io.Serializable) multipleChoiceQuizResult);
         args.putString(ARG_QUIZ_ID, quizId);
         args.putFloat(ARG_PASS_POINT, passPoint);
         fragment.setArguments(args);
@@ -75,28 +72,22 @@ public class QuestionMultipleChoiceAnswerFragment extends Fragment {
             multipleChoiceQuestions = (List<MultipleChoiceQuestion>) getArguments().getSerializable(ARG_QUESTIONS);
             quizId = getArguments().getString(ARG_QUIZ_ID);
             passPoint = getArguments().getFloat(ARG_PASS_POINT);
+            multipleChoiceQuizResult = (MultipleChoiceQuizResult) getArguments().getSerializable(ARG_QUIZ_RESULT);
         }
 
         quizViewModel = new ViewModelProvider(requireActivity()).get(MultipleChoiceQuizViewModel.class);
-        user = authRepository.getCurrentUser();
-        if (user != null) {
-            quizViewModel.getQuizResult(quizId).observe(this, new Observer<MultipleChoiceQuizResult>() {
-                @Override
-                public void onChanged(MultipleChoiceQuizResult result) {
-                    if (result != null) {
-                        multipleChoiceQuizResult = result;
-                        Log.d("Multiple Choice quiz result", "Multiple Choice Quiz result size: " + result.getAnsweredQuestions().size());
-                        loadQuestion();
-                    }
-                }
-            });
-        }
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_question_multiple_choice, container, false);
+        return inflater.inflate(R.layout.fragment_question_multiple_choice, container, false);
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         questionName = view.findViewById(R.id.questionName);
         questionOrder = view.findViewById(R.id.questionOrder);
@@ -105,16 +96,12 @@ public class QuestionMultipleChoiceAnswerFragment extends Fragment {
         btnNext = getActivity().findViewById(R.id.btnNext);
         btnPrevious = getActivity().findViewById(R.id.btnPrevious);
 
-
-
         quizViewModel = new ViewModelProvider(requireActivity()).get(MultipleChoiceQuizViewModel.class);
-
-        loadQuestion();
 
         btnNext.setOnClickListener(v -> navigateToQuestion(questionIndex + 1));
         btnPrevious.setOnClickListener(v -> navigateToQuestion(questionIndex - 1));
 
-        return view;
+        loadQuestion();
     }
 
     private void loadQuestion() {
@@ -132,7 +119,6 @@ public class QuestionMultipleChoiceAnswerFragment extends Fragment {
 
         answerGroup.removeAllViews();
 
-//        Log.d("Option size", "Option size: " + currentMultipleChoiceQuestion.getOptions().size());
         for (int i = 0; i < currentMultipleChoiceQuestion.getOptions().size(); i++) {
             View optionView = LayoutInflater.from(getContext()).inflate(R.layout.item_answer_option, answerGroup, false);
             LinearLayout layout = optionView.findViewById(R.id.answerOptionLayout);
@@ -170,7 +156,7 @@ public class QuestionMultipleChoiceAnswerFragment extends Fragment {
         if (newIndex >= 0 && newIndex < multipleChoiceQuestions.size()) {
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.quizAnswerFragmentContainer, QuestionMultipleChoiceAnswerFragment.newInstance(newIndex, multipleChoiceQuestions,quizId, passPoint))
+                    .replace(R.id.quizAnswerFragmentContainer, QuestionMultipleChoiceAnswerFragment.newInstance(newIndex, multipleChoiceQuestions,quizId, passPoint,multipleChoiceQuizResult))
                     .commit();
         }
     }

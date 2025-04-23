@@ -24,6 +24,7 @@ public class ListeningQuestionGroupAdapter extends RecyclerView.Adapter<Listenin
     private final List<ListeningQuestionGroup> groupList = new ArrayList<>();
     private Map<Integer, String> userAnswers = new HashMap<>();
     private boolean isTimeUp = false;
+    private boolean isReviewMode = false;
 
     public void submitList(List<ListeningQuestionGroup> newList) {
         groupList.clear();
@@ -37,6 +38,10 @@ public class ListeningQuestionGroupAdapter extends RecyclerView.Adapter<Listenin
 
     public void setTimeUp(boolean isTimeUp) {
         this.isTimeUp = isTimeUp;
+    }
+
+    public void setReviewMode(boolean reviewMode) {
+        this.isReviewMode = reviewMode;
     }
 
     @NonNull
@@ -54,13 +59,10 @@ public class ListeningQuestionGroupAdapter extends RecyclerView.Adapter<Listenin
                 .load(group.getImageUrl())
                 .into(holder.groupImage);
 
-        Log.d("ListeningQuestionGroupAdapter"," Group Type: " + group.getType());
-
-        ListeningQuestionAdapter questionAdapter = new ListeningQuestionAdapter(userAnswers);
+        ListeningQuestionAdapter questionAdapter = new ListeningQuestionAdapter(userAnswers, isReviewMode);
         holder.questionRecyclerView.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
         holder.questionRecyclerView.setAdapter(questionAdapter);
-
-        questionAdapter.setData(group.getQuestions(), group.getType(), group.getOptions(), isTimeUp);
+        questionAdapter.setData(group.getQuestions(), group.getType(), group.getOptions(), group.getCorrectAnswers(), true);
     }
 
     @Override

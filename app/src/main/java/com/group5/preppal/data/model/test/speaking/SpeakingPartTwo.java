@@ -15,9 +15,7 @@ public class SpeakingPartTwo implements Parcelable {
     private List<String> hints;
     private String followUp;
 
-    public SpeakingPartTwo() {
-        // Needed for Firestore
-    }
+    public SpeakingPartTwo() {}
 
     public SpeakingPartTwo(String task, List<String> hints, String followUp) {
         this.task = task;

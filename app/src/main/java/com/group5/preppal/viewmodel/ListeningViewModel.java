@@ -13,15 +13,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.group5.preppal.data.model.test.listening.ListeningAttempt;
 import com.group5.preppal.data.model.test.listening.ListeningGrader;
 import com.group5.preppal.data.model.test.listening.ListeningPart;
-import com.group5.preppal.data.model.test.listening.ListeningQuestion;
-import com.group5.preppal.data.model.test.listening.ListeningQuestionGroup;
 import com.group5.preppal.data.model.test.listening.ListeningSection;
 import com.group5.preppal.data.repository.practise_test.ListeningAttemptRepository;
+import com.group5.preppal.data.repository.practise_test.TestAttemptRepository;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -34,6 +31,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 public class ListeningViewModel extends ViewModel {
 
     private final ListeningAttemptRepository attemptRepository;
+    private final TestAttemptRepository testAttemptRepository;
 
     private final MutableLiveData<Integer> currentPart = new MutableLiveData<>(1);
     private final MutableLiveData<ListeningPart> currentPartData = new MutableLiveData<>();
@@ -50,8 +48,9 @@ public class ListeningViewModel extends ViewModel {
     private Date startedAt;
 
     @Inject
-    public ListeningViewModel(ListeningAttemptRepository attemptRepository) {
+    public ListeningViewModel(ListeningAttemptRepository attemptRepository, TestAttemptRepository testAttemptRepository) {
         this.attemptRepository = attemptRepository;
+        this.testAttemptRepository = testAttemptRepository;
     }
 
     // --- Meta ---
@@ -173,6 +172,12 @@ public class ListeningViewModel extends ViewModel {
         attempt.setSubmittedAt(submittedAt);
 
         attemptRepository.submitListeningAttempt(attempt, onSuccess, onFailure);
+        testAttemptRepository.updateSkillBandScore(
+                testId,
+                "listening",
+                bandScore,
+                unused -> Log.d("Firestore", "Listening band score updated"),
+                e -> Log.e("Firestore", "Failed to update band score", e));
     }
 
     @Override
