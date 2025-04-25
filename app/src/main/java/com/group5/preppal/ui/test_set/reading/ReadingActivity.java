@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
@@ -45,7 +46,17 @@ public class ReadingActivity extends AppCompatActivity {
         tvTimer = findViewById(R.id.tvReadingTimer); // Add this to layout
         btnBack = findViewById(R.id.btnBack);
 
-        btnBack.setOnClickListener(v -> finish());
+        btnBack.setOnClickListener(v -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("Confirm Exit")
+                    .setMessage("Are you sure you want to end the test?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        setResult(RESULT_OK);
+                        finish();
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+        });
         viewModel = new ViewModelProvider(this).get(ReadingViewModel.class);
 
         viewModel.getTimeLeft().observe(this, time -> {

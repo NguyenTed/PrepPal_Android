@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -50,7 +51,7 @@ public class TestDetailActivity extends AppCompatActivity {
     private ReadingSection readingSection;
     private WritingSection writingSection;
     private SpeakingSection speakingSection;
-
+    private ImageView btnBack;
     private final OnAttemptClickListener attemptClickListener = new OnAttemptClickListener() {
         @Override
         public void onListeningAttemptClick(ListeningAttempt attempt, ListeningSection section) {
@@ -106,6 +107,11 @@ public class TestDetailActivity extends AppCompatActivity {
 
         observeAttempts();
         setupButtonActions();
+
+        //btnBack
+        btnBack = findViewById(R.id.btnBack);
+
+        btnBack.setOnClickListener(v -> finish());
     }
 
     private void observeAttempts() {
@@ -202,6 +208,16 @@ public class TestDetailActivity extends AppCompatActivity {
             intent.putStringArrayListExtra("part3", new ArrayList<>(speakingSection.getPart3()));
             startActivity(intent);
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Reload the attempts each time we come back to this screen
+        viewModel.loadListeningAttempts(testId);
+        viewModel.loadReadingAttempts(testId);
+        // Later: viewModel.loadWritingAttempts(testId);
+        // Later: viewModel.loadSpeakingAttempts(testId);
     }
 }
 

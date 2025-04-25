@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,14 +31,16 @@ public class FlashcardActivity extends AppCompatActivity {
     private List<Vocabulary> vocabList = new ArrayList<>();
     private ViewPager2 viewPager;
     private ProgressBar progressBar;
-    private TextView progressText;
+    private TextView topicNameText, progressText;
     private Button markLearnedButton;
+    private ImageView btnBack;
     private int currentIndex = 0;
 
     private int learnedCount = 0;
     private int totalCount = 0;
 
     private String topicId;
+    private String topicName;
     private String userId;
 
     @Override
@@ -48,14 +51,19 @@ public class FlashcardActivity extends AppCompatActivity {
         // Views
         progressBar = findViewById(R.id.flashcard_progress_bar);
         progressText = findViewById(R.id.flashcard_progress_text);
+        topicNameText = findViewById(R.id.topicNameTextView);
         markLearnedButton = findViewById(R.id.btn_mark_learned);
         viewPager = findViewById(R.id.viewPager);
+        btnBack = findViewById(R.id.btnBack);
 
         // Intent data
         topicId = getIntent().getStringExtra("topicId");
+        topicName = getIntent().getStringExtra("topicName");
         learnedCount = getIntent().getIntExtra("learnedCount", 0);
         totalCount = getIntent().getIntExtra("totalCount", 0);
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        topicNameText.setText(topicName);
 
         if (topicId == null) {
             Toast.makeText(this, "Missing topic ID", Toast.LENGTH_SHORT).show();
@@ -105,6 +113,11 @@ public class FlashcardActivity extends AppCompatActivity {
                                 Toast.makeText(this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show())
                 );
             }
+        });
+
+        btnBack.setOnClickListener(v -> {
+            setResult(RESULT_OK);
+            finish();
         });
 
         // Load unlearned vocab

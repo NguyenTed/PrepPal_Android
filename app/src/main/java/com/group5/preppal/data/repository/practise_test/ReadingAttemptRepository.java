@@ -1,7 +1,5 @@
 package com.group5.preppal.data.repository.practise_test;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -61,6 +59,7 @@ public class ReadingAttemptRepository {
                 .collection("reading_attempts")
                 .whereEqualTo("testId", testId)
                 .orderBy("submittedAt", Query.Direction.DESCENDING)
+                .limit(5)
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     List<ReadingAttempt> list = new ArrayList<>();

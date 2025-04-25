@@ -1,13 +1,17 @@
 package com.group5.preppal.ui.test_set.speaking;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.test.speaking.SpeakingPartTwo;
@@ -26,7 +30,17 @@ public class SpeakingActivity extends AppCompatActivity {
     private List<String> part1, part3;
     private SpeakingPartTwo part2;
     private String testName;
+    private View createSectionView(String title, String content) {
+        View view = LayoutInflater.from(this).inflate(R.layout.item_part2_section, null);
 
+        TextView titleView = view.findViewById(R.id.sectionTitle);
+        TextView contentView = view.findViewById(R.id.sectionContent);
+
+        titleView.setText(title);
+        contentView.setText(content);
+
+        return view;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,17 +75,57 @@ public class SpeakingActivity extends AppCompatActivity {
 
     private void showPart2() {
         questionsContainer.removeAllViews();
-        addQuestionCard("Task", part2.getTask());
 
+        // Tạo CardView
+        CardView cardView = new CardView(this);
+        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        cardParams.setMargins(0, 0, 0, 24); // margin bottom nếu cần
+        cardView.setLayoutParams(cardParams);
+        cardView.setRadius(12f);
+        cardView.setCardElevation(6f);
+        cardView.setUseCompatPadding(true);
+
+        // Container bên trong CardView
+        LinearLayout contentLayout = new LinearLayout(this);
+        contentLayout.setOrientation(LinearLayout.VERTICAL);
+        contentLayout.setPadding(24, 24, 24, 24); // padding trong card
+        cardView.addView(contentLayout);
+
+        // Thêm Task
+        contentLayout.addView(createSectionView("Task", part2.getTask()));
+
+        // Thêm các Hint
         if (part2.getHints() != null && !part2.getHints().isEmpty()) {
+            // In tiêu đề Hint 1 lần
+            TextView hintTitle = new TextView(this);
+            hintTitle.setText("Hint");
+            hintTitle.setTextSize(16f);
+            hintTitle.setTypeface(null, Typeface.BOLD);
+            hintTitle.setTextColor(Color.BLACK);
+            hintTitle.setPadding(0, 16, 0, 8); // khoảng cách với phần trên
+            contentLayout.addView(hintTitle);
+
+            // In từng hint không có tiêu đề
             for (String hint : part2.getHints()) {
-                addQuestionCard("Hint", hint);
+                TextView hintContent = new TextView(this);
+                hintContent.setText(hint);
+                hintContent.setTextSize(14f);
+                hintContent.setTextColor(Color.DKGRAY);
+                hintContent.setPadding(0, 0, 0, 8); // khoảng cách giữa các hint
+                contentLayout.addView(hintContent);
             }
         }
 
+        // Thêm Follow-up
         if (part2.getFollowUp() != null && !part2.getFollowUp().isEmpty()) {
-            addQuestionCard("Follow-up", part2.getFollowUp());
+            contentLayout.addView(createSectionView("Follow-up", part2.getFollowUp()));
         }
+
+        // Thêm CardView vào container
+        questionsContainer.addView(cardView);
     }
 
     private void showPart3() {
