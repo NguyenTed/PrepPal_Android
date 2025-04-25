@@ -5,9 +5,11 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.group5.preppal.data.model.StudentBookedSpeaking;
 import com.group5.preppal.data.model.Student;
 import com.group5.preppal.data.model.User;
@@ -49,6 +51,8 @@ public class StudentRepository {
                 float aimBand = documentSnapshot.getDouble("aimBand").floatValue();
                 List<String> courses = (List<String>) documentSnapshot.get("courses");
                 List<String> finishedLessons = (List<String>) documentSnapshot.get("finishedLessons");
+                List<String> finishedSpeakingTests = (List<String>) documentSnapshot.get("finishedSpeakingTests");
+                List<String> finishedCourses = (List<String>) documentSnapshot.get("finishedCourses");
                 List<StudentBookedSpeaking> studentBookedSpeakingList = (List<StudentBookedSpeaking>) documentSnapshot.get("bookedSpeaking");
                 Student student = new Student(
                         uid,
@@ -61,6 +65,8 @@ public class StudentRepository {
                         aimBand,
                         courses,
                         finishedLessons,
+                        finishedSpeakingTests,
+                        finishedCourses,
                         studentBookedSpeakingList
                 );
 
@@ -126,6 +132,16 @@ public class StudentRepository {
             }
         });
     }
+
+    public Task<Void> updateStudent(Student student) {
+        return FirebaseFirestore.getInstance()
+                .collection("students")
+                .document(student.getUid())
+                .set(student, SetOptions.merge()); // ✨ trả ra Task<Void>
+    }
+
+
+
 
     public void saveBookedSpeaking(String studentId, StudentBookedSpeaking studentBookedSpeaking) {
         studentCollection.document(studentId).get().addOnCompleteListener(task -> {

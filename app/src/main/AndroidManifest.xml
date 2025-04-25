@@ -103,6 +103,10 @@
             android:exported="true">
         </activity>
         <activity
+            android:name=".ui.quiz.multiple_choice_quiz.MultipleChoiceReviewActivity"
+            android:exported="true">
+        </activity>
+        <activity
             android:name=".ui.dictionary.DictionaryActivity"
             android:exported="true">
         </activity>

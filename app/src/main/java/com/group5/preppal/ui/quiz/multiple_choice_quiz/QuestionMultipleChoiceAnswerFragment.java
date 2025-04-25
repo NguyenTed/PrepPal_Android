@@ -113,12 +113,10 @@ public class QuestionMultipleChoiceAnswerFragment extends Fragment {
         MultipleChoiceQuestion currentMultipleChoiceQuestion = multipleChoiceQuestions.get(questionIndex);
         questionName.setText(currentMultipleChoiceQuestion.getQuestionName());
 
-
-        questionPoint.setText(multipleChoiceQuizResult.getScore() + "/" + currentMultipleChoiceQuestion.getPoint() + " points");
         questionOrder.setText("Question " + (questionIndex + 1) + "/" + multipleChoiceQuestions.size());
 
         answerGroup.removeAllViews();
-
+        boolean finalCorrect = false;
         for (int i = 0; i < currentMultipleChoiceQuestion.getOptions().size(); i++) {
             View optionView = LayoutInflater.from(getContext()).inflate(R.layout.item_answer_option, answerGroup, false);
             LinearLayout layout = optionView.findViewById(R.id.answerOptionLayout);
@@ -134,6 +132,7 @@ public class QuestionMultipleChoiceAnswerFragment extends Fragment {
             {
                 radioButton.setChecked(true);
                 if (isCorrect) {
+                    finalCorrect = true;
                     radioButton.setButtonTintList(ContextCompat.getColorStateList(requireContext(), R.color.radio_button_true));
                     layout.setBackgroundResource(R.drawable.radio_option_selected_true);
                 }
@@ -146,6 +145,10 @@ public class QuestionMultipleChoiceAnswerFragment extends Fragment {
 
             answerGroup.addView(optionView);
         }
+        final float currentPoint = currentMultipleChoiceQuestion.getPoint();
+        if (finalCorrect) {
+            questionPoint.setText(currentPoint + "/" + currentPoint + " points");
+        } else    questionPoint.setText(0.0 + "/" + currentPoint + " points");
 
         btnPrevious.setVisibility(questionIndex == 0 ? View.INVISIBLE : View.VISIBLE);
         btnNext.setVisibility(questionIndex == multipleChoiceQuestions.size() - 1 ? View.INVISIBLE : View.VISIBLE);

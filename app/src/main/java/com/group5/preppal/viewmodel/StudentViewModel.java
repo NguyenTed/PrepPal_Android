@@ -4,6 +4,7 @@ package com.group5.preppal.viewmodel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.tasks.Task;
 import com.group5.preppal.data.model.StudentBookedSpeaking;
 import com.group5.preppal.data.model.Student;
 import com.group5.preppal.data.repository.StudentRepository;
@@ -35,5 +36,9 @@ public class StudentViewModel extends ViewModel {
 
     public LiveData<StudentBookedSpeaking> fetchStudentBookedSpeakingById(String speakingTestId, String studentId) {
         return studentRepository.getBookedSpeakingById(speakingTestId, studentId);
+    }
+
+    public Task<Void> updateStudent(Student student) {
+        return studentRepository.updateStudent(student);
     }
 }

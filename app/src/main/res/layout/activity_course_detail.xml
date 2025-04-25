@@ -52,7 +52,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_marginTop="20dp"
         android:paddingHorizontal="10dp">
+        <LinearLayout
+            android:id="@+id/congratulation"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="Course is completed"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginRight="200dp"
+                android:layout_marginVertical="10dp"
+                android:background="@color/blue" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="Congratulations on completing the course!"/>
+        </LinearLayout>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

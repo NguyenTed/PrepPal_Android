@@ -43,15 +43,17 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
     private final ViewModelStoreOwner viewModelStoreOwner;
     private FirebaseUser user;
     private final List<String> finishedLessons;
+    private final List<String> finishedSpeakingTests;
     private StudentViewModel studentViewModel;
 
-    public SectionAdapter(List<Map<String, Object>> sectionList, Context context, String courseId, FirebaseAuth firebaseAuth, ViewModelStoreOwner viewModelStoreOwner,List<String> finishedLessons, StudentViewModel studentViewModel) {
+    public SectionAdapter(List<Map<String, Object>> sectionList, Context context, String courseId, FirebaseAuth firebaseAuth, ViewModelStoreOwner viewModelStoreOwner,List<String> finishedLessons, List<String> finishedSpeakingTests, StudentViewModel studentViewModel) {
         this.sectionList = sectionList;
         this.context = context;
         this.courseId = courseId;
         this.user = firebaseAuth.getCurrentUser();
         this.viewModelStoreOwner = viewModelStoreOwner;
         this.finishedLessons = finishedLessons;
+        this.finishedSpeakingTests = finishedSpeakingTests;
         this.studentViewModel = studentViewModel;
     }
 
@@ -224,20 +226,33 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
                         context.startActivity(intent);
                     });
                 });
-            } else if (type.contains("Speaking")) {
+            }  else if (type.contains("Speaking")) {
                 holder.sectionName.setText(name);
                 holder.sectionType.setText(type);
                 holder.txtTypeFinish.setText(type);
-                holder.sectionType.setVisibility(View.VISIBLE);
+
+                boolean isFinishedSpeaking = false;
+                if (finishedSpeakingTests != null) {
+                    isFinishedSpeaking = finishedSpeakingTests.contains(quizId);
+                }
+
+                if (isFinishedSpeaking) {
+                    holder.sectionTypeFinish.setVisibility(View.VISIBLE); // Hiển thị đã hoàn thành
+                    holder.itemView.setOnClickListener(view -> {
+                        Toast.makeText(context, "Bạn đã hoàn thành phần này rồi", Toast.LENGTH_SHORT).show(); // Hiển thị đang chờ hoàn thành
+                    });
+                } else {
+                    holder.sectionType.setVisibility(View.VISIBLE);
+                    holder.itemView.setOnClickListener(view -> {
+                        if (!isUnlocked) {
+                            Toast.makeText(context, "Vui lòng hoàn thành các phần trước!", Toast.LENGTH_SHORT).show(); // Hiển thị đang chờ hoàn thành
+                            return;
+                        }
+                        handleSpeakingNavigate(quizId);
+                    });
+                }
 
                 holder.itemView.setAlpha(isUnlocked ? 1.0f : 0.4f);
-                holder.itemView.setOnClickListener(view -> {
-                    if (!isUnlocked ) {
-                        Toast.makeText(context, "Vui lòng hoàn thành các phần trước!", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    handleSpeakingNavigate(quizId);
-                });
             }
 
         }
@@ -258,8 +273,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
         String quizId = quiz.get("id").toString();
 
         if (type.contains(CourseSectionType.WRITING.getDisplayName()) || type.contains(CourseSectionType.SPEAKING.getDisplayName())) {
-            if (position == 0) callback.onResult(true);
-            else checkPreviousSectionCompleted(sectionList.get(position - 1), sectionList, position, callback);
+            callback.onResult(true); // Luôn unlock phần Writing và Speaking
         } else if (type.contains(CourseSectionType.MULTIPLE_CHOICE.getDisplayName())){
             MultipleChoiceQuizViewModel multipleChoiceQuizViewModel = new ViewModelProvider(viewModelStoreOwner).get(MultipleChoiceQuizViewModel.class);
 

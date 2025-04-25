@@ -22,6 +22,8 @@ public class MultipleChoiceQuizViewModel extends ViewModel {
     private final Map<Integer, Integer> selectedAnswers = new HashMap<>();
     private final MultipleChoiceQuizRepository quizRepository;
     private final MultipleChoiceQuizResultRepository quizResultRepository;
+    private MultipleChoiceQuizResult savedQuizResult;
+
 
     @Inject
     public MultipleChoiceQuizViewModel(MultipleChoiceQuizRepository quizRepository, MultipleChoiceQuizResultRepository quizResultRepository) {
@@ -51,11 +53,22 @@ public class MultipleChoiceQuizViewModel extends ViewModel {
         return selectedAnswers.get(questionIndex);
     }
 
+    public void setSavedQuizResult(MultipleChoiceQuizResult result) {
+        this.savedQuizResult = result;
+    }
+
+    public MultipleChoiceQuizResult getSavedQuizResult() {
+        return savedQuizResult;
+    }
+
     public void saveQuizResult(String studentId, String quizId, float score, float passPoint,
                                List<MultipleChoiceAnsweredQuestion> answeredQuestions,
                                MultipleChoiceQuizResultRepository.SaveResultCallback callback) {
+
         boolean pass = score >= passPoint;
         MultipleChoiceQuizResult quizResult = new MultipleChoiceQuizResult(studentId, quizId, score, pass, answeredQuestions);
+
+        this.savedQuizResult = quizResult;
 
         quizResultRepository.saveQuizResult(quizResult, callback);
     }

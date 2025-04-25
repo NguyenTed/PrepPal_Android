@@ -25,6 +25,7 @@ import com.group5.preppal.data.repository.MultipleChoiceQuizResultRepository;
 import com.group5.preppal.ui.course.CourseDetailActivity;
 import com.group5.preppal.viewmodel.MultipleChoiceQuizViewModel;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,6 +120,7 @@ public class QuestionMultipleChoiceFragment extends Fragment {
                     ));
                 }
             }
+            float finalScore = score;
             quizViewModel.saveQuizResult(user.getUid(), quizId, score, passPoint, answeredQuestions, new MultipleChoiceQuizResultRepository.SaveResultCallback() {
                 @Override
                 public void onSuccess() {
@@ -127,8 +129,13 @@ public class QuestionMultipleChoiceFragment extends Fragment {
 
                 @Override
                 public void onFailure(Exception e) {
-//                    Toast.makeText(requireContext(), "Submit " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    navigateToCourse();
+                    if (e.getMessage() != null && e.getMessage().equals("New score is not higher")) {
+                        // Nếu điểm mới không cao hơn → show dialog
+                        showResultDialog(finalScore);
+                    } else {
+                        // Các lỗi khác (nếu có) vẫn điều hướng về Course như cũ
+                        navigateToCourse();
+                    }
                 }
             });
         });
@@ -226,4 +233,29 @@ public class QuestionMultipleChoiceFragment extends Fragment {
         intent.putExtra("courseId", courseId);
         startActivity(intent);
     }
+
+    private void showResultDialog(float score) {
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Result")
+                .setMessage("Your point is " + score + " and your result will not be recorded. Will you want to review?")
+                .setCancelable(false)
+                .setPositiveButton("Review Answers", (dialog, which) -> {
+                    navigateToReviewAnswers();
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    // Quay về Course
+                    navigateToCourse();
+                })
+                .show();
+    }
+    private void navigateToReviewAnswers() {
+        Intent intent = new Intent(requireContext(), MultipleChoiceReviewActivity.class);
+        intent.putExtra("quizId", quizId);
+        intent.putExtra("courseId", courseId);
+        intent.putExtra("quizResult", quizViewModel.getSavedQuizResult());
+        intent.putExtra("questions",(Serializable) multipleChoiceQuestions);
+        startActivity(intent);
+        requireActivity().finish();
+    }
+
 }

@@ -60,12 +60,12 @@ public class MultipleChoiceAnswerActivity extends AppCompatActivity {
                 if (result != null) {
                     multipleChoiceQuizResult = result;
                     quizViewModel.getAnsweredQuizByResult(multipleChoiceQuizResult).observe(this, quiz -> {
-                        Toast.makeText(this, "No null1", Toast.LENGTH_SHORT).show();
+
                         if (quiz != null && quiz.getQuestions() != null) {
-                            Toast.makeText(this, "No null", Toast.LENGTH_SHORT).show();
+
                             List<String> questionIds = quiz.getQuestionIds();
                             int size = (questionIds != null) ? questionIds.size() : 0;
-                            Toast.makeText(this, "Question size: " + size, Toast.LENGTH_SHORT).show();
+
                             quizName.setText(quiz.getName());
                             loadFirstQuestion(
                                     quiz.getQuestions(),
