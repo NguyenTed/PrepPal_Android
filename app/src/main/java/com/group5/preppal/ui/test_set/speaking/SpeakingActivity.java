@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,6 +31,14 @@ public class SpeakingActivity extends AppCompatActivity {
     private List<String> part1, part3;
     private SpeakingPartTwo part2;
     private String testName;
+    private ImageView btnBack;
+    private void setSelectedTab(Button selectedButton) {
+        btnPart1.setSelected(false);
+        btnPart2.setSelected(false);
+        btnPart3.setSelected(false);
+
+        selectedButton.setSelected(true);
+    }
     private View createSectionView(String title, String content) {
         View view = LayoutInflater.from(this).inflate(R.layout.item_part2_section, null);
 
@@ -38,7 +47,6 @@ public class SpeakingActivity extends AppCompatActivity {
 
         titleView.setText(title);
         contentView.setText(content);
-
         return view;
     }
     @Override
@@ -59,11 +67,26 @@ public class SpeakingActivity extends AppCompatActivity {
 
         tvTestTitle.setText(testName);
 
-        btnPart1.setOnClickListener(v -> showPart1());
-        btnPart2.setOnClickListener(v -> showPart2());
-        btnPart3.setOnClickListener(v -> showPart3());
+        btnPart1.setOnClickListener(v -> {
+            setSelectedTab(btnPart1);
+            showPart1();
+        });
 
-        showPart1(); // default
+        btnPart2.setOnClickListener(v -> {
+            setSelectedTab(btnPart2);
+            showPart2();
+        });
+
+        btnPart3.setOnClickListener(v -> {
+            setSelectedTab(btnPart3);
+            showPart3();
+        });
+
+        // Chọn mặc định Part 1
+        setSelectedTab(btnPart1);
+        showPart1();
+        btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> finish());
     }
 
     private void showPart1() {

@@ -1,54 +1,85 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="#E8F2FF"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tvTestTitle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="IELTS Handbook 19 - Test 1"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="#002855" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@drawable/gradient_background"
+        android:padding="16dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="Back"
+            app:tint="#000000" />
+
+        <TextView
+            android:id="@+id/tvTestTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="12dp"
+            android:text="IELTS Handbook 19 - Test 1"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#002855" />
+    </LinearLayout>
 
     <!-- Tabs -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_speaking_tab_container"
+        android:elevation="4dp">
 
-        <Button
-            android:id="@+id/btnPart1"
-            style="@style/TabButtonStyle"
-            android:text="Part 1" />
-
-        <Button
-            android:id="@+id/btnPart2"
-            style="@style/TabButtonStyle"
-            android:text="Part 2" />
-
-        <Button
-            android:id="@+id/btnPart3"
-            style="@style/TabButtonStyle"
-            android:text="Part 3" />
-    </LinearLayout>
-
-    <!-- Question List -->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
+        <!-- Tab Buttons -->
         <LinearLayout
-            android:id="@+id/questionsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp" />
-    </ScrollView>
+            android:padding="12dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnPart1"
+                style="@style/TabButtonStyle"
+                android:text="Part 1" />
+
+            <Button
+                android:id="@+id/btnPart2"
+                style="@style/TabButtonStyle"
+                android:text="Part 2" />
+
+            <Button
+                android:id="@+id/btnPart3"
+                style="@style/TabButtonStyle"
+                android:text="Part 3" />
+        </LinearLayout>
+
+        <!-- Question List -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:id="@+id/questionsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp" />
+        </ScrollView>
+    </LinearLayout>
+
 </LinearLayout>

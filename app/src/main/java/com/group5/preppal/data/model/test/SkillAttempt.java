@@ -5,5 +5,7 @@ import java.util.Date;
 public interface SkillAttempt {
     float getBandScore();
     Date getSubmittedAt();
+
+
 }
 

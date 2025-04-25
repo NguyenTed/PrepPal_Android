@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="listeningScore" type="id" />
+    <item name="overallScore" type="id" />
+    <item name="scoreTitle" type="id" />
+</resources>
