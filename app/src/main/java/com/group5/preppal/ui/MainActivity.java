@@ -1,5 +1,6 @@
 package com.group5.preppal.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout myCourseBtn, viewMoreBtn, btnInteractCourse;
     private StudentViewModel studentViewModel;
 
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

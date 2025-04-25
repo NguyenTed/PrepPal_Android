@@ -92,6 +92,7 @@
     <string name="profile">Profile</string>
     <string name="waiting_for_call_speaker">Waiting for call co-speaker…</string>
     <string name="programme_ielts">Programme IELTS</string>
+    <string name="start">start</string>/>
     <string-array name="genders">
         <item>MALE</item>
         <item>FEMALE</item>
