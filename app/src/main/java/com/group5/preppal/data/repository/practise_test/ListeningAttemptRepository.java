@@ -1,14 +1,21 @@
 package com.group5.preppal.data.repository.practise_test;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.group5.preppal.data.model.test.listening.ListeningAttempt;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -42,11 +49,10 @@ public class ListeningAttemptRepository {
                 .addOnFailureListener(onFailure);
     }
 
-    // Optional: Fetch latest attempt by testId
-    public void getLatestAttemptByTestId(
-            String testId,
-            @NonNull OnSuccessListener<ListeningAttempt> onSuccess,
-            @NonNull OnFailureListener onFailure
+    public void getListeningAttempts(
+            @NonNull String testId,
+            @NonNull Consumer<List<ListeningAttempt>> onSuccess,
+            @NonNull Consumer<Exception> onFailure
     ) {
         String userId = auth.getCurrentUser().getUid();
 
@@ -55,16 +61,17 @@ public class ListeningAttemptRepository {
                 .collection("listening_attempts")
                 .whereEqualTo("testId", testId)
                 .orderBy("submittedAt", Query.Direction.DESCENDING)
-                .limit(1)
+                .limit(5)
                 .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    if (!querySnapshot.isEmpty()) {
-                        ListeningAttempt attempt = querySnapshot.getDocuments().get(0).toObject(ListeningAttempt.class);
-                        onSuccess.onSuccess(attempt);
-                    } else {
-                        onSuccess.onSuccess(null);
+                .addOnSuccessListener(snapshot -> {
+                    List<ListeningAttempt> list = new ArrayList<>();
+                    for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                        ListeningAttempt attempt = doc.toObject(ListeningAttempt.class);
+                        Log.d("Firestore", "Attempt: " + attempt.getTestId() + ", Band: " + attempt.getBandScore());
+                        list.add(attempt);
                     }
+                    onSuccess.accept(list);
                 })
-                .addOnFailureListener(onFailure);
+                .addOnFailureListener(onFailure::accept);
     }
 }

@@ -1,13 +1,12 @@
 package com.group5.preppal.data.model.test;
 
-import com.group5.preppal.data.model.test.listening.ListeningAttempt;
-import com.group5.preppal.data.model.test.reading.ReadingAttempt;
+import com.google.firebase.firestore.PropertyName;
 
 public class TestAttempt {
     private String testId;
     private String testSetId;
-    private ListeningAttempt listeningAttempt;
-    private ReadingAttempt readingAttempt;
+    private Float listeningBandScore;
+    private Float readingBandScore;
 
     public TestAttempt() {}
 
@@ -27,11 +26,23 @@ public class TestAttempt {
         this.testSetId = testSetId;
     }
 
-    public ListeningAttempt getListeningAttempt() {
-        return listeningAttempt;
+    @PropertyName("listening_band_score")
+    public Float getListeningBandScore() {
+        return listeningBandScore;
     }
 
-    public void setListeningAttempt(ListeningAttempt listeningAttempt) {
-        this.listeningAttempt = listeningAttempt;
+    @PropertyName("listening_band_score")
+    public void setListeningBandScore(float listeningBandScore) {
+        this.listeningBandScore = listeningBandScore;
+    }
+
+    @PropertyName("reading_band_score")
+    public Float getReadingBandScore() {
+        return readingBandScore;
+    }
+
+    @PropertyName("reading_band_score")
+    public void setReadingBandScore(float readingBandScore) {
+        this.readingBandScore = readingBandScore;
     }
 }

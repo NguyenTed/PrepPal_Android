@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@android:color/white" /> <!-- Background Color -->
+
+    <item android:right="8dp" android:left="8dp" android:top="8dp" android:bottom="8dp">
+        <shape
+            android:shape="oval">
+            <solid android:color="#ACEDFD" />
+            <size android:width="40dp" android:height="40dp" />
+        </shape>
+    </item>
+
+    <!-- Chỗ để đặt số, sẽ được thay thế trong Java/Kotlin -->
+    <item
+        android:left="8dp"
+        android:right="8dp"
+        android:top="8dp"
+        android:bottom="8dp">
+        <bitmap
+            android:gravity="center"
+            android:src="@android:color/transparent" /> <!-- Để trống, sẽ set ảnh động -->
+    </item>
+</layer-list>

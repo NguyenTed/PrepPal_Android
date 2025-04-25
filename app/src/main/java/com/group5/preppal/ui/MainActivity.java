@@ -1,5 +1,6 @@
 package com.group5.preppal.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,9 +35,11 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class MainActivity extends AppCompatActivity {
     private UserViewModel viewModel;
     private TextView txtGreetingUser, txtContact, txtInteractCourseButton;
-    private LinearLayout myCourseBtn, viewMoreBtn, btnInteractCourse;
+    private LinearLayout myCourseBtn, viewMoreBtn, testSetBtn, vocabBtn, btnInteractCourse;
     private StudentViewModel studentViewModel;
+    BottomNavigationView bottomNav;
 
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,9 +54,12 @@ public class MainActivity extends AppCompatActivity {
         txtGreetingUser = findViewById(R.id.txtGreetingUser);
         myCourseBtn = findViewById(R.id.myCourseBtn);
         viewMoreBtn = findViewById(R.id.viewMoreBtn);
+        testSetBtn = findViewById(R.id.testSetBtn);
+        vocabBtn = findViewById(R.id.vocabBtn);
         btnInteractCourse = findViewById(R.id.btnInteractCourse);
         txtContact = findViewById(R.id.txtContact);
         txtInteractCourseButton = findViewById(R.id.txtInteractCourseButton);
+        bottomNav = findViewById(R.id.bottom_nav);
 
         currentUserLiveData.observe(this, user -> {
             if (user != null) {
@@ -101,9 +107,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
-        bottomNav.setSelectedItemId(R.id.nav_home);
+        testSetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, TestSetListActivity.class);
+                startActivity(intent);
+            }
+        });
 
+        vocabBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, TopicActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        bottomNav.setSelectedItemId(R.id.nav_home);
         bottomNav.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
@@ -113,12 +133,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, CourseListActivity.class));
                 overridePendingTransition(0, 0);
                 return true;
-            } else if (itemId == R.id.nav_vocab) {
+            } else if (itemId == R.id.nav_test_set) {
                 startActivity(new Intent(MainActivity.this, TestSetListActivity.class));
                 overridePendingTransition(0, 0);
                 return true;
-            } else if (itemId == R.id.nav_dictionary) {
-                startActivity(new Intent(MainActivity.this, DictionaryActivity.class));
+            } else if (itemId == R.id.nav_vocab) {
+                Log.d("MainActivity", "Navigating to Vocabulary");
+                startActivity(new Intent(MainActivity.this, TopicActivity.class));
                 overridePendingTransition(0, 0);
                 return true;
             } else if (itemId == R.id.nav_profile) {
@@ -131,4 +152,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bottomNav.setSelectedItemId(R.id.nav_home);
+    }
 }

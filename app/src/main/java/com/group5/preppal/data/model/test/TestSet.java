@@ -8,6 +8,7 @@ public class TestSet {
     private String id;
     private String name;
     private List<String> testIds;
+    private String imageUrl;
 
     public TestSet() {}
 
@@ -35,6 +36,16 @@ public class TestSet {
     @PropertyName("test_ids")
     public void setTestIds(List<String> testIds) {
         this.testIds = testIds;
+    }
+
+    @PropertyName("cover_img_url")
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    @PropertyName("cover_img_url")
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
 

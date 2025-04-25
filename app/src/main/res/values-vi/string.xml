@@ -27,6 +27,8 @@
     <string name="in_this_course_you_will_learn_all_type_of_writing_skills_includes_charts_map_process_in_speaking_you_will_able_to_learn_about_environment_people">
         Trong khóa học này, bạn sẽ học tất cả các kỹ năng viết như biểu đồ, bản đồ, quy trình. Trong phần nói, bạn sẽ được học về môi trường, con người.
     </string>
+    <string name="vocabularyTopicScreen">Danh sách những chủ đề từ vựng</string>
+    <string name="dictionaryScreen">Từ điển</string>
     <string name="welcome">Chào mừng</string>
     <string name="lesson_1_writing_task_1_dynamic_charts">Bài 1: Writing Task 1 - Biểu đồ động</string>
     <string name="enter_email">Nhập email</string>
@@ -37,6 +39,8 @@
     <string name="course">Khóa học</string>
     <string name="explore">Khám phá</string>
     <string name="my_courses">Khóa học của tôi</string>
+    <string name="test_set">Luyện tập đề thi</string>
+    <string name="vocab">Từ vựng Flashcard</string>
     <string name="view_more">Xem thêm</string>
     <string name="hello_current_user_s_name">Xin chào Tên người dùng</string>
     <string name="register_account">Đăng ký tài khoản</string>
@@ -98,5 +102,6 @@
     <string name="home">Trang chủ</string>
     <string name="profile">Hồ sơ</string>
     <string name="waiting_for_call_speaker">Đang đợi người vào phòng…</string>
-    <string name="programme_ielts">Chương trình IELTSS</string>
+    <string name="programme_ielts">Chương trình IELTS</string>
+    <string name="start">Làm bài</string>
 </resources>

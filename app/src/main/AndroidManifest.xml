@@ -16,7 +16,6 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PrepPal"
         tools:targetApi="31" >
@@ -153,8 +152,11 @@
         <activity android:name=".ui.admin.AddNewTeacherActivity"/>
         <activity android:name=".ui.test_set.TestListActivity"/>
         <activity android:name=".ui.test_set.TestSetListActivity"/>
+        <activity android:name=".ui.test_set.TestDetailActivity"/>
         <activity android:name=".ui.test_set.listening.ListeningActivity"/>
+        <activity android:name=".ui.test_set.listening.ListeningReviewActivity"/>
         <activity android:name=".ui.test_set.reading.ReadingActivity"/>
+        <activity android:name=".ui.test_set.reading.ReadingReviewActivity"/>
         <activity android:name=".ui.test_set.writing.WritingActivity"/>
         <activity android:name=".ui.test_set.speaking.SpeakingActivity"/>
     </application>
