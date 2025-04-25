@@ -138,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
                 return true;
             } else if (itemId == R.id.nav_vocab) {
-                Log.d("MainActivity", "Navigating to Vocabulary");
                 startActivity(new Intent(MainActivity.this, TopicActivity.class));
                 overridePendingTransition(0, 0);
                 return true;

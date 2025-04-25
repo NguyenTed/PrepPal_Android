@@ -77,5 +77,13 @@ public class TestListActivity extends AppCompatActivity {
         viewModel.fetchTests(testSetId);
         viewModel.fetchTestAttempts();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        String testSetId = getIntent().getStringExtra("testSetId");
+        viewModel.fetchTests(testSetId);
+        viewModel.fetchTestAttempts();
+    }
 }
 

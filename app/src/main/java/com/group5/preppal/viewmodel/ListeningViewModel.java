@@ -108,10 +108,6 @@ public class ListeningViewModel extends ViewModel {
         return userAnswers;
     }
 
-    public void updateAnswer(int questionNumber, String answer) {
-        userAnswers.put(questionNumber, answer);
-    }
-
     // --- Timer ---
     public LiveData<String> getTimeLeft() {
         return timeLeft;
