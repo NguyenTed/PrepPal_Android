@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="70dp"
     android:orientation="vertical"
     android:background="@drawable/bg_card"
     android:padding="16dp"
@@ -10,14 +10,14 @@
     <!-- Tiêu đề bộ đề với hình ảnh cuốn đề -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
         <ImageView
             android:id="@+id/bookIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:src="@drawable/ielts"
         android:layout_marginEnd="8dp" />
 
@@ -31,26 +31,4 @@
             android:textSize="16sp"
             android:textColor="#000000" />
     </LinearLayout>
-
-    <!-- Container chứa các đề preview -->
-    <LinearLayout
-        android:id="@+id/testPreviewContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="8dp"
-        android:divider="?android:attr/dividerVertical"
-        android:showDividers="middle" />
-
-    <!-- Nút xem thêm -->
-    <TextView
-        android:id="@+id/btnViewMore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="View more 10 tests"
-        android:textColor="@color/blue"
-        android:textStyle="bold"
-        android:textSize="14sp"
-        android:layout_marginTop="8dp"
-        android:visibility="gone" />
 </LinearLayout>

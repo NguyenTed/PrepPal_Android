@@ -4,8 +4,10 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/bg_speaking_question_card"
-    android:padding="16dp"
-    android:layout_marginBottom="12dp">
+    android:padding="20dp"
+    android:layout_margin="12dp"
+    android:elevation="4dp"
+    android:clipToPadding="false">
 
     <TextView
         android:id="@+id/tvQuestionTitle"
@@ -13,15 +15,15 @@
         android:layout_height="wrap_content"
         android:text="Question 1"
         android:textStyle="bold"
-        android:textSize="16sp"
-        android:textColor="#1A1A1A" />
+        android:textSize="17sp"
+        android:textColor="#002855" />
 
     <TextView
         android:id="@+id/tvQuestionContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="This is the question text"
-        android:layout_marginTop="6dp"
-        android:textSize="15sp"
+        android:layout_marginTop="8dp"
+        android:textSize="16sp"
         android:textColor="#333333" />
 </LinearLayout>
