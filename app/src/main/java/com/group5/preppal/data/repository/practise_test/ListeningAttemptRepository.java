@@ -61,6 +61,7 @@ public class ListeningAttemptRepository {
                 .collection("listening_attempts")
                 .whereEqualTo("testId", testId)
                 .orderBy("submittedAt", Query.Direction.DESCENDING)
+                .limit(5)
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     List<ListeningAttempt> list = new ArrayList<>();

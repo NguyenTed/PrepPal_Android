@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -41,7 +42,17 @@ public class ListeningActivity extends AppCompatActivity {
         setContentView(R.layout.activity_listening);
         btnBack = findViewById(R.id.btnBack);
 
-        btnBack.setOnClickListener(v -> finish());
+        btnBack.setOnClickListener(v -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("Confirm Exit")
+                    .setMessage("Are you sure you want to end the test?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        setResult(RESULT_OK);
+                        finish();
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+        });
         // View bindings
         tvPartLabel = findViewById(R.id.partLabelTextView);
         tvTimer = findViewById(R.id.tvListeningTimer);

@@ -39,6 +39,7 @@ public class ProfileActivity extends AppCompatActivity {
     private AuthViewModel authViewModel;
     private ImageView profileImageView;
     private TextView nameTextView, emailTextView, logOutTextView;
+    BottomNavigationView bottomNav;
     @Inject
     FirebaseFirestore firestore;
 
@@ -53,6 +54,7 @@ public class ProfileActivity extends AppCompatActivity {
         nameTextView = findViewById(R.id.nameTextView);
         emailTextView = findViewById(R.id.emailTextView);
         logOutTextView = findViewById(R.id.logOutTextView);
+        bottomNav = findViewById(R.id.bottom_nav);
 
         authViewModel.getUserLiveData().observe(this, firebaseUser -> {
             if (firebaseUser != null) {
@@ -71,7 +73,6 @@ public class ProfileActivity extends AppCompatActivity {
         setupClickListener(R.id.accountInformationRoute, AccountInformationActivity.class);
         setupClickListener(R.id.courseRoute, CourseInfoActivity.class);
         setupClickListener(R.id.languageRoute, LanguageActivity.class);
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setSelectedItemId(R.id.nav_profile);
 
         bottomNav.setOnItemSelectedListener(item -> {
@@ -80,19 +81,19 @@ public class ProfileActivity extends AppCompatActivity {
             if (itemId == R.id.nav_profile) {
                 return true;
             } else if (itemId == R.id.nav_courses) {
-                startActivity(new Intent(ProfileActivity.this, CourseListActivity.class));
+                startActivity(new Intent(this, CourseListActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.nav_test_set) {
+                startActivity(new Intent(this, TestSetListActivity.class));
                 overridePendingTransition(0, 0);
                 return true;
             } else if (itemId == R.id.nav_vocab) {
-                startActivity(new Intent(ProfileActivity.this, TestSetListActivity.class));
-                overridePendingTransition(0, 0);
-                return true;
-            } else if (itemId == R.id.nav_dictionary) {
-                startActivity(new Intent(ProfileActivity.this, DictionaryActivity.class));
+                startActivity(new Intent(this, TopicActivity.class));
                 overridePendingTransition(0, 0);
                 return true;
             } else if (itemId == R.id.nav_home) {
-                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                startActivity(new Intent(this, MainActivity.class));
                 overridePendingTransition(0, 0);
                 finish();
                 return true;
@@ -146,5 +147,11 @@ public class ProfileActivity extends AppCompatActivity {
         Toast.makeText(this, "Signed out", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
         finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bottomNav.setSelectedItemId(R.id.nav_profile);
     }
 }

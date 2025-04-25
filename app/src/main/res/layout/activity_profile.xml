@@ -249,6 +249,7 @@
         android:background="@color/white"
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
+        app:labelVisibilityMode="labeled"
         android:layout_alignParentBottom="true" />
 </RelativeLayout>
 
