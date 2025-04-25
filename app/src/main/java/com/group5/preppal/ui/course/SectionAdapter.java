@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.group5.preppal.utils.ShowToast;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
@@ -134,7 +134,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
             holder.itemView.setAlpha(isUnlocked ? 1.0f : 0.4f);
             holder.itemView.setOnClickListener(view -> {
                 if (!isUnlocked) {
-                    Toast.makeText(context, "Vui lòng hoàn thành phần trước!", Toast.LENGTH_SHORT).show();
+                    ShowToast.show(context, "Vui lòng hoàn thành phần trước!", ShowToast.ToastType.WARNING);
                     return;
                 }
                 Intent intent = new Intent(context, type.equals("Reading") ? LessonPDFDetailActivity.class : LessonVideoActivity.class);
@@ -173,7 +173,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
                     boolean finalQuizCompleted = quizComplete;
                     holder.itemView.setOnClickListener(view -> {
                         if (!isUnlocked ) {
-                            Toast.makeText(context, "Vui lòng hoàn thành các phần trước!", Toast.LENGTH_SHORT).show();
+                            ShowToast.show(context, "Vui lòng hoàn thành phần trước!", ShowToast.ToastType.WARNING);
                             return;
                         }
                         Intent intent;
@@ -215,7 +215,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
                     }
                     holder.itemView.setOnClickListener(view -> {
                         if (!isUnlocked ) {
-                            Toast.makeText(context, "Vui lòng hoàn thành các phần trước!", Toast.LENGTH_SHORT).show();
+                            ShowToast.show(context, "Vui lòng hoàn thành phần trước!", ShowToast.ToastType.WARNING);
                             return;
                         }
                         Intent intent = new Intent(context, WritingQuizActivity.class);
@@ -233,7 +233,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
                 holder.itemView.setAlpha(isUnlocked ? 1.0f : 0.4f);
                 holder.itemView.setOnClickListener(view -> {
                     if (!isUnlocked ) {
-                        Toast.makeText(context, "Vui lòng hoàn thành các phần trước!", Toast.LENGTH_SHORT).show();
+                        ShowToast.show(context, "Vui lòng hoàn thành phần trước!", ShowToast.ToastType.WARNING);
                         return;
                     }
                     handleSpeakingNavigate(quizId);

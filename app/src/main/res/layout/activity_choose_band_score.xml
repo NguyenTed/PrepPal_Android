@@ -192,8 +192,8 @@
         android:text="@string/save"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="@android:color/white"
-        android:background="@drawable/rounded_button_20dp_blue"
+        android:textColor="#4385d3"
+        android:background="@drawable/rounded_button_10dp_blue"
         android:stateListAnimator="@null"/>
 
 

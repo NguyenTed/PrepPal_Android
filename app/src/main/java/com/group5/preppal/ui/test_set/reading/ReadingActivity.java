@@ -12,7 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
-
+import com.group5.preppal.utils.ShowToast;
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.test.reading.ReadingSection;
 import com.group5.preppal.viewmodel.ReadingViewModel;
@@ -63,7 +63,7 @@ public class ReadingActivity extends AppCompatActivity {
             tvTimer.setText(time);
 
             if ("00:00".equals(time)) {
-                Toast.makeText(this, "Time’s up!", Toast.LENGTH_LONG).show();
+                ShowToast.show(this, "Time’s up!", ShowToast.ToastType.WARNING);
                 viewModel.setTimeUp(true);
                 submitAnswers(); // or disable buttons only if you want manual submission
             }
@@ -74,7 +74,7 @@ public class ReadingActivity extends AppCompatActivity {
         // Get data from Intent
         ReadingSection readingSection = getIntent().getParcelableExtra("readingSection");
         if (readingSection == null) {
-            Toast.makeText(this, "Reading section is missing", Toast.LENGTH_SHORT).show();
+            ShowToast.show(this, "Reading section is missing", ShowToast.ToastType.WARNING);
             finish();
             return;
         }
@@ -136,11 +136,11 @@ public class ReadingActivity extends AppCompatActivity {
                 new Date(),
                 new Date(),
                 unused -> {
-                    Toast.makeText(this, "Submitted! 🎉", Toast.LENGTH_SHORT).show();
+                    ShowToast.show(this, "Submitted! 🎉", ShowToast.ToastType.SUCCESS);
                     finish(); // or go to results
                 },
                 error -> {
-                    Toast.makeText(this, "Submit failed: ", Toast.LENGTH_SHORT).show();
+                    ShowToast.show(this, "Submit failed: ", ShowToast.ToastType.ERROR);
                 }
         );
     }

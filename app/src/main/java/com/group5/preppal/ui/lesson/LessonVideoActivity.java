@@ -19,7 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-
+import com.group5.preppal.utils.ShowToast;
 import com.google.firebase.auth.FirebaseUser;
 import com.group5.preppal.R;
 import com.group5.preppal.data.repository.AuthRepository;
@@ -73,7 +73,7 @@ public class LessonVideoActivity extends AppCompatActivity {
 
         btnComplete.setOnClickListener(view -> {
             studentViewModel.saveFinishedLesson(lessonId, user.getUid());
-            Toast.makeText(this, "Lesson is finished", Toast.LENGTH_SHORT).show();
+            ShowToast.show(this, "Lesson is finished", ShowToast.ToastType.SUCCESS);
             this.finish();
         });
 

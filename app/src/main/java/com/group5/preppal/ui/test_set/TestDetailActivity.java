@@ -45,7 +45,7 @@ public class TestDetailActivity extends AppCompatActivity {
 
     private TestDetailViewModel viewModel;
 
-    private TextView tvTestTitle,scoreOverall,scoreListening,scoreReading,scoreWriting,scoreSpeaking;
+    private TextView tvTestTitle,scoreOverall,scoreListening,scoreReading;
     private Button btnRetakeListening, btnStartReading, btnStartWriting, btnStartSpeaking;
 
     private LinearLayout listeningAttemptsLayout, readingAttemptsLayout, writingAttemptsLayout, speakingAttemptsLayout;
@@ -103,11 +103,8 @@ public class TestDetailActivity extends AppCompatActivity {
 
         tvTestTitle.setText(testName);
 
-        scoreOverall = findViewById(R.id.scoreOverall);
         scoreListening = findViewById(R.id.scoreListening);
         scoreReading = findViewById(R.id.scoreReading);
-        scoreWriting = findViewById(R.id.scoreWriting);
-        scoreSpeaking = findViewById(R.id.scoreSpeaking);
 
 
         // ViewModel
@@ -118,7 +115,6 @@ public class TestDetailActivity extends AppCompatActivity {
 
         observeAttempts();
         setupButtonActions();
-        updateOverallScore();
         //btnBack
         btnBack = findViewById(R.id.btnBack);
 
@@ -249,26 +245,6 @@ public class TestDetailActivity extends AppCompatActivity {
         viewModel.loadReadingAttempts(testId);
         // Later: viewModel.loadWritingAttempts(testId);
         // Later: viewModel.loadSpeakingAttempts(testId);
-    }
-    private void updateOverallScore() {
-        float total = 0;
-        int count = 0;
-
-        for (TextView tv : new TextView[]{scoreListening, scoreReading, scoreWriting, scoreSpeaking}) {
-            try {
-                total += Float.parseFloat(tv.getText().toString());
-                count++;
-            } catch (NumberFormatException e) {
-                // Bỏ qua nếu chưa có điểm
-            }
-        }
-
-        if (count > 0) {
-            float avg = total / count;
-            scoreOverall.setText(String.format(Locale.US, "%.1f", avg));
-        } else {
-            scoreOverall.setText("0.0");
-        }
     }
 }
 

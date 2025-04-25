@@ -90,7 +90,7 @@ class CoursePaymentAdapter extends RecyclerView.Adapter<CoursePaymentAdapter.Cou
                 String courseId = course.getCourseId();
                 FirebaseUser user = authRepository.getCurrentUser();
                 if (user != null) {
-                    ShowToast.showRegisterCourseSuccessToast(context, "Registered successfully!\nLet's start your journey");
+                    ShowToast.show(context, "Registered successfully!\nLet's start your journey", ShowToast.ToastType.SUCCESS);
                     userRepository.addCourseToStudent(user.getUid(), courseId);
                     Intent intent = new Intent(context, CourseDetailActivity.class);
                     intent.putExtra("courseId", courseId);
