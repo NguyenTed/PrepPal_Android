@@ -209,6 +209,16 @@ public class TestDetailActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Reload the attempts each time we come back to this screen
+        viewModel.loadListeningAttempts(testId);
+        viewModel.loadReadingAttempts(testId);
+        // Later: viewModel.loadWritingAttempts(testId);
+        // Later: viewModel.loadSpeakingAttempts(testId);
+    }
 }
 
 

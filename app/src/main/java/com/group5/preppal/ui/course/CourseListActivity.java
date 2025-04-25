@@ -12,10 +12,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.group5.preppal.R;
 import com.group5.preppal.data.model.Course;
 import com.group5.preppal.ui.MainActivity;
+import com.group5.preppal.ui.profile.ProfileActivity;
+import com.group5.preppal.ui.test_set.TestSetListActivity;
+import com.group5.preppal.ui.vocabulary.TopicActivity;
 import com.group5.preppal.viewmodel.CourseViewModel;
 
 import java.util.ArrayList;
@@ -31,20 +35,14 @@ public class CourseListActivity extends AppCompatActivity {
     private CourseAdapter courseAdapter;
     private CourseViewModel courseViewModel;
     private List<Course> courseList = new ArrayList<>();
-    private ImageButton backButton;
-
+    private BottomNavigationView bottomNav;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_list);
 
-        backButton = findViewById(R.id.backButton);
-        backButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        });
+        bottomNav = findViewById(R.id.bottom_nav);
 
         recyclerView = findViewById(R.id.recyclerViewCourse);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -66,5 +64,31 @@ public class CourseListActivity extends AppCompatActivity {
             }
         });
 
+        bottomNav.setSelectedItemId(R.id.nav_courses);
+        bottomNav.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_courses) {
+                return true;
+            } else if (itemId == R.id.nav_test_set) {
+                startActivity(new Intent(this, TestSetListActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.nav_home) {
+                startActivity(new Intent(this, MainActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.nav_vocab) {
+                startActivity(new Intent(this, TopicActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.nav_profile) {
+                startActivity(new Intent(this, ProfileActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
+                return true;
+            }
+            return false;
+        });
     }
 }

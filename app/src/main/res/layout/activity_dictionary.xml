@@ -4,17 +4,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="#FFFFFF"
+    android:padding="16dp"
+    tools:context=".ui.dictionary.DictionaryActivity">
 
-    <!-- EditText for Word Input -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
+    <!-- Header -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_back_black"
+            android:contentDescription="Back"
+            app:tint="#070202"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/screenNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dictionaryScreen"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Search Input -->
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilWord"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:boxBackgroundMode="none"
         app:hintEnabled="false"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/etWord"
@@ -27,9 +66,7 @@
             android:imeOptions="actionSearch"
             android:padding="12dp"
             android:textSize="16sp" />
-
     </com.google.android.material.textfield.TextInputLayout>
-
 
     <!-- Word Display -->
     <TextView
@@ -42,20 +79,23 @@
         android:paddingTop="16dp"
         android:text="@string/word"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/tilWord"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/tilWord"
+        app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- Phonetics -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvPhonetics"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/tvWord"
-        app:layout_constraintStart_toStartOf="parent"
         android:paddingBottom="8dp"
+        android:minHeight="30dp"
         android:visibility="gone"
-        android:minHeight="30dp"/>
+        app:layout_constraintTop_toBottomOf="@id/tvWord"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Tabs -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="wrap_content"
@@ -67,31 +107,32 @@
         app:tabTextAppearance="@style/TabText"
         app:tabIndicator="@null"
         app:tabRippleColor="@null"
-        app:layout_constraintTop_toBottomOf="@+id/rvPhonetics"
+        app:layout_constraintTop_toBottomOf="@id/rvPhonetics"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <!-- Definition Label -->
     <TextView
         android:id="@+id/tvDefinitionText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="DEFINITION"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@android:color/black"
+        android:layout_marginStart="4dp"
         android:paddingTop="16dp"
         android:visibility="gone"
-        android:layout_marginLeft="4dp"
-        android:text="DEFINITION"
+        app:layout_constraintTop_toBottomOf="@id/tabLayout"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        app:layout_constraintTop_toBottomOf="@+id/tabLayout"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <!-- ViewPager2 for Swiping Between Meanings -->
+    <!-- ViewPager2 for meanings -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvDefinitionText"
+        app:layout_constraintTop_toBottomOf="@id/tvDefinitionText"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

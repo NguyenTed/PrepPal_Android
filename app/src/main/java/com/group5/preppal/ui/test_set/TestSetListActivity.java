@@ -10,7 +10,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.group5.preppal.R;
+import com.group5.preppal.ui.MainActivity;
+import com.group5.preppal.ui.course.CourseListActivity;
+import com.group5.preppal.ui.profile.ProfileActivity;
+import com.group5.preppal.ui.vocabulary.TopicActivity;
 import com.group5.preppal.viewmodel.TestSetViewModel;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -20,7 +25,8 @@ public class TestSetListActivity extends AppCompatActivity {
 
     private TestSetViewModel viewModel;
     private TestSetAdapter adapter;
-    private ImageView btnBack;
+    private BottomNavigationView bottomNav;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,9 +35,8 @@ public class TestSetListActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.testSetRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        btnBack = findViewById(R.id.btnBack);
+        bottomNav = findViewById(R.id.bottom_nav);
 
-        btnBack.setOnClickListener(v -> finish());
         adapter = new TestSetAdapter(set -> {
             Log.d("CLICK", "Opening test set with ID: " + set.getId());
 
@@ -46,6 +51,39 @@ public class TestSetListActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(TestSetViewModel.class);
         viewModel.getTestSets().observe(this, adapter::submitList);
         viewModel.fetchTestSets();
+
+        bottomNav.setSelectedItemId(R.id.nav_test_set);
+        bottomNav.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_test_set) {
+                return true;
+            } else if (itemId == R.id.nav_courses) {
+                startActivity(new Intent(this, CourseListActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.nav_home) {
+                startActivity(new Intent(this, MainActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.nav_vocab) {
+                startActivity(new Intent(this, TopicActivity.class));
+                overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.nav_profile) {
+                startActivity(new Intent(this, ProfileActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
+                return true;
+            }
+            return false;
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bottomNav.setSelectedItemId(R.id.nav_test_set);
     }
 }
 

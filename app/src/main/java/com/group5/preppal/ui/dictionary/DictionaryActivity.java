@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +37,7 @@ public class DictionaryActivity extends AppCompatActivity {
     private RecyclerView rvPhonetics;
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
+    private ImageView btnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class DictionaryActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
         rvPhonetics = findViewById(R.id.rvPhonetics);
+        btnBack = findViewById(R.id.btnBack);
 
         // Setup RecyclerVie
         rvPhonetics.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -107,6 +110,10 @@ public class DictionaryActivity extends AppCompatActivity {
                 }
                 return false;
             }
+        });
+
+        btnBack.setOnClickListener(v -> {
+            finish();
         });
     }
 
