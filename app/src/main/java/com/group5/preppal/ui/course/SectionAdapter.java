@@ -258,8 +258,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
         String quizId = quiz.get("id").toString();
 
         if (type.contains(CourseSectionType.WRITING.getDisplayName()) || type.contains(CourseSectionType.SPEAKING.getDisplayName())) {
-            if (position == 0) callback.onResult(true);
-            else checkPreviousSectionCompleted(sectionList.get(position - 1), sectionList, position, callback);
+            callback.onResult(true); // Luôn unlock phần Writing và Speaking
         } else if (type.contains(CourseSectionType.MULTIPLE_CHOICE.getDisplayName())){
             MultipleChoiceQuizViewModel multipleChoiceQuizViewModel = new ViewModelProvider(viewModelStoreOwner).get(MultipleChoiceQuizViewModel.class);
 
