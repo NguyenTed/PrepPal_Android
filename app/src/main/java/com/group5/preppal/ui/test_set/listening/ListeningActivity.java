@@ -20,8 +20,10 @@ import com.group5.preppal.data.model.test.listening.ListeningSection;
 import com.group5.preppal.viewmodel.ListeningViewModel;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -36,6 +38,7 @@ public class ListeningActivity extends AppCompatActivity {
     private View[] stepViews;
     private ListeningQuestionGroupAdapter adapter;
     private ImageView btnBack;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +92,16 @@ public class ListeningActivity extends AppCompatActivity {
 
         viewModel.setListeningSection(listeningSection);
 
+        // 👇 Start continuous playback of 4 parts
+        List<String> audioUrls = new ArrayList<>();
+        audioUrls.add(listeningSection.getPart1().getAudioUrl());
+        audioUrls.add(listeningSection.getPart2().getAudioUrl());
+        audioUrls.add(listeningSection.getPart3().getAudioUrl());
+        audioUrls.add(listeningSection.getPart4().getAudioUrl());
+
+        playAllAudiosInOrder(audioUrls);
+
+
         // Start countdown timer
         viewModel.startTimer(60 * 60 * 1000); // 60 minutes
         viewModel.getTimeLeft().observe(this, time -> {
@@ -122,9 +135,6 @@ public class ListeningActivity extends AppCompatActivity {
                 // Update questions
                 adapter.setTimeUp(viewModel.isTimeUp());
                 adapter.submitList(part.getListeningQuestionGroups());
-
-                // Play audio
-                playAudio(part.getAudioUrl());
             }
         });
 
@@ -139,20 +149,39 @@ public class ListeningActivity extends AppCompatActivity {
         });
     }
 
-    private void playAudio(String audioUrl) {
+    private void playAllAudiosInOrder(List<String> audioUrls) {
+        if (audioUrls == null || audioUrls.isEmpty()) return;
+
+        playNextAudio(audioUrls, 0);
+    }
+
+    private void playNextAudio(List<String> audioUrls, int index) {
+        if (index >= audioUrls.size()) {
+            Log.d("ListeningActivity", "✅ Finished all audios.");
+            return; // Done all parts
+        }
+
         if (mediaPlayer != null) {
             mediaPlayer.release();
         }
         mediaPlayer = new MediaPlayer();
         try {
-            mediaPlayer.setDataSource(audioUrl);
+            mediaPlayer.setDataSource(audioUrls.get(index));
             mediaPlayer.prepare();
             mediaPlayer.start();
+
+            mediaPlayer.setOnCompletionListener(mp -> {
+                playNextAudio(audioUrls, index + 1);
+            });
+
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Failed to play audio", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Failed to play audio part " + (index + 1), Toast.LENGTH_SHORT).show();
+            // Try next audio anyway
+            playNextAudio(audioUrls, index + 1);
         }
     }
+
 
     private void submitAnswers() {
         Log.d("ListeningActivity", "User answers: " + viewModel.getUserAnswers());

@@ -1,17 +1,20 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="12dp"
     app:cardElevation="6dp"
     android:layout_marginBottom="12dp"
-    android:layout_marginHorizontal="8dp">
+    android:layout_marginHorizontal="8dp"
+    tools:ignore="ExtraText"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/bg_card"
+        android:background="@drawable/bg_card_border"
         android:padding="16dp">
 
         <!-- Tên bài kiểm tra -->
@@ -24,13 +27,62 @@
             android:textStyle="bold"
             android:textColor="#000000" />
 
-        <TextView
-            android:id="@+id/bandScoresTextView"
-            android:layout_width="wrap_content"
+        <!-- Các kỹ năng -->
+        <GridLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="L: - | R: -"
-            android:textSize="14sp"
-            android:textColor="#666"
-            android:layout_marginTop="4dp" />
+            android:columnCount="2"
+            android:rowCount="2"
+            android:layout_marginBottom="12dp"
+            android:columnOrderPreserved="false"
+            android:alignmentMode="alignMargins"
+            android:rowOrderPreserved="false">
+
+            <Button
+                android:id="@+id/listeningScoreButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_rowWeight="1"
+                android:text="Listening"
+                android:drawableLeft="@drawable/ic_listening_padded"
+                android:background="@drawable/bg_button_outline"
+                android:textColor="#000"
+                android:layout_margin="4dp" />
+
+            <Button
+                android:id="@+id/readingScoreButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="Reading"
+                android:drawableLeft="@drawable/ic_reading_padded"
+                android:background="@drawable/bg_button_outline"
+                android:textColor="#000"
+                android:layout_margin="4dp" />
+
+            <Button
+                android:id="@+id/writingScoreButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="Writing"
+                android:drawableLeft="@drawable/ic_writing_padded"
+                android:background="@drawable/bg_button_outline"
+                android:textColor="#000"
+                android:layout_margin="4dp" />
+
+            <Button
+                android:id="@+id/speakingScoreButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="Speaking"
+                android:drawableLeft="@drawable/ic_speaking_padded"
+                android:background="@drawable/bg_button_outline"
+                android:textColor="#000"
+                android:layout_margin="4dp" />
+        </GridLayout>
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -38,8 +38,6 @@ public class TestSetListActivity extends AppCompatActivity {
         bottomNav = findViewById(R.id.bottom_nav);
 
         adapter = new TestSetAdapter(set -> {
-            Log.d("CLICK", "Opening test set with ID: " + set.getId());
-
             Intent intent = new Intent(this, TestListActivity.class);
             intent.putExtra("testSetId", set.getId());
             intent.putExtra("testSetName", set.getName());

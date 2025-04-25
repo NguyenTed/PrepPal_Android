@@ -1,5 +1,6 @@
 package com.group5.preppal.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private StudentViewModel studentViewModel;
     BottomNavigationView bottomNav;
 
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
                 return true;
             } else if (itemId == R.id.nav_vocab) {
-                Log.d("MainActivity", "Navigating to Vocabulary");
                 startActivity(new Intent(MainActivity.this, TopicActivity.class));
                 overridePendingTransition(0, 0);
                 return true;
