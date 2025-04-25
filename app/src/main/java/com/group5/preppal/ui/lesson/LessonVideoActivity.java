@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -14,18 +15,20 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-
+import com.group5.preppal.utils.ShowToast;
 import com.google.firebase.auth.FirebaseUser;
 import com.group5.preppal.R;
 import com.group5.preppal.data.repository.AuthRepository;
 import com.group5.preppal.ui.course.CourseDetailActivity;
 import com.group5.preppal.viewmodel.LessonViewModel;
 import com.group5.preppal.viewmodel.StudentViewModel;
+import android.content.pm.ActivityInfo;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import java.util.regex.Matcher;
@@ -42,6 +45,12 @@ public class LessonVideoActivity extends AppCompatActivity {
     private ImageButton backBtn;
     private LessonViewModel lessonViewModel;
     private Button btnComplete;
+    private View mCustomView;
+    private WebChromeClient.CustomViewCallback mCustomViewCallback;
+    private FrameLayout fullscreenContainer;
+    private boolean isVideoFullscreen = false;
+    private FrameLayout  headerLayout;
+    private LinearLayout completeLayout;
 
     @Inject
     AuthRepository authRepository;
@@ -62,7 +71,8 @@ public class LessonVideoActivity extends AppCompatActivity {
         webView = findViewById(R.id.webView);
         webViewContainer = findViewById(R.id.webViewContainer);
         btnComplete = findViewById(R.id.btnComplete);
-
+        headerLayout = findViewById(R.id.headerLayout);
+        completeLayout = findViewById(R.id.completeLayout);
         lessonName.setText("");
         backBtn.setOnClickListener(view -> {
             Intent intent = new Intent(this, CourseDetailActivity.class);
@@ -73,7 +83,7 @@ public class LessonVideoActivity extends AppCompatActivity {
 
         btnComplete.setOnClickListener(view -> {
             studentViewModel.saveFinishedLesson(lessonId, user.getUid());
-            Toast.makeText(this, "Lesson is finished", Toast.LENGTH_SHORT).show();
+            ShowToast.show(this, "Lesson is finished", ShowToast.ToastType.SUCCESS);
             this.finish();
         });
 
@@ -121,7 +131,58 @@ public class LessonVideoActivity extends AppCompatActivity {
         webSettings.setDomStorageEnabled(true);
         webSettings.setMediaPlaybackRequiresUserGesture(false);
 
-        webView.setWebChromeClient(new WebChromeClient());
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onShowCustomView(View view, CustomViewCallback callback) {
+                if (mCustomView != null) {
+                    callback.onCustomViewHidden();
+                    return;
+                }
+
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE); // 1. Xoay trước
+
+                mCustomView = view;
+                mCustomViewCallback = callback;
+
+                // 2. Thêm fullscreen view vào Window thay vì setContentView
+                getWindow().addContentView(
+                        mCustomView,
+                        new FrameLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.MATCH_PARENT
+                        )
+                );
+
+                // Ẩn header/footer
+                headerLayout.setVisibility(View.GONE);
+                completeLayout.setVisibility(View.GONE);
+
+                isVideoFullscreen = true;
+            }
+
+            @Override
+            public void onHideCustomView() {
+                if (mCustomView == null) {
+                    return;
+                }
+
+                // 1. Remove custom fullscreen view
+                ((ViewGroup) mCustomView.getParent()).removeView(mCustomView);
+                mCustomView = null;
+
+                // 2. Restore layout
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                headerLayout.setVisibility(View.VISIBLE);
+                completeLayout.setVisibility(View.VISIBLE);
+
+                mCustomViewCallback.onCustomViewHidden();
+                mCustomViewCallback = null;
+
+                isVideoFullscreen = false;
+            }
+        });
+
+
 
         if (isYouTubeUrl(videoUrl)) {
             String videoId = extractYouTubeVideoId(videoUrl);

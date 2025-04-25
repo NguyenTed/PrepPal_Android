@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.group5.preppal.utils.ShowToast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -177,7 +177,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void observeAuthState() {
         authViewModel.getUserLiveData().observe(this, firebaseUser -> {
             if (firebaseUser != null) {
-                Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show();
+                ShowToast.show(this, "Registration successful", ShowToast.ToastType.SUCCESS);
                 startActivity(new Intent(this, ChooseBandActivity.class));
                 finish();
             }
@@ -185,7 +185,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         authViewModel.getErrorLiveData().observe(this, errorMessage -> {
             if (errorMessage != null) {
-                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+                ShowToast.show(this, errorMessage, ShowToast.ToastType.ERROR);
             }
         });
     }

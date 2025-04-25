@@ -25,7 +25,7 @@
             android:layout_weight="7"
             android:layout_marginLeft="20dp"
             android:text="PREP"
-            android:textSize="80sp"
+            android:textSize="70dp"
             android:textColor="#515151"
             android:textStyle="bold"/>
     </LinearLayout>

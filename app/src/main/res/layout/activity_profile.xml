@@ -81,6 +81,7 @@
                         android:textColor="#ff0D0D0D"
                         />
                     <TextView
+                        android:id="@+id/currentBand"
                         android:background="@drawable/rounded_background"
                         android:layout_marginLeft="5dp"
                         android:layout_width="wrap_content"

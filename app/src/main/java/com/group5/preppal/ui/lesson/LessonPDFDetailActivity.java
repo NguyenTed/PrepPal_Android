@@ -14,7 +14,7 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
-
+import com.group5.preppal.utils.ShowToast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -74,7 +74,7 @@ public class LessonPDFDetailActivity extends AppCompatActivity {
 
         btnComplete.setOnClickListener(view -> {
             studentViewModel.saveFinishedLesson(lessonId, user.getUid());
-            Toast.makeText(this, "Lesson is finished", Toast.LENGTH_SHORT).show();
+            ShowToast.show(this, "Lesson is finished", ShowToast.ToastType.SUCCESS);
             this.finish();
         });
 
