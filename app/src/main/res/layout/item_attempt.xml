@@ -1,45 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp"
-    android:orientation="horizontal"
-    android:gravity="center_vertical">
+    android:orientation="vertical">
 
-    <!-- Score Circle -->
-    <TextView
-        android:id="@+id/tvScore"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:background="@drawable/circle_green"
-        android:gravity="center"
-        android:text="1.0"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:textSize="14sp" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="#CCCCCC"
+        android:layout_marginBottom="8dp" />
 
-    <!-- Attempt label and submitted time -->
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginStart="12dp">
+        android:padding="8dp"
+        android:layout_marginBottom="8dp">
 
+        <!-- Score Circle -->
+        <TextView
+            android:id="@+id/tvScore"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/circle_green"
+            android:gravity="center"
+            android:text="1.0"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true" />
+
+        <!-- Attempt label -->
         <TextView
             android:id="@+id/tvAttemptLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Attempt 1"
             android:textStyle="bold"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:layout_toEndOf="@id/tvScore"
+            android:layout_marginStart="12dp"
+            android:layout_alignTop="@id/tvScore" />
 
+        <!-- Submitted time -->
         <TextView
             android:id="@+id/tvSubmittedTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Submitted on 19/4/2025"
             android:textSize="12sp"
-            android:textColor="#666666" />
-    </LinearLayout>
+            android:textColor="#666666"
+            android:layout_below="@id/tvAttemptLabel"
+            android:layout_alignStart="@id/tvAttemptLabel"
+            android:layout_marginTop="2dp" />
+
+        <!-- Expand arrow -->
+        <ImageView
+            android:id="@+id/ivArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="expand arrow"
+            app:tint="#888888" />
+
+    </RelativeLayout>
+
+</LinearLayout>
 
 </LinearLayout>

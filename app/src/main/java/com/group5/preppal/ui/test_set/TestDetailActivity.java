@@ -1,5 +1,6 @@
 package com.group5.preppal.ui.test_set;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -128,6 +129,7 @@ public class TestDetailActivity extends AppCompatActivity {
         btnStartSpeaking.setText("Start");
     }
 
+    @SuppressLint("SetTextI18n")
     private <T extends SkillAttempt> void updateSkillUI(
             List<T> attempts,
             LinearLayout container,
@@ -145,6 +147,7 @@ public class TestDetailActivity extends AppCompatActivity {
 
         int attemptNumber = attempts.size();
         for (T attempt : attempts) {
+
             View view = LayoutInflater.from(this).inflate(R.layout.item_attempt, container, false);
 
             TextView tvAttemptLabel = view.findViewById(R.id.tvAttemptLabel);

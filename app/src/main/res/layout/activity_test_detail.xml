@@ -99,7 +99,6 @@
                     android:layout_height="wrap_content"
                     tools:ignore="HardcodedText" />
             </RelativeLayout>
-
             <!-- Attempts -->
             <LinearLayout
                 android:id="@+id/listeningAttemptsLayout"
