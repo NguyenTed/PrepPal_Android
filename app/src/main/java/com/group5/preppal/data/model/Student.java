@@ -9,6 +9,8 @@ public class Student extends User {
     protected float aimBand;
     private List<String> courses;
     private List<String> finishedLessons;
+    private List<String> finishedSpeakingTests;
+    private List<String> finishedCourses;
     private List<StudentBookedSpeaking> studentBookedSpeaking;
 
     public Student() {}
@@ -21,12 +23,15 @@ public class Student extends User {
         this.finishedLessons = new ArrayList<>();
     }
 
-    public Student(String uid, String email, String name, Date dateOfBirth, Gender gender, String role, float currentBand, float aimBand, List<String> courses, List<String> finishedLessons, List<StudentBookedSpeaking> studentBookedSpeaking) {
+
+    public Student(String uid, String email, String name, Date dateOfBirth, Gender gender, String role, float currentBand, float aimBand, List<String> courses, List<String> finishedLessons, List<String> finishedSpeakingTests, List<String> finishedCourses ,List<StudentBookedSpeaking> studentBookedSpeaking) {
         super(uid, email, name, dateOfBirth, gender, role);
         this.currentBand = currentBand;
         this.aimBand = aimBand;
         this.courses = courses;
         this.finishedLessons = finishedLessons;
+        this.finishedSpeakingTests = finishedSpeakingTests;
+        this.finishedCourses = finishedCourses;
         this.studentBookedSpeaking = studentBookedSpeaking;
     }
 
@@ -60,6 +65,30 @@ public class Student extends User {
 
     public void setFinishedLessons(List<String> finishedLessons) {
         this.finishedLessons = finishedLessons;
+    }
+
+    public List<String> getFinishedSpeakingTests() {
+        return finishedSpeakingTests;
+    }
+
+    public void setFinishedSpeakingTests(List<String> finishedSpeakingTests) {
+        this.finishedSpeakingTests = finishedSpeakingTests;
+    }
+
+    public List<String> getFinishedCourses() {
+        return finishedCourses;
+    }
+
+    public void setFinishedCourses(List<String> finishedCourses) {
+        this.finishedCourses = finishedCourses;
+    }
+
+    public List<StudentBookedSpeaking> getStudentBookedSpeaking() {
+        return studentBookedSpeaking;
+    }
+
+    public void setStudentBookedSpeaking(List<StudentBookedSpeaking> studentBookedSpeaking) {
+        this.studentBookedSpeaking = studentBookedSpeaking;
     }
 
     public List<StudentBookedSpeaking> getBookedSpeaking() {

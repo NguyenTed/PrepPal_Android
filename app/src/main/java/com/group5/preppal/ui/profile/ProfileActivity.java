@@ -29,6 +29,7 @@ import com.group5.preppal.ui.test_set.TestListActivity;
 import com.group5.preppal.ui.test_set.TestSetListActivity;
 import com.group5.preppal.ui.vocabulary.TopicActivity;
 import com.group5.preppal.viewmodel.AuthViewModel;
+import com.group5.preppal.viewmodel.StudentViewModel;
 
 import javax.inject.Inject;
 
@@ -38,18 +39,20 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class ProfileActivity extends AppCompatActivity {
     private AuthViewModel authViewModel;
     private ImageView profileImageView;
-    private TextView nameTextView, emailTextView, logOutTextView;
+    private TextView nameTextView, emailTextView, logOutTextView, currentBand;
     BottomNavigationView bottomNav;
     @Inject
     FirebaseFirestore firestore;
-
+    private StudentViewModel studentViewModel;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
         authViewModel = new ViewModelProvider(this).get(AuthViewModel.class);
+        studentViewModel = new ViewModelProvider(this).get(StudentViewModel.class);
 
+        currentBand = findViewById(R.id.currentBand);
         profileImageView = findViewById(R.id.profileImageView);
         nameTextView = findViewById(R.id.nameTextView);
         emailTextView = findViewById(R.id.emailTextView);
@@ -60,6 +63,9 @@ public class ProfileActivity extends AppCompatActivity {
             if (firebaseUser != null) {
                 Log.d("MainActivity", "User logged in: " + firebaseUser.getEmail());
                 fetchUserFromFirestore(firebaseUser);
+                studentViewModel.getStudentById(firebaseUser.getUid()).observe(this, student -> {
+                    currentBand.setText(String.valueOf(student.getCurrentBand()));
+                });
             } else {
                 Log.e("MainActivity", "FirebaseUser is NULL, redirecting to login...");
                 startActivity(new Intent(ProfileActivity.this, LoginActivity.class));

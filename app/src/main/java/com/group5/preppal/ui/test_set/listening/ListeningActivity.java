@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
+import com.group5.preppal.utils.ShowToast;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -195,10 +195,12 @@ public class ListeningActivity extends AppCompatActivity {
                 new Date(),
                 new Date(),
                 unused -> {
-                    Toast.makeText(this, "Listening submitted! 🎧", Toast.LENGTH_SHORT).show();
+                    ShowToast.show(this, "Listening submitted! 🎧", ShowToast.ToastType.SUCCESS);
                     finish(); // or move to result screen
                 },
-                e -> Toast.makeText(this, "Submit failed", Toast.LENGTH_SHORT).show()
+
+                e ->
+                        ShowToast.show(this, "Submit failed", ShowToast.ToastType.ERROR)
         );
     }
 

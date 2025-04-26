@@ -42,7 +42,7 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
-
+import com.group5.preppal.utils.ShowToast;
 @AndroidEntryPoint
 public class WritingTestFragment extends Fragment {
     private TextView tvQuestion, tvComment, tvCommentInteract;
@@ -202,7 +202,7 @@ public class WritingTestFragment extends Fragment {
     private void submitAnswer(boolean isQuiz) {
         String answer = etAnswer.getText().toString().trim();
         if (answer.isEmpty()) {
-            Toast.makeText(requireContext(), "Please enter an answer", Toast.LENGTH_SHORT).show();
+            ShowToast.show(requireContext(), "Please enter an answer", ShowToast.ToastType.WARNING);
             return;
         }
 
@@ -224,7 +224,7 @@ public class WritingTestFragment extends Fragment {
             writingTestViewModel.saveWritingQuizSubmission(writingQuizSubmission, taskId, user.getUid(), new WritingQuizSubmissionRepository.SubmissionCallback() {
                 @Override
                 public void onSuccess(String message) {
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+                    ShowToast.show(requireContext(), message, ShowToast.ToastType.SUCCESS);
                     if (getActivity() instanceof WritingQuizActivity) {
                         Intent intent = new Intent(requireContext(), CourseDetailActivity.class);
                         intent.putExtra("courseId", requireActivity().getIntent().getStringExtra("courseId"));
@@ -235,7 +235,7 @@ public class WritingTestFragment extends Fragment {
                 }
                 @Override
                 public void onFailure(String errorMessage) {
-                    Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                    ShowToast.show(requireContext(), errorMessage, ShowToast.ToastType.ERROR);
                 }
             });
         }
@@ -253,23 +253,23 @@ public class WritingTestFragment extends Fragment {
                                     .document(docId)
                                     .update("answer", answer, "timestamp", System.currentTimeMillis())
                                     .addOnSuccessListener(aVoid ->{
-                                        Toast.makeText(requireContext(), "Answer updated successfully!", Toast.LENGTH_SHORT).show();
+                                        ShowToast.show(requireContext(), "Answer updated successfully!", ShowToast.ToastType.SUCCESS);
                                         requireActivity().finish();})
                                     .addOnFailureListener(e ->
-                                            Toast.makeText(requireContext(), "Failed to update answer", Toast.LENGTH_SHORT).show());
+                                            ShowToast.show(requireContext(), "Failed to update answer", ShowToast.ToastType.ERROR));
                         } else {
                             // Nếu không có document, tạo mới
                             db.collection("writing_submissions")
                                     .add(submission)
                                     .addOnSuccessListener(documentReference ->{
-                                        Toast.makeText(requireContext(), "Answer submitted successfully!", Toast.LENGTH_SHORT).show();
+                                        ShowToast.show(requireContext(), "Answer summited successfully!", ShowToast.ToastType.SUCCESS);
                                         requireActivity().finish();})
                                     .addOnFailureListener(e ->
-                                            Toast.makeText(requireContext(), "Failed to submit answer", Toast.LENGTH_SHORT).show());
+                                            ShowToast.show(requireContext(), "Failed to submit answer", ShowToast.ToastType.ERROR));
                         }
                     })
                     .addOnFailureListener(e ->
-                            Toast.makeText(requireContext(), "Error checking existing submissions", Toast.LENGTH_SHORT).show());
+                            ShowToast.show(requireContext(), "Error checking existing submissions", ShowToast.ToastType.ERROR));
         }
 
     }

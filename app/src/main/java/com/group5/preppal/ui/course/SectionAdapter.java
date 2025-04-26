@@ -28,6 +28,7 @@ import com.group5.preppal.ui.quiz.multiple_choice_quiz.MultipleChoiceAnswerActiv
 import com.group5.preppal.ui.quiz.speaking.SpeakingBookingActivity;
 import com.group5.preppal.ui.quiz.speaking.SpeakingWaitingActivity;
 import com.group5.preppal.ui.quiz.writing_quiz.WritingQuizActivity;
+import com.group5.preppal.utils.ShowToast;
 import com.group5.preppal.viewmodel.MultipleChoiceQuizViewModel;
 import com.group5.preppal.viewmodel.StudentViewModel;
 import com.group5.preppal.viewmodel.WritingTestViewModel;
@@ -43,15 +44,17 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
     private final ViewModelStoreOwner viewModelStoreOwner;
     private FirebaseUser user;
     private final List<String> finishedLessons;
+    private final List<String> finishedSpeakingTests;
     private StudentViewModel studentViewModel;
 
-    public SectionAdapter(List<Map<String, Object>> sectionList, Context context, String courseId, FirebaseAuth firebaseAuth, ViewModelStoreOwner viewModelStoreOwner,List<String> finishedLessons, StudentViewModel studentViewModel) {
+    public SectionAdapter(List<Map<String, Object>> sectionList, Context context, String courseId, FirebaseAuth firebaseAuth, ViewModelStoreOwner viewModelStoreOwner,List<String> finishedLessons, List<String> finishedSpeakingTests, StudentViewModel studentViewModel) {
         this.sectionList = sectionList;
         this.context = context;
         this.courseId = courseId;
         this.user = firebaseAuth.getCurrentUser();
         this.viewModelStoreOwner = viewModelStoreOwner;
         this.finishedLessons = finishedLessons;
+        this.finishedSpeakingTests = finishedSpeakingTests;
         this.studentViewModel = studentViewModel;
     }
 
@@ -102,17 +105,61 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
         void onResult(boolean isCompleted);
     }
 
-    private void checkPreviousSectionCompleted(Map<String, Object> section, List<Map<String, Object>> sectionList, int position,  CompletionCallback callback) {
-        if (section.containsKey("lesson")) {
-            callbackLessonState(section, callback);
+    private void checkPreviousSectionCompleted(Map<String, Object> currentSection, List<Map<String, Object>> sectionList, int position, CompletionCallback callback) {
+        if (position < 0) {
+            callback.onResult(false);
+            return;
+        }
 
-        } else if (section.containsKey("quiz")) {
-            callbackQuizState(section, callback, position);
+        Map<String, Object> previousSection = sectionList.get(position);
 
+        if (previousSection.containsKey("lesson")) {
+            // Nếu previous là bài học (lesson) thì bắt buộc phải completed mới mở current
+            callbackLessonState(previousSection, isCompleted -> {
+                if (isCompleted) {
+                    callback.onResult(true);
+                } else {
+                    callback.onResult(false);  // 🚨 nếu bài học trước chưa xong thì khóa luôn current
+                }
+            });
+        } else if (previousSection.containsKey("quiz")) {
+            Map<String, Object> quiz = (Map<String, Object>) previousSection.get("quiz");
+            String type = quiz.get("type").toString();
+            String quizId = quiz.get("id").toString();
+
+            if (type.contains(CourseSectionType.MULTIPLE_CHOICE.getDisplayName())) {
+                MultipleChoiceQuizViewModel multipleChoiceQuizViewModel = new ViewModelProvider(viewModelStoreOwner).get(MultipleChoiceQuizViewModel.class);
+                multipleChoiceQuizViewModel.getQuizResult(quizId).observe((LifecycleOwner) viewModelStoreOwner, quizResult -> {
+                    if (quizResult != null) {
+                        float score = quizResult.getScore();
+                        multipleChoiceQuizViewModel.getQuizById(quizId).observe((LifecycleOwner) viewModelStoreOwner, multipleChoiceQuiz -> {
+                            if (multipleChoiceQuiz != null) {
+                                float passPoint = multipleChoiceQuiz.getPassPoint();
+                                if (score >= passPoint) {
+                                    callback.onResult(true);
+                                } else {
+                                    callback.onResult(false);
+                                }
+                            } else {
+                                callback.onResult(false);
+                            }
+                        });
+                    } else {
+                        callback.onResult(false);
+                    }
+                });
+            } else if (type.contains(CourseSectionType.WRITING.getDisplayName()) || type.contains(CourseSectionType.SPEAKING.getDisplayName())) {
+                // Nếu gặp Writing/Speaking thì bỏ qua, đệ quy tiếp về trước
+                checkPreviousSectionCompleted(currentSection, sectionList, position - 1, callback);
+            } else {
+                callback.onResult(false);
+            }
         } else {
             callback.onResult(false);
         }
     }
+
+
 
     private void bindSection(SectionViewHolder holder, Map<String, Object> section, boolean isUnlocked) {
         if (section.containsKey("lesson")) {
@@ -134,7 +181,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
             holder.itemView.setAlpha(isUnlocked ? 1.0f : 0.4f);
             holder.itemView.setOnClickListener(view -> {
                 if (!isUnlocked) {
-                    Toast.makeText(context, "Vui lòng hoàn thành phần trước!", Toast.LENGTH_SHORT).show();
+                    ShowToast.show(context, "Vui lòng hoàn thành phần trước!", ShowToast.ToastType.WARNING);
                     return;
                 }
                 Intent intent = new Intent(context, type.equals("Reading") ? LessonPDFDetailActivity.class : LessonVideoActivity.class);
@@ -173,7 +220,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
                     boolean finalQuizCompleted = quizComplete;
                     holder.itemView.setOnClickListener(view -> {
                         if (!isUnlocked ) {
-                            Toast.makeText(context, "Vui lòng hoàn thành các phần trước!", Toast.LENGTH_SHORT).show();
+                            ShowToast.show(context, "Vui lòng hoàn thành phần trước!", ShowToast.ToastType.WARNING);
                             return;
                         }
                         Intent intent;
@@ -215,7 +262,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
                     }
                     holder.itemView.setOnClickListener(view -> {
                         if (!isUnlocked ) {
-                            Toast.makeText(context, "Vui lòng hoàn thành các phần trước!", Toast.LENGTH_SHORT).show();
+                            ShowToast.show(context, "Vui lòng hoàn thành phần trước!", ShowToast.ToastType.WARNING);
                             return;
                         }
                         Intent intent = new Intent(context, WritingQuizActivity.class);
@@ -228,16 +275,29 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
                 holder.sectionName.setText(name);
                 holder.sectionType.setText(type);
                 holder.txtTypeFinish.setText(type);
-                holder.sectionType.setVisibility(View.VISIBLE);
+
+                boolean isFinishedSpeaking = false;
+                if (finishedSpeakingTests != null) {
+                    isFinishedSpeaking = finishedSpeakingTests.contains(quizId);
+                }
+
+                if (isFinishedSpeaking) {
+                    holder.sectionTypeFinish.setVisibility(View.VISIBLE); // Hiển thị đã hoàn thành
+                    holder.itemView.setOnClickListener(view -> {
+                        ShowToast.show(context, "Bạn đã hoàn thành bài thi nói.", ShowToast.ToastType.WARNING);
+                    });
+                } else {
+                    holder.sectionType.setVisibility(View.VISIBLE);
+                    holder.itemView.setOnClickListener(view -> {
+                        if (!isUnlocked) {
+                            ShowToast.show(context, "Vui lòng hoàn thành phần trước!", ShowToast.ToastType.WARNING);
+                            return;
+                        }
+                        handleSpeakingNavigate(quizId);
+                    });
+                }
 
                 holder.itemView.setAlpha(isUnlocked ? 1.0f : 0.4f);
-                holder.itemView.setOnClickListener(view -> {
-                    if (!isUnlocked ) {
-                        Toast.makeText(context, "Vui lòng hoàn thành các phần trước!", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    handleSpeakingNavigate(quizId);
-                });
             }
 
         }
@@ -258,8 +318,7 @@ public class SectionAdapter extends RecyclerView.Adapter<SectionAdapter.SectionV
         String quizId = quiz.get("id").toString();
 
         if (type.contains(CourseSectionType.WRITING.getDisplayName()) || type.contains(CourseSectionType.SPEAKING.getDisplayName())) {
-            if (position == 0) callback.onResult(true);
-            else checkPreviousSectionCompleted(sectionList.get(position - 1), sectionList, position, callback);
+            callback.onResult(true); // Luôn unlock phần Writing và Speaking
         } else if (type.contains(CourseSectionType.MULTIPLE_CHOICE.getDisplayName())){
             MultipleChoiceQuizViewModel multipleChoiceQuizViewModel = new ViewModelProvider(viewModelStoreOwner).get(MultipleChoiceQuizViewModel.class);
 

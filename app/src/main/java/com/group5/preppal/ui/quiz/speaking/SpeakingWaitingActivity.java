@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.group5.preppal.utils.ShowToast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -89,7 +89,7 @@ public class SpeakingWaitingActivity extends AppCompatActivity {
                     // Không nằm trong khung giờ → đổi màu nút + thông báo khi click
                     btnJoin.setBackgroundResource(R.drawable.rounded_20dp_gray); // màu xám
                     btnJoin.setOnClickListener(view -> {
-                        Toast.makeText(this, "Bạn chỉ có thể tham gia trong khung giờ đã đặt!", Toast.LENGTH_LONG).show();
+                        ShowToast.show(this, "Bạn chỉ có thể tham gia trong khung giờ đã đặt!", ShowToast.ToastType.WARNING);
                     });
                 } else {
                     // Trong khung giờ → cho phép vào phòng
@@ -103,7 +103,7 @@ public class SpeakingWaitingActivity extends AppCompatActivity {
                     Log.d("Speaking Waiting", "diff: " + diff);
                     // Nếu hiện tại < 24h so với giờ booking
                     if (diff < 24 * 60 * 60 * 1000L && diff > 0) {
-                        Toast.makeText(this, "Bạn chỉ có thể đặt lại khi còn hơn 24h so với lịch hiện tại", Toast.LENGTH_LONG).show();
+                        ShowToast.show(this, "Bạn chỉ có thể tham gia trong khung giờ đã đặt!", ShowToast.ToastType.WARNING);
                     } else {
                         navigateToSpeakingBookingActivity();
                     }
